@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:linear-gradient(135deg,oklch(0.95 0.02 260) 0%,oklch(0.96 0.015 250) 100%);font-family:'Nunito',sans-serif;-webkit-font-smoothing:antialiased}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</helmet>
+
+<!-- TOP NAV -->
+<div style="display:flex;gap:8px;padding:12px 16px;background:#fff;border-bottom:2px solid oklch(0.92 0.02 260);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+  <a href="#" style="padding:6px 12px;font:600 14px 'Fredoka';color:oklch(0.24 0.015 240);text-decoration:none;border-radius:8px">Dashboard</a>
+  <a href="#" style="padding:6px 12px;font:600 14px 'Fredoka';color:oklch(0.24 0.015 240);text-decoration:none;border-radius:8px">Calendar</a>
+  <a href="#" style="padding:6px 12px;font:600 14px 'Fredoka';color:#fff;text-decoration:none;border-radius:8px;background:linear-gradient(135deg,oklch(0.65 0.28 25) 0%,oklch(0.65 0.28 15) 100%)">To-Do</a>
+  <a href="#" style="padding:6px 12px;font:600 14px 'Fredoka';color:oklch(0.24 0.015 240);text-decoration:none;border-radius:8px">Journal</a>
+  <a href="#" style="padding:6px 12px;font:600 14px 'Fredoka';color:oklch(0.24 0.015 240);text-decoration:none;border-radius:8px">Habits</a>
+  <a href="#" style="padding:6px 12px;font:600 14px 'Fredoka';color:oklch(0.24 0.015 240);text-decoration:none;border-radius:8px">Goals</a>
+</div>
+
+<!-- MAIN LIST VIEW -->
+<sc-if value="{{ view === 'list' }}" hint-placeholder-val="{{ true }}">
+<div style="padding:24px;max-width:1200px;margin:0 auto">
+  <!-- FILTERS -->
+  <div style="display:flex;gap:9px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+    <input type="text" placeholder="Search tasks..." value="{{ searchQuery }}" onChange="{{ (e) => setSearchQuery(e.target.value) }}" style="padding:7px 10px;font:600 13px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:7px;background:#fff;color:oklch(0.24 0.015 240);min-width:160px">
+    <select style="padding:7px 10px;font:600 13px 'Nunito';border:1.5px solid oklch(0.88 0.04 50);border-radius:7px;background:#fff;cursor:pointer;color:oklch(0.24 0.015 240)">
+      <option>All Priorities</option>
+      <option>High</option>
+      <option>Medium</option>
+      <option>Low</option>
+    </select>
+    <select style="padding:7px 10px;font:600 13px 'Nunito';border:1.5px solid oklch(0.88 0.04 180);border-radius:7px;background:#fff;cursor:pointer;color:oklch(0.24 0.015 240)">
+      <option>All Categories</option>
+      <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="3">
+        <option>{{ cat.name }}</option>
+      </sc-for>
+    </select>
+    <input type="date" style="padding:7px 10px;font:600 13px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:7px;background:#fff;cursor:pointer;color:oklch(0.24 0.015 240)">
+    <input type="date" style="padding:7px 10px;font:600 13px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:7px;background:#fff;cursor:pointer;color:oklch(0.24 0.015 240)">
+    <select value="{{ sortBy }}" onChange="{{ (e) => setSortBy(e.target.value) }}" style="padding:7px 10px;font:600 13px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:7px;background:#fff;cursor:pointer;color:oklch(0.24 0.015 240)">
+      <option value="dueDate">Sort: Due Date</option>
+      <option value="priority">Sort: Priority</option>
+    </select>
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font:600 13px 'Nunito';color:oklch(0.24 0.015 240)">
+      <input type="checkbox" onChange="{{ toggleCompleted }}" style="cursor:pointer;width:15px;height:15px;accent-color:oklch(0.65 0.28 25)">
+      Show completed
+    </label>
+    <button onClick="{{ openCategoryManager }}" style="padding:7px 12px;font:600 13px 'Fredoka';background:#fff;border:1.5px solid oklch(0.65 0.28 180);border-radius:8px;cursor:pointer;color:oklch(0.65 0.28 180);white-space:nowrap">Manage Categories</button>
+    <button onClick="{{ goToCreate }}" style="padding:6px 11px;font:600 13px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 25) 0%,oklch(0.65 0.28 15) 100%);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-left:auto;box-shadow:0 4px 12px rgba(214,107,66,0.3);white-space:nowrap">+ Add Task</button>
+  </div>
+
+  <!-- MY DAY SECTION -->
+  <div style="margin-bottom:36px">
+    <h2 style="font:700 20px 'Fredoka';color:oklch(0.24 0.015 240);margin:0 0 14px 0;text-transform:uppercase;letter-spacing:0.5px">My Day</h2>
+    <div style="background:#fff;border-radius:12px;border:1.5px solid oklch(0.92 0.02 50);box-shadow:0 4px 16px rgba(0,0,0,0.08)">
+      <sc-if value="{{ isMyDayEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:36px;text-align:center;color:oklch(0.6 0.03 240);font:600 14px 'Nunito'">Nothing on your plate today 🎉</div>
+      </sc-if>
+      <sc-for list="{{ filteredMyDay }}" as="task" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid oklch(0.94 0.01 240);background:{{ task.rowBg }};transition:all 0.2s">
+          <div onClick="{{ () => cycleStatus(task.id) }}" title="Click to change status" style="width:17px;height:17px;border-radius:{{ task.statusRadius }};background:{{ task.statusBg }};border:{{ task.statusBorder }};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+            <sc-if value="{{ task.statusShowCheck }}" hint-placeholder-val="{{ false }}"><span style="color:#fff;font-size:13px;font-weight:800;line-height:1">✓</span></sc-if>
+          </div>
+          <div style="flex:1;min-width:200px;display:flex;align-items:center;gap:8px">
+            <div style="font:600 15px 'Nunito';text-decoration:{{ task.titleDecoration }};color:{{ task.titleColor }};cursor:pointer" onClick="{{ () => editTitle(task.id) }}" title="Click to edit">{{ task.title }}</div>
+            <sc-if value="{{ task.showRecur }}" hint-placeholder-val="{{ false }}"><span title="Recurring task" style="font-size:13px">🔁</span></sc-if>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <select onClick="{{ e => e.stopPropagation() }}" onChange="{{ (e) => changePriority(task.id, e.target.value) }}" value="{{ task.priority }}" style="padding:4px 7px;font:600 12px 'Nunito';border:1.5px solid {{ task.priorityColor }};border-radius:6px;background:#fff;cursor:pointer;color:{{ task.priorityColor }};font-weight:700">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <select onClick="{{ e => e.stopPropagation() }}" onChange="{{ (e) => changeCategory(task.id, e.target.value) }}" value="{{ task.category }}" style="padding:4px 7px;font:600 12px 'Nunito';border:1.5px solid oklch(0.88 0.04 180);border-radius:6px;background:#fff;cursor:pointer;color:oklch(0.24 0.015 240)">
+              <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="2">
+                <option value="{{ cat.name }}">{{ cat.name }}</option>
+              </sc-for>
+            </select>
+            <span style="font:700 12px 'Nunito';color:{{ task.dueColor }};min-width:60px">{{ task.dueLabel }}</span>
+            <button onClick="{{ () => openTaskDetail(task.id) }}" style="padding:5px 9px;font:600 12px 'Fredoka';background:oklch(0.94 0.01 240);border:1.5px solid oklch(0.88 0.04 240);border-radius:6px;cursor:pointer;color:oklch(0.24 0.015 240);transition:all 0.2s" style-hover="background:oklch(0.92 0.015 240)">Edit</button>
+            <button onClick="{{ () => requestDelete(task.id) }}" style="padding:5px 9px;font:600 12px 'Nunito';background:none;border:none;color:oklch(0.5 0.05 240);cursor:pointer;font-size:16px">×</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- ALL TASKS SECTION -->
+  <div>
+    <h2 style="font:700 20px 'Fredoka';color:oklch(0.24 0.015 240);margin:0 0 14px 0;text-transform:uppercase;letter-spacing:0.5px">All Tasks</h2>
+    <div style="background:#fff;border-radius:12px;border:1.5px solid oklch(0.92 0.02 240);box-shadow:0 4px 16px rgba(0,0,0,0.08)">
+      <sc-if value="{{ isAllTasksEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:36px;text-align:center;color:oklch(0.6 0.03 240);font:600 14px 'Nunito'">No tasks found</div>
+      </sc-if>
+      <sc-for list="{{ filteredAllTasks }}" as="task" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid oklch(0.94 0.01 240);background:{{ task.rowBg }};transition:all 0.2s">
+          <div onClick="{{ () => cycleStatus(task.id) }}" title="Click to change status" style="width:17px;height:17px;border-radius:{{ task.statusRadius }};background:{{ task.statusBg }};border:{{ task.statusBorder }};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+            <sc-if value="{{ task.statusShowCheck }}" hint-placeholder-val="{{ false }}"><span style="color:#fff;font-size:13px;font-weight:800;line-height:1">✓</span></sc-if>
+          </div>
+          <div style="flex:1;min-width:200px;display:flex;align-items:center;gap:8px">
+            <div style="font:600 15px 'Nunito';text-decoration:{{ task.titleDecoration }};color:{{ task.titleColor }};cursor:pointer" onClick="{{ () => editTitle(task.id) }}" title="Click to edit">{{ task.title }}</div>
+            <sc-if value="{{ task.showRecur }}" hint-placeholder-val="{{ false }}"><span title="Recurring task" style="font-size:13px">🔁</span></sc-if>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <select onClick="{{ e => e.stopPropagation() }}" onChange="{{ (e) => changePriority(task.id, e.target.value) }}" value="{{ task.priority }}" style="padding:4px 7px;font:600 12px 'Nunito';border:1.5px solid {{ task.priorityColor }};border-radius:6px;background:#fff;cursor:pointer;color:{{ task.priorityColor }};font-weight:700">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <select onClick="{{ e => e.stopPropagation() }}" onChange="{{ (e) => changeCategory(task.id, e.target.value) }}" value="{{ task.category }}" style="padding:4px 7px;font:600 12px 'Nunito';border:1.5px solid oklch(0.88 0.04 180);border-radius:6px;background:#fff;cursor:pointer;color:oklch(0.24 0.015 240)">
+              <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="2">
+                <option value="{{ cat.name }}">{{ cat.name }}</option>
+              </sc-for>
+            </select>
+            <span style="font:700 12px 'Nunito';color:{{ task.dueColor }};min-width:60px">{{ task.dueLabel }}</span>
+            <button onClick="{{ () => openTaskDetail(task.id) }}" style="padding:5px 9px;font:600 12px 'Fredoka';background:oklch(0.94 0.01 240);border:1.5px solid oklch(0.88 0.04 240);border-radius:6px;cursor:pointer;color:oklch(0.24 0.015 240);transition:all 0.2s" style-hover="background:oklch(0.92 0.015 240)">Edit</button>
+            <button onClick="{{ () => requestDelete(task.id) }}" style="padding:5px 9px;font:600 12px 'Nunito';background:none;border:none;color:oklch(0.5 0.05 240);cursor:pointer;font-size:16px">×</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- DELETE CONFIRMATION -->
+<sc-if value="{{ pendingDeleteTask }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1100;backdrop-filter:blur(4px)">
+  <div style="background:#fff;border-radius:12px;padding:22px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <h3 style="font:700 20px 'Fredoka';color:oklch(0.24 0.015 240);margin:0 0 10px 0">Delete task?</h3>
+    <p style="font:400 14px 'Nunito';color:oklch(0.5 0.05 240);margin:0 0 22px 0">"{{ pendingDeleteTask.title }}" will be permanently deleted.</p>
+    <div style="display:flex;gap:9px">
+      <button onClick="{{ cancelDelete }}" style="flex:1;padding:12px;font:600 13px 'Fredoka';background:oklch(0.94 0.01 240);border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;cursor:pointer;color:oklch(0.24 0.015 240)">Cancel</button>
+      <button onClick="{{ confirmDelete }}" style="flex:1;padding:12px;font:600 13px 'Fredoka';background:oklch(0.65 0.28 25);color:#fff;border:none;border-radius:8px;cursor:pointer">Delete</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- CATEGORY MANAGER -->
+<sc-if value="{{ view === 'categories' }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)">
+  <div style="background:#fff;border-radius:12px;padding:26px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <h2 style="font:700 24px 'Fredoka';color:oklch(0.24 0.015 240);margin:0">Manage Categories</h2>
+      <button onClick="{{ goToList }}" style="font:600 24px 'Nunito';background:none;border:none;color:oklch(0.5 0.05 240);cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;max-height:320px;overflow-y:auto;margin-bottom:20px">
+      <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:oklch(0.97 0.01 240);border-radius:8px">
+          <input type="text" value="{{ cat.name }}" onChange="{{ (e) => renameCategory(cat.id, e.target.value) }}" style="flex:1;padding:6px 10px;font:600 13px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:6px;background:#fff;color:oklch(0.24 0.015 240)">
+          <button onClick="{{ () => deleteCategory(cat.id) }}" style="padding:6px 10px;font:600 12px 'Fredoka';background:#fff;border:1.5px solid oklch(0.65 0.28 25);border-radius:6px;cursor:pointer;color:oklch(0.65 0.28 25)">Delete</button>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:10px">
+      <input type="text" placeholder="New category name" value="{{ newCategoryName }}" onChange="{{ (e) => setNewCategoryName(e.target.value) }}" style="flex:1;padding:9px 11px;font:400 14px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;box-sizing:border-box;color:oklch(0.24 0.015 240)">
+      <button onClick="{{ addCategory }}" style="padding:9px 14px;font:600 13px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 180) 0%,oklch(0.65 0.28 170) 100%);color:#fff;border:none;border-radius:8px;cursor:pointer">Add</button>
+    </div>
+    <button onClick="{{ goToList }}" style="width:100%;padding:12px;margin-top:18px;font:600 13px 'Fredoka';background:oklch(0.94 0.01 240);border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;cursor:pointer;color:oklch(0.24 0.015 240)">Done</button>
+  </div>
+</div>
+</sc-if>
+
+<!-- TASK DETAIL SCREEN -->
+<sc-if value="{{ view === 'detail' }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;overflow-y:auto;padding:20px;backdrop-filter:blur(4px)">
+  <div style="background:#fff;border-radius:12px;padding:26px;max-width:600px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px">
+      <h2 style="font:700 28px 'Fredoka';color:oklch(0.24 0.015 240);margin:0;word-break:break-word">{{ selectedTask.title }}</h2>
+      <button onClick="{{ goToList }}" style="font:600 28px 'Nunito';background:none;border:none;color:oklch(0.5 0.05 240);cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px">
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Status</label>
+          <div style="display:flex;gap:10px;align-items:center;padding-top:4px">
+            <sc-for list="{{ statusOptionsVisual }}" as="opt" hint-placeholder-count="3">
+              <div onClick="{{ () => changeStatus(selectedTask.id, opt.status) }}" title="{{ opt.label }}" style="width:20px;height:20px;border-radius:{{ opt.statusRadius }};background:{{ opt.statusBg }};border:{{ opt.optBorder }};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+                <sc-if value="{{ opt.statusShowCheck }}" hint-placeholder-val="{{ false }}"><span style="color:#fff;font-size:14px;font-weight:800;line-height:1">✓</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Priority</label>
+          <select onChange="{{ (e) => changePriority(selectedTask.id, e.target.value) }}" value="{{ selectedTask.priority }}" style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid {{ selectedTask.priorityColor }};border-radius:8px;box-sizing:border-box;cursor:pointer;color:{{ selectedTask.priorityColor }};font-weight:700">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Category</label>
+          <select onChange="{{ (e) => changeCategory(selectedTask.id, e.target.value) }}" value="{{ selectedTask.category }}" style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid oklch(0.65 0.28 180);border-radius:8px;box-sizing:border-box;cursor:pointer;color:oklch(0.24 0.015 240)">
+            <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="3">
+              <option value="{{ cat.name }}">{{ cat.name }}</option>
+            </sc-for>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px">
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Due Date</label>
+          <input type="date" onChange="{{ (e) => changeDueDate(selectedTask.id, e.target.value) }}" value="{{ selectedTask.dueDate }}" style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;box-sizing:border-box;color:oklch(0.24 0.015 240)">
+        </div>
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Repeat</label>
+          <select onChange="{{ (e) => changeRecurring(selectedTask.id, e.target.value) }}" value="{{ selectedTask.recurring }}" style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;box-sizing:border-box;cursor:pointer;color:oklch(0.24 0.015 240)">
+            <option value="none">Does not repeat</option>
+            <option value="daily">🔁 Daily</option>
+            <option value="weekly">🔁 Weekly</option>
+            <option value="monthly">🔁 Monthly</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Description</label>
+        <textarea placeholder="Add notes or details..." style="width:100%;padding:14px;font:400 14px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;box-sizing:border-box;min-height:140px;resize:none;color:oklch(0.24 0.015 240)"></textarea>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <label style="font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);text-transform:uppercase;letter-spacing:1px;margin:0">Subtasks</label>
+          <button style="padding:5px 9px;font:600 11px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 180) 0%,oklch(0.65 0.28 170) 100%);color:#fff;border:none;border-radius:6px;cursor:pointer">+ Add</button>
+        </div>
+        <div style="background:oklch(0.97 0.01 240);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ selectedTask.subtasks }}" as="sub" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:9px;padding:8px;background:#fff;border-radius:6px;border:1px solid oklch(0.92 0.01 240)">
+              <input type="checkbox" checked="{{ sub.completed }}" style="cursor:pointer;width:15px;height:15px;accent-color:oklch(0.7 0.22 120)">
+              <input type="text" value="{{ sub.title }}" style="flex:1;padding:8px 10px;font:400 13px 'Nunito';border:none;background:transparent;color:oklch(0.24 0.015 240)">
+              <button style="padding:4px 8px;font:600 12px 'Nunito';background:none;border:none;color:oklch(0.5 0.05 240);cursor:pointer">×</button>
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:8px;padding:8px">
+            <input type="text" placeholder="New subtask..." style="flex:1;padding:8px 10px;font:400 13px 'Nunito';border:1px solid oklch(0.85 0.04 240);border-radius:6px;background:#fff;color:oklch(0.24 0.015 240)">
+            <button style="padding:6px 11px;font:600 11px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 180) 0%,oklch(0.65 0.28 170) 100%);color:#fff;border:none;border-radius:6px;cursor:pointer">Add</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:28px">
+        <button onClick="{{ goToList }}" style="flex:1;padding:14px;font:600 13px 'Fredoka';background:oklch(0.94 0.01 240);border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;cursor:pointer;color:oklch(0.24 0.015 240);transition:all 0.2s" style-hover="background:oklch(0.92 0.015 240)">Cancel</button>
+        <button style="flex:1;padding:14px;font:600 13px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 25) 0%,oklch(0.65 0.28 15) 100%);color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 12px rgba(214,107,66,0.3);transition:all 0.2s" style-hover="transform:translateY(-2px);box-shadow:0 6px 16px rgba(214,107,66,0.4)">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- TASK CREATION SCREEN -->
+<sc-if value="{{ view === 'create' }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)">
+  <div style="background:#fff;border-radius:12px;padding:26px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px">
+      <h2 style="font:700 28px 'Fredoka';color:oklch(0.24 0.015 240);margin:0">Create Task</h2>
+      <button onClick="{{ goToList }}" style="font:600 28px 'Nunito';background:none;border:none;color:oklch(0.5 0.05 240);cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:13px">
+      <div>
+        <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Task Title</label>
+        <input type="text" placeholder="Enter task title" style="width:100%;padding:9px 11px;font:400 14px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;box-sizing:border-box;color:oklch(0.24 0.015 240)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Priority</label>
+          <select style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid oklch(0.65 0.28 25);border-radius:8px;box-sizing:border-box;cursor:pointer;color:oklch(0.65 0.28 25);font-weight:700">
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Due Date</label>
+          <input type="date" style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;box-sizing:border-box;color:oklch(0.24 0.015 240)">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Category</label>
+          <select style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid oklch(0.65 0.28 180);border-radius:8px;box-sizing:border-box;cursor:pointer;color:oklch(0.24 0.015 240)">
+            <option value="">Select category</option>
+            <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="3">
+              <option value="{{ cat.name }}">{{ cat.name }}</option>
+            </sc-for>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">Repeat</label>
+          <select style="width:100%;padding:9px 11px;font:600 14px 'Nunito';border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;box-sizing:border-box;cursor:pointer;color:oklch(0.24 0.015 240)">
+            <option value="none">Does not repeat</option>
+            <option value="daily">🔁 Daily</option>
+            <option value="weekly">🔁 Weekly</option>
+            <option value="monthly">🔁 Monthly</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <label style="font:700 12px 'Fredoka';color:oklch(0.24 0.015 240);text-transform:uppercase;letter-spacing:1px;margin:0">Subtasks</label>
+          <button style="padding:5px 9px;font:600 11px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 180) 0%,oklch(0.65 0.28 170) 100%);color:#fff;border:none;border-radius:6px;cursor:pointer">+ Add</button>
+        </div>
+        <div style="background:oklch(0.97 0.01 240);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:8px">
+            <input type="text" placeholder="New subtask..." style="flex:1;padding:8px 10px;font:400 13px 'Nunito';border:1px solid oklch(0.85 0.04 240);border-radius:6px;background:#fff;color:oklch(0.24 0.015 240)">
+            <button style="padding:6px 11px;font:600 11px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 180) 0%,oklch(0.65 0.28 170) 100%);color:#fff;border:none;border-radius:6px;cursor:pointer">Add</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button onClick="{{ goToList }}" style="flex:1;padding:12px;font:600 13px 'Fredoka';background:oklch(0.94 0.01 240);border:1.5px solid oklch(0.88 0.04 240);border-radius:8px;cursor:pointer;color:oklch(0.24 0.015 240);transition:all 0.2s" style-hover="background:oklch(0.92 0.015 240)">Cancel</button>
+        <button style="flex:1;padding:12px;font:600 13px 'Fredoka';background:linear-gradient(135deg,oklch(0.65 0.28 25) 0%,oklch(0.65 0.28 15) 100%);color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 12px rgba(214,107,66,0.3);transition:all 0.2s" style-hover="transform:translateY(-2px);box-shadow:0 6px 16px rgba(214,107,66,0.4)">Create Task</button>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    view: 'list',
+    showCompleted: false,
+    selectedTaskId: null,
+    editingTitleId: null,
+    statusMenuId: null,
+    newCategoryName: '',
+    nextCategoryId: 4,
+    searchQuery: '',
+    sortBy: 'dueDate',
+    pendingDeleteId: null,
+    today: '2026-07-02',
+    statusOptions: [
+      { status: 'not_started', label: 'Not Started' },
+      { status: 'in_progress', label: 'In Progress' },
+      { status: 'complete', label: 'Complete' }
+    ],
+    categories: [
+      { id: 1, name: 'Work' },
+      { id: 2, name: 'Personal' },
+      { id: 3, name: 'Health' }
+    ],
+    tasks: [
+      { id: 1, title: 'Finish project proposal', category: 'Work', priority: 'High', dueDate: '2026-07-02', status: 'in_progress', completed: false, isMyDay: true, recurring: 'none', subtasks: [{ id: 1, title: 'Write intro', completed: false }] },
+      { id: 2, title: 'Schedule meeting with client', category: 'Work', priority: 'High', dueDate: '2026-06-30', status: 'not_started', completed: false, isMyDay: true, recurring: 'none', subtasks: [] },
+      { id: 3, title: 'Review team feedback', category: 'Personal', priority: 'Medium', dueDate: '2026-07-02', status: 'complete', completed: true, isMyDay: true, recurring: 'none', subtasks: [{ id: 1, title: 'Check email', completed: true }] },
+      { id: 4, title: 'Update documentation', category: 'Work', priority: 'Low', dueDate: '2026-07-05', status: 'not_started', completed: false, isMyDay: false, recurring: 'none', subtasks: [] },
+      { id: 5, title: 'Buy groceries', category: 'Personal', priority: 'Medium', dueDate: '2026-07-03', status: 'in_progress', completed: false, isMyDay: false, recurring: 'weekly', subtasks: [] },
+      { id: 6, title: 'Gym session', category: 'Health', priority: 'High', dueDate: '2026-07-03', status: 'complete', completed: true, isMyDay: false, recurring: 'daily', subtasks: [] }
+    ]
+  };
+
+  renderVals() {
+    const getPriorityColor = (priority) => {
+      if (priority === 'High') return 'oklch(0.65 0.28 25)';
+      if (priority === 'Medium') return 'oklch(0.65 0.28 60)';
+      return 'oklch(0.65 0.28 120)';
+    };
+
+    const statusVisual = (status) => {
+      const purple = 'oklch(0.55 0.2 290)';
+      if (status === 'complete') return { statusBg: purple, statusBorder: '2px solid ' + purple, statusRadius: '6px', statusShowCheck: true };
+      if (status === 'in_progress') return { statusBg: 'conic-gradient(' + purple + ' 0deg 180deg, #fff 180deg 360deg)', statusBorder: '2px solid ' + purple, statusRadius: '50%', statusShowCheck: false };
+      return { statusBg: '#fff', statusBorder: '2px solid oklch(0.75 0.03 240)', statusRadius: '6px', statusShowCheck: false };
+    };
+
+    const fmtDate = (iso) => {
+      if (!iso) return '';
+      const d = new Date(iso + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+
+    const decorate = (t) => {
+      const isOverdue = t.dueDate < this.state.today && t.status !== 'complete';
+      return {
+        ...t,
+        ...statusVisual(t.status),
+        rowBg: t.completed ? 'oklch(0.96 0.005 240)' : '#fff',
+        titleDecoration: t.completed ? 'line-through' : 'none',
+        titleColor: t.completed ? 'oklch(0.6 0.05 240)' : 'oklch(0.24 0.015 240)',
+        priorityColor: getPriorityColor(t.priority),
+        isOverdue,
+        dueLabel: isOverdue ? 'Overdue' : (t.dueDate === this.state.today ? 'Today' : fmtDate(t.dueDate)),
+        dueColor: isOverdue ? 'oklch(0.6 0.28 25)' : 'oklch(0.5 0.05 240)',
+        showRecur: t.recurring && t.recurring !== 'none'
+      };
+    };
+
+    const priorityRank = { High: 0, Medium: 1, Low: 2 };
+    const sortTasks = (list) => {
+      const arr = [...list];
+      if (this.state.sortBy === 'dueDate') arr.sort((a, b) => (a.dueDate || '').localeCompare(b.dueDate || ''));
+      else if (this.state.sortBy === 'priority') arr.sort((a, b) => priorityRank[a.priority] - priorityRank[b.priority]);
+      return arr;
+    };
+
+    const q = this.state.searchQuery.trim().toLowerCase();
+    const matchesSearch = (t) => !q || t.title.toLowerCase().includes(q);
+
+    const myDay = sortTasks(this.state.tasks.filter(t => t.isMyDay && matchesSearch(t))).map(decorate);
+    const allTasks = sortTasks(this.state.tasks.filter(matchesSearch)).map(decorate);
+    const filteredMyDay = this.state.showCompleted ? myDay : myDay.filter(t => !t.completed);
+    const filteredAllTasks = this.state.showCompleted ? allTasks : allTasks.filter(t => !t.completed);
+    const isMyDayEmpty = filteredMyDay.length === 0;
+    const isAllTasksEmpty = filteredAllTasks.length === 0;
+    const rawSelected = this.state.tasks.find(t => t.id === this.state.selectedTaskId) || { title: '', subtasks: [] };
+    const selectedTask = decorate(rawSelected);
+    const statusOptionsVisual = this.state.statusOptions.map(opt => {
+      const v = statusVisual(opt.status);
+      const isCurrent = selectedTask.status === opt.status;
+      return { ...opt, ...v, optBorder: isCurrent ? v.statusBorder.replace('2px', '3px') : v.statusBorder };
+    });
+    const pendingDeleteTask = this.state.tasks.find(t => t.id === this.state.pendingDeleteId);
+
+    return {
+      view: this.state.view,
+      filteredMyDay,
+      filteredAllTasks,
+      categories: this.state.categories,
+      selectedTask,
+      getPriorityColor,
+      statusOptions: this.state.statusOptions,
+      statusOptionsVisual,
+      newCategoryName: this.state.newCategoryName,
+      searchQuery: this.state.searchQuery,
+      sortBy: this.state.sortBy,
+      isMyDayEmpty,
+      isAllTasksEmpty,
+      pendingDeleteTask,
+      setSearchQuery: (v) => this.setState({ searchQuery: v }),
+      setSortBy: (v) => this.setState({ sortBy: v }),
+      requestDelete: (id) => this.setState({ pendingDeleteId: id }),
+      cancelDelete: () => this.setState({ pendingDeleteId: null }),
+      confirmDelete: () => {
+        this.setState(s => ({
+          tasks: s.tasks.filter(t => t.id !== s.pendingDeleteId),
+          pendingDeleteId: null
+        }));
+      },
+      changeRecurring: (id, recurring) => {
+        this.setState(s => ({
+          tasks: s.tasks.map(t => t.id === id ? { ...t, recurring } : t)
+        }));
+      },
+      toggleCompleted: () => this.setState(s => ({ showCompleted: !s.showCompleted })),
+      goToCreate: () => this.setState({ view: 'create' }),
+      goToList: () => this.setState({ view: 'list' }),
+      openTaskDetail: (id) => this.setState({ view: 'detail', selectedTaskId: id }),
+      openCategoryManager: () => this.setState({ view: 'categories' }),
+      changePriority: (id, priority) => {
+        this.setState(s => ({
+          tasks: s.tasks.map(t => t.id === id ? { ...t, priority } : t)
+        }));
+      },
+      changeCategory: (id, category) => {
+        this.setState(s => ({
+          tasks: s.tasks.map(t => t.id === id ? { ...t, category } : t)
+        }));
+      },
+      changeDueDate: (id, dueDate) => {
+        this.setState(s => ({
+          tasks: s.tasks.map(t => t.id === id ? { ...t, dueDate } : t)
+        }));
+      },
+      changeStatus: (id, status) => {
+        this.setState(s => ({
+          tasks: s.tasks.map(t => t.id === id ? { ...t, status, completed: status === 'complete' } : t)
+        }));
+      },
+      cycleStatus: (id) => {
+        const order = ['not_started', 'in_progress', 'complete'];
+        this.setState(s => ({
+          tasks: s.tasks.map(t => {
+            if (t.id !== id) return t;
+            const next = order[(order.indexOf(t.status) + 1) % order.length];
+            return { ...t, status: next, completed: next === 'complete' };
+          })
+        }));
+      },
+      editTitle: (id) => this.setState({ editingTitleId: id }),
+      showStatusMenu: (id) => this.setState({ statusMenuId: id }),
+      setNewCategoryName: (name) => this.setState({ newCategoryName: name }),
+      addCategory: () => {
+        this.setState(s => {
+          const name = s.newCategoryName.trim();
+          if (!name) return {};
+          return {
+            categories: [...s.categories, { id: s.nextCategoryId, name }],
+            nextCategoryId: s.nextCategoryId + 1,
+            newCategoryName: ''
+          };
+        });
+      },
+      renameCategory: (id, name) => {
+        this.setState(s => ({
+          categories: s.categories.map(c => c.id === id ? { ...c, name } : c)
+        }));
+      },
+      deleteCategory: (id) => {
+        this.setState(s => ({
+          categories: s.categories.filter(c => c.id !== id)
+        }));
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

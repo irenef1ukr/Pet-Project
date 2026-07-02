@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f4f1ea;font-family:'Kalam',sans-serif;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+
+<section id="t1" style="padding:40px 44px 60px">
+
+  <div style="display:flex;align-items:baseline;gap:10px;margin:0 0 6px">
+    <span id="1c" style="font:700 11px ui-monospace,monospace;padding:3px 8px;background:#2b2b2b;color:#fff;border-radius:4px">1c</span>
+    <span style="font:700 16px 'Kalam',sans-serif;color:#2b2b2b">Dashboard — today hero + zones</span>
+  </div>
+  <p style="margin:0 0 24px;font:13px/1.5 'Kalam';color:rgba(0,0,0,.5)">Structure only — placeholder content, no color/type system locked in yet. Section labels (except the greeting) will link through to their module in the real app.</p>
+
+  <div style="width:1220px;background:#fffdf8;border:2px solid #2b2b2b;border-radius:9px 8px 7px 10px;box-shadow:5px 5px 0 rgba(0,0,0,.08);transform:rotate(-0.1deg);padding:24px;box-sizing:border-box">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font:700 13px 'Kalam';color:#2b2b2b">☰ my hub</span>
+      <span style="font:12px 'Kalam';color:rgba(0,0,0,.4)">wireframe · desktop, 1280px</span>
+    </div>
+
+    <!-- hero band -->
+    <div style="display:flex;align-items:center;border:2px dashed #2b2b2b;border-radius:10px;padding:20px 24px;background:#fff;width:78%;margin:0 auto 18px;box-sizing:border-box">
+      <div style="flex:1"></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center">
+        <span style="font:700 22px 'Kalam';color:#2b2b2b">Good morning, Iryna ☀️</span>
+        <span style="font:13px 'Kalam';color:rgba(0,0,0,.5)">Monday, July 1 · "small steps every day"</span>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;font:22px 'Kalam';border:2px solid #2b2b2b;border-radius:50%;background:#fff;cursor:pointer">🙂</span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;font:22px 'Kalam';border:2px solid #2b2b2b;border-radius:50%;background:#fff;cursor:pointer">☀️</span>
+        </div>
+        <span style="font:11px 'Kalam';color:rgba(0,0,0,.4)">click an emoji to change</span>
+      </div>
+    </div>
+
+    <!-- zone: today -->
+    <span style="display:inline-block;margin:0 0 8px;font:700 11px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:rgba(0,0,0,.45)">zone — today</span>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+      <div style="border:2px dashed #2b2b2b;border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;background:#fff">
+        <span style="display:inline-block;width:fit-content;font:700 10px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:#2b2b2b;padding:2px 8px;border:2px solid #2b2b2b;border-radius:6px;cursor:pointer" style-hover="text-decoration:underline">Today's tasks →</span>
+        <span style="font:14px 'Kalam';color:#333">☐ Finish report — <span style="color:#e8543c">overdue</span></span>
+        <span style="font:14px 'Kalam';color:#333">◐ Draft proposal — in progress</span>
+        <span style="font:14px 'Kalam';color:#333">☐ Grocery shopping</span>
+        <span style="font:14px 'Kalam';color:#333">☑ Reply to emails</span>
+      </div>
+      <div style="border:2px dashed #2b2b2b;border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;background:#fff">
+        <span style="display:inline-block;width:fit-content;font:700 10px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:#2b2b2b;padding:2px 8px;border:2px solid #2b2b2b;border-radius:6px;cursor:pointer" style-hover="text-decoration:underline">Today's events →</span>
+        <span style="font:14px 'Kalam';color:rgba(0,0,0,.4);text-decoration:line-through">● 9:00 — Team sync</span>
+        <span style="font:14px 'Kalam';color:rgba(0,0,0,.4);text-decoration:line-through">● 11:30 — Piano lesson (recurring)</span>
+        <span style="font:14px 'Kalam';color:#333">● 13:00 — Dentist</span>
+        <span style="font:14px 'Kalam';color:#333">● 18:00 — Call with mom</span>
+      </div>
+    </div>
+
+    <!-- zone: progress -->
+    <span style="display:inline-block;margin:0 0 8px;font:700 11px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:rgba(0,0,0,.45)">zone — progress</span>
+    <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px;margin-bottom:18px">
+      <div style="border:2px dashed #2b2b2b;border-radius:9px;padding:14px 16px;display:flex;flex-direction:column;gap:7px;background:#fff">
+        <span style="display:inline-block;width:fit-content;font:700 10px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:#2b2b2b;padding:2px 8px;border:2px solid #2b2b2b;border-radius:6px;background:#ffd866;cursor:pointer" style-hover="text-decoration:underline">Active goals →</span>
+        <div style="display:flex;justify-content:space-between;font:12px 'Kalam'"><span>Learn Spanish</span><span>60%</span></div>
+        <div style="height:7px;border:2px solid #2b2b2b;border-radius:6px;overflow:hidden"><div style="width:60%;height:100%;background:#ffd866"></div></div>
+        <div style="display:flex;justify-content:space-between;font:12px 'Kalam'"><span>Save $5,000</span><span>35%</span></div>
+        <div style="height:7px;border:2px solid #2b2b2b;border-radius:6px;overflow:hidden"><div style="width:35%;height:100%;background:#ffd866"></div></div>
+        <div style="display:flex;justify-content:space-between;font:12px 'Kalam'"><span>Run a 5k</span><span>20%</span></div>
+        <div style="height:7px;border:2px solid #2b2b2b;border-radius:6px;overflow:hidden"><div style="width:20%;height:100%;background:#ffd866"></div></div>
+        <div style="display:flex;justify-content:space-between;font:12px 'Kalam'"><span>Read 12 books</span><span>80%</span></div>
+        <div style="height:7px;border:2px solid #2b2b2b;border-radius:6px;overflow:hidden"><div style="width:80%;height:100%;background:#ffd866"></div></div>
+      </div>
+      <div style="border:2px dashed #2b2b2b;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;background:#fff">
+        <span style="display:inline-block;width:fit-content;font:700 10px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:#2b2b2b;padding:2px 8px;border:2px solid #2b2b2b;border-radius:6px;background:#64d6c4;cursor:pointer" style-hover="text-decoration:underline">Habits →</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;font:13px 'Kalam'">
+          <span style="border:2px solid #2b2b2b;border-radius:6px;padding:2px 6px">☑ read</span>
+          <span style="border:2px solid #2b2b2b;border-radius:6px;padding:2px 6px">☐ workout</span>
+          <span style="border:2px solid #2b2b2b;border-radius:6px;padding:2px 6px">☑ water</span>
+        </div>
+      </div>
+      <div style="border:2px dashed #2b2b2b;border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;background:#fff">
+        <span style="display:inline-block;width:fit-content;font:700 10px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:#2b2b2b;padding:2px 8px;border:2px solid #2b2b2b;border-radius:6px;cursor:pointer" style-hover="text-decoration:underline">Finance →</span>
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font:13px 'Kalam';color:rgba(0,0,0,.55)">spent this month</span>
+          <span style="font:700 16px 'Kalam';color:#2b2b2b">$860</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font:13px 'Kalam';color:rgba(0,0,0,.55)">spent yesterday</span>
+          <span style="font:700 16px 'Kalam';color:#2b2b2b">$42</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- journal strip -->
+    <div style="border:2px dashed #2b2b2b;border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:14px;background:#fff">
+      <span style="display:inline-block;width:fit-content;font:700 10px ui-monospace,monospace;letter-spacing:.5px;text-transform:uppercase;color:#2b2b2b;padding:2px 8px;border:2px solid #2b2b2b;border-radius:6px;flex:none;cursor:pointer" style-hover="text-decoration:underline">Journal →</span>
+      <span style="font:14px 'Kalam';color:#333;flex:1">Jun 29 — "Today was calm, finished the report draft and went for a walk…"</span>
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:#ff8a65;border:2px solid #2b2b2b;border-radius:50%;font:700 16px 'Kalam';color:#2b2b2b;flex:none;cursor:pointer">+</span>
+    </div>
+
+  </div>
+
+  <p style="margin:22px 0 0;font:13px/1.5 'Kalam';color:rgba(0,0,0,.5)">Legend: ☐ to do · ◐ in progress · ☑ done. Past events are struck through.</p>
+
+</section>
+
+</x-dc>
+</body>
+</html>

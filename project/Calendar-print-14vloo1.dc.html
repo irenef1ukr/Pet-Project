@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-print-defaults>
+@media print {
+  @page { margin: 0.5in; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  figure, table, pre, blockquote, img, svg, tr, [class~="card" i] { break-inside: avoid; }
+  img, svg { max-width: 100%; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:oklch(0.97 0.01 240);font-family:'Nunito',sans-serif;-webkit-font-smoothing:antialiased}
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail" data-bg-color="#f5f5f7">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#f5f5f7"/>
+    <rect width="1200" height="90" fill="#3a3a4a"/>
+    <text x="45" y="55" font-family="Fredoka" font-size="36" font-weight="700" fill="#f5f5f7">hi</text>
+    <circle cx="600" cy="400" r="120" fill="#64a6d8" opacity="0.2"/>
+    <rect x="450" y="300" width="300" height="200" rx="12" fill="#ffffff" stroke="#ddd" stroke-width="2"/>
+    <text x="600" y="380" font-family="Nunito" font-size="24" font-weight="600" text-anchor="middle" fill="#3a3a4a">Calendar</text>
+    <text x="600" y="430" font-family="Nunito" font-size="14" text-anchor="middle" fill="#888">Month · Week · Day</text>
+  </svg>
+</template>
+
+<div style="width:1440px;min-height:920px;background:oklch(0.97 0.01 240);display:flex;flex-direction:column;box-sizing:border-box">
+
+  <!-- ============ TOP RAIL ============ -->
+  <div style="flex:none;height:72px;background:oklch(0.24 0.015 240);display:flex;align-items:center;gap:30px;padding:0 32px;box-sizing:border-box">
+    <span style="font:700 20px 'Fredoka',sans-serif;color:oklch(0.97 0.01 240)">hi</span>
+    <div style="display:flex;align-items:center;gap:10px;flex:1">
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.14 230 / .22);color:oklch(0.88 0.05 230);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">Home</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.97 0.01 240);color:oklch(0.24 0.015 240);font:800 12.5px 'Nunito';cursor:pointer">Calendar</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.14 280 / .22);color:oklch(0.88 0.05 280);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">To-Do</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.14 190 / .22);color:oklch(0.88 0.05 190);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">Lesson Plan</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.13 165 / .22);color:oklch(0.88 0.05 165);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">Habits</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.14 190 / .22);color:oklch(0.88 0.05 190);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">Goals</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.14 230 / .22);color:oklch(0.88 0.05 230);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">Finance</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.14 300 / .22);color:oklch(0.88 0.05 300);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">Journal</span>
+      <span style="padding:9px 16px;border-radius:999px;background:oklch(0.55 0.13 165 / .22);color:oklch(0.88 0.05 165);font:700 12.5px 'Nunito';cursor:pointer" style-hover="filter:brightness(1.3)">Recipes</span>
+    </div>
+  </div>
+
+  <!-- ============ MAIN ============ -->
+  <div style="flex:1;padding:36px 52px 48px;display:flex;flex-direction:column;gap:22px;box-sizing:border-box">
+
+    <!-- view switcher -->
+    <div style="display:flex;justify-content:center;align-items:center;gap:8px">
+      <span onClick="{{ switchToMonth }}" style="font:700 13px 'Fredoka';padding:8px 18px;border-radius:999px;background:{{ monthBg }};color:{{ monthColor }};cursor:pointer" style-hover="filter:brightness(1.3)">Month</span>
+      <span onClick="{{ switchToWeek }}" style="font:700 13px 'Fredoka';padding:8px 18px;border-radius:999px;background:{{ weekBg }};color:{{ weekColor }};cursor:pointer" style-hover="filter:brightness(1.3)">Week</span>
+      <span onClick="{{ switchToDay }}" style="font:700 13px 'Fredoka';padding:8px 18px;border-radius:999px;background:{{ dayBg }};color:{{ dayColor }};cursor:pointer" style-hover="filter:brightness(1.3)">Day</span>
+    </div>
+
+    <!-- month view -->
+    <sc-if value="{{ view === 'month' }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:22px;align-items:flex-start">
+      <div style="flex:1;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:#fff;border-bottom:1px solid oklch(0.88 0.04 240)">
+          <span style="font:600 14px 'Fredoka';color:oklch(0.24 0.015 240)">‹ July 2026 ›</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);background:oklch(0.55 0.05 240)">
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Mon</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Tue</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Wed</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Thu</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Fri</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Sat</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Sun</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:90px;background:#fff">
+          {{ monthGridCells }}
+        </div>
+      </div>
+      <div style="flex:none;width:280px;border-radius:12px;padding:14px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+        <span style="font:700 10px 'Nunito';text-transform:uppercase;color:oklch(0.5 0.06 240);display:block;margin-bottom:10px">Upcoming</span>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.64 0.22 280);color:#fff;padding:2px 5px;border-radius:4px">●</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Team sync</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.68 0.25 20);color:#fff;padding:2px 5px;border-radius:4px">●</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Dentist</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.5 0.08 0);color:#fff;padding:2px 5px;border-radius:4px">☐</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Finish report</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.65 0.18 160);color:#fff;padding:2px 5px;border-radius:4px">🎓</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 3 · Piano ↻</span></div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- week view -->
+    <sc-if value="{{ view === 'week' }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:22px;align-items:flex-start">
+      <div style="flex:1;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:#fff;border-bottom:1px solid oklch(0.88 0.04 240)">
+          <span style="font:600 14px 'Fredoka';color:oklch(0.24 0.015 240)">‹ Jun 29 – Jul 5, 2026 ›</span>
+        </div>
+        <div style="display:grid;grid-template-columns:50px repeat(7,1fr);background:oklch(0.55 0.05 240)">
+          <div></div>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Mon 29</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Tue 30</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Wed 1</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Thu 2</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Fri 3</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;color:oklch(0.24 0.015 240)">Sat 4</span>
+          <span style="font:700 12px 'Nunito';text-align:center;padding:10px 0;background:oklch(0.92 0.04 260);color:oklch(0.24 0.015 240)">Sun 5</span>
+        </div>
+        <div style="display:grid;grid-template-columns:50px repeat(7,1fr);background:#fff;grid-auto-rows:32px;border-bottom:1px solid oklch(0.88 0.04 240)">
+          <span style="font:10px 'Nunito';color:oklch(0.6 0.05 240);padding:6px 4px">all day</span>
+          <div style="border-right:1px solid oklch(0.88 0.04 240);padding:2px 4px"></div>
+          <div style="border-right:1px solid oklch(0.88 0.04 240);padding:2px 4px"></div>
+          <div style="border-right:1px solid oklch(0.88 0.04 240);padding:2px 4px"><span style="font:10px 'Nunito';background:oklch(0.64 0.22 280);color:#fff;padding:2px 4px;border-radius:4px;display:inline-block">● Trip</span></div>
+          <div style="border-right:1px solid oklch(0.88 0.04 240);padding:2px 4px"><span style="font:10px 'Nunito';background:oklch(0.64 0.22 280);color:#fff;padding:2px 4px;border-radius:4px;display:inline-block">● Trip</span></div>
+          <div style="border-right:1px solid oklch(0.88 0.04 240);padding:2px 4px"></div>
+          <div style="border-right:1px solid oklch(0.88 0.04 240);padding:2px 4px"></div>
+          <div style="padding:2px 4px"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:50px repeat(7,1fr);grid-auto-rows:48px">
+          <span style="font:10px 'Nunito';color:oklch(0.6 0.05 240);padding:6px 4px">9am</span>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"><span style="font:10px 'Nunito';background:oklch(0.64 0.22 280);color:#fff;padding:2px 4px;border-radius:4px;display:inline-block">● Team sync</span></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <span style="font:10px 'Nunito';color:oklch(0.6 0.05 240);padding:6px 4px">1pm</span>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"><span style="font:10px 'Nunito';background:oklch(0.68 0.25 20);color:#fff;padding:2px 4px;border-radius:4px;display:inline-block">● Dentist</span></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"><span style="font:10px 'Nunito';background:oklch(0.65 0.18 160);color:#fff;padding:2px 4px;border-radius:4px;display:inline-block">🎓 Piano</span></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+          <div style="border:1px solid oklch(0.88 0.04 240)"></div>
+        </div>
+      </div>
+      <div style="flex:none;width:280px;border-radius:12px;padding:14px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+        <span style="font:700 10px 'Nunito';text-transform:uppercase;color:oklch(0.5 0.06 240);display:block;margin-bottom:10px">Upcoming</span>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.64 0.22 280);color:#fff;padding:2px 5px;border-radius:4px">●</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Team sync</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.68 0.25 20);color:#fff;padding:2px 5px;border-radius:4px">●</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Dentist</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.5 0.08 0);color:#fff;padding:2px 5px;border-radius:4px">☐</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Finish report</span></div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.65 0.18 160);color:#fff;padding:2px 5px;border-radius:4px">🎓</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 3 · Piano ↻</span></div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- day view -->
+    <sc-if value="{{ view === 'day' }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:22px;align-items:flex-start">
+      <div style="flex:1;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)">
+        <div style="display:flex;justify-content:center;align-items:center;gap:12px;padding:14px;background:#fff;border-bottom:1px solid oklch(0.88 0.04 240)">
+          <span onClick="{{ prevDay }}" style="font:600 18px 'Fredoka';color:oklch(0.24 0.015 240);cursor:pointer" style-hover="filter:brightness(0.8)">‹</span>
+          <span style="font:600 14px 'Fredoka';color:oklch(0.24 0.015 240)">{{ dayDateLabel }}</span>
+          <span onClick="{{ nextDay }}" style="font:600 18px 'Fredoka';color:oklch(0.24 0.015 240);cursor:pointer" style-hover="filter:brightness(0.8)">›</span>
+        </div>
+        <div style="background:#fff;padding:14px">
+          <span style="font:12px 'Nunito';color:oklch(0.6 0.05 240)">₴42 🙂☀️</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;background:#fff;padding:14px">
+          <div style="font:10px 'Nunito';color:oklch(0.6 0.05 240);padding:8px 0">all day</div>
+          <span style="font:11px 'Nunito';background:oklch(0.64 0.22 280);color:#fff;padding:6px 10px;border-radius:6px;display:inline-block;width:fit-content">● Trip to coast</span>
+          <div style="font:10px 'Nunito';color:oklch(0.6 0.05 240);padding:8px 0;margin-top:12px">Timed events</div>
+          <div style="display:flex;gap:10px;align-items:center;opacity:0.5">
+            <span style="font:12px 'Nunito';width:50px;flex:none">9:00</span>
+            <div style="flex:1;height:40px;background:oklch(0.64 0.22 280);color:#fff;border-radius:6px;display:flex;align-items:center;padding:0 12px;font:12px 'Nunito'">● Team sync</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span style="font:12px 'Nunito';width:50px;flex:none">1pm</span>
+            <div style="flex:1;height:40px;background:oklch(0.68 0.25 20);color:#fff;border-radius:6px;display:flex;align-items:center;padding:0 12px;font:12px 'Nunito'">● Dentist</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span style="font:12px 'Nunito';width:50px;flex:none">—</span>
+            <div style="flex:1;height:40px;background:oklch(0.5 0.08 0);color:#fff;border-radius:6px;display:flex;align-items:center;padding:0 12px;font:12px 'Nunito'">☐ Finish report</div>
+          </div>
+        </div>
+      </div>
+      <div style="flex:none;width:280px;display:flex;flex-direction:column;gap:16px">
+          <div style="border-radius:12px;padding:14px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+            <span style="font:700 10px 'Nunito';text-transform:uppercase;color:oklch(0.5 0.06 240);display:block;margin-bottom:10px">July 2026</span>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">
+              <span style="font:11px 'Nunito';text-align:center;color:oklch(0.6 0.05 240)">M</span>
+              <span style="font:11px 'Nunito';text-align:center;color:oklch(0.6 0.05 240)">T</span>
+              <span style="font:11px 'Nunito';text-align:center;color:oklch(0.6 0.05 240)">W</span>
+              <span style="font:11px 'Nunito';text-align:center;color:oklch(0.6 0.05 240)">T</span>
+              <span style="font:11px 'Nunito';text-align:center;color:oklch(0.6 0.05 240)">F</span>
+              <span style="font:11px 'Nunito';text-align:center;color:oklch(0.6 0.05 240)">S</span>
+              <span style="font:11px 'Nunito';text-align:center;color:oklch(0.6 0.05 240)">S</span>
+              {{ monthPickerDays }}
+            </div>
+          </div>
+          <div style="border-radius:12px;padding:14px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+            <span style="font:700 10px 'Nunito';text-transform:uppercase;color:oklch(0.5 0.06 240);display:block;margin-bottom:10px">Upcoming</span>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.64 0.22 280);color:#fff;padding:2px 5px;border-radius:4px">●</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Team sync</span></div>
+              <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.68 0.25 20);color:#fff;padding:2px 5px;border-radius:4px">●</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Dentist</span></div>
+              <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.5 0.08 0);color:#fff;padding:2px 5px;border-radius:4px">☐</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 1 · Finish report</span></div>
+              <div style="display:flex;gap:8px;align-items:center"><span style="font:10px 'Nunito';background:oklch(0.65 0.18 160);color:#fff;padding:2px 5px;border-radius:4px">🎓</span><span style="font:12px 'Nunito';color:oklch(0.24 0.015 240)">Jul 3 · Piano ↻</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { view: 'month', selectedDay: 1 };
+
+  renderVals() {
+    const view = this.state.view;
+    const switchToMonth = () => this.setState({ view: 'month' });
+    const switchToWeek = () => this.setState({ view: 'week' });
+    const switchToDay = () => this.setState({ view: 'day' });
+
+    const dayDateLabel = this.getDayDateLabel();
+    const prevDay = () => {
+      const newDay = this.state.selectedDay > 1 ? this.state.selectedDay - 1 : 31;
+      this.setState({ selectedDay: newDay });
+    };
+    const nextDay = () => {
+      const newDay = this.state.selectedDay < 31 ? this.state.selectedDay + 1 : 1;
+      this.setState({ selectedDay: newDay });
+    };
+
+    const monthBg = view === 'month' ? 'oklch(0.24 0.015 240)' : 'oklch(0.55 0.14 230 / .22)';
+    const monthColor = view === 'month' ? 'oklch(0.97 0.01 240)' : '#2b2b2b';
+    const weekBg = view === 'week' ? 'oklch(0.24 0.015 240)' : 'oklch(0.55 0.14 230 / .22)';
+    const weekColor = view === 'week' ? 'oklch(0.97 0.01 240)' : '#2b2b2b';
+    const dayBg = view === 'day' ? 'oklch(0.24 0.015 240)' : 'oklch(0.55 0.14 230 / .22)';
+    const dayColor = view === 'day' ? 'oklch(0.97 0.01 240)' : '#2b2b2b';
+
+    const selectDate = (day) => {
+      this.setState({ view: 'day' });
+    };
+
+    const monthGridCells = this.renderMonthGrid();
+    const monthPickerDays = this.renderMonthPickerDays();
+
+    return {
+      view,
+      switchToMonth,
+      switchToWeek,
+      switchToDay,
+      monthBg,
+      monthColor,
+      weekBg,
+      weekColor,
+      dayBg,
+      dayColor,
+      selectDate,
+      monthGridCells,
+      monthPickerDays,
+      dayDateLabel,
+      prevDay,
+      nextDay
+    };
+  }
+
+  renderMonthGrid() {
+    const eventDays = {
+      1: { spend: '₴42', mood: '🙂', weather: '☀️', events: [{ name: 'Team sync', icon: '●', bg: 'oklch(0.64 0.22 280)' }, { name: 'Dentist', icon: '●', bg: 'oklch(0.68 0.25 20)' }, { name: 'Finish report', icon: '☐', bg: 'oklch(0.5 0.08 0)' }] },
+      3: { mood: '😐', weather: '🌧️', events: [{ name: 'Piano ↻', icon: '🎓', bg: 'oklch(0.65 0.18 160)' }] },
+      9: { events: [{ name: 'Report due', icon: '☐', bg: 'oklch(0.5 0.08 0)' }] }
+    };
+
+    const days = [];
+
+    // Previous month days (Jun 29–30)
+    for (let i = 29; i <= 30; i++) {
+      days.push({ num: i, isPrev: true, meta: '', events: [] });
+    }
+
+    // July days
+    for (let d = 1; d <= 31; d++) {
+      const eventInfo = eventDays[d];
+      const meta = eventInfo ? `${eventInfo.spend || ''} ${eventInfo.mood || ''} ${eventInfo.weather || ''}`.trim() : '';
+      const events = eventInfo ? eventInfo.events : [];
+      days.push({ num: d, isPrev: false, meta, events });
+    }
+
+    // Next month days
+    const remaining = (7 - (days.length % 7)) % 7;
+    for (let i = 1; i <= remaining; i++) {
+      days.push({ num: i, isNext: true, meta: '', events: [] });
+    }
+
+    // Build React elements for each day
+    return React.createElement(
+      React.Fragment,
+      null,
+      ...days.map((day, idx) =>
+        React.createElement(
+          'div',
+          {
+            key: `day-${idx}`,
+            onClick: () => this.setState({ view: 'day' }),
+            style: {
+              border: '1px solid oklch(0.88 0.04 240)',
+              padding: '8px',
+              font: '13px "Nunito"',
+              background: day.num === 1 ? 'oklch(0.92 0.04 260)' : '#fff',
+              cursor: 'pointer',
+              color: day.isPrev || day.isNext ? 'oklch(0.7 0.02 240)' : 'oklch(0.24 0.015 240)',
+              boxSizing: 'border-box'
+            }
+          },
+          React.createElement(
+            'div',
+            {
+              style: {
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: day.events.length > 0 ? '4px' : '0'
+              }
+            },
+            React.createElement('span', { style: { font: '700 13px "Nunito"' } }, day.num.toString()),
+            React.createElement('span', { style: { font: '12px' } }, day.meta)
+          ),
+          day.events.length > 0 && React.createElement(
+            'div',
+            { style: { display: 'flex', flexDirection: 'column', gap: '2px' } },
+            ...day.events.map((evt, eIdx) =>
+              React.createElement(
+                'span',
+                {
+                  key: `event-${eIdx}`,
+                  style: {
+                    font: '9px "Nunito"',
+                    background: evt.bg,
+                    color: '#fff',
+                    padding: '2px 4px',
+                    borderRadius: '4px',
+                    display: 'inline-block'
+                  }
+                },
+                `${evt.icon} ${evt.name}`
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+
+  renderMonthPickerDays() {
+    const days = [];
+    for (let d = 1; d <= 31; d++) {
+      days.push(
+        React.createElement(
+          'span',
+          {
+            key: `picker-${d}`,
+            onClick: () => this.setState({ view: 'day', selectedDay: d }),
+            style: {
+              font: '12px "Nunito"',
+              textAlign: 'center',
+              padding: '4px 0',
+              borderRadius: '6px',
+              background: d === this.state.selectedDay ? 'oklch(0.92 0.04 260)' : 'transparent',
+              color: 'oklch(0.24 0.015 240)',
+              cursor: 'pointer'
+            }
+          },
+          d.toString()
+        )
+      );
+    }
+    return React.createElement(React.Fragment, null, ...days);
+  }
+
+  getDayDateLabel() {
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const date = new Date(2026, 6, this.state.selectedDay);
+    const dayName = dayNames[date.getDay()];
+    const monthName = monthNames[date.getMonth()];
+    const day = date.getDate();
+    return `${dayName}, ${day} ${monthName}`;
+  }
+}
+
+</script>
+<script>
+(async () => {
+  if (!document.title || !document.title.trim()) document.title = "Calendar";
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    print-color-adjust: exact; -webkit-print-color-adjust: exact;\n    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  // Project support.js may predate runtime default-seeding; push via bridge.
+  if (isDc && window.__dcSetProps && window.__dcRootName) {
+    try {
+      const dpEl = document.querySelector('script[data-dc-script]');
+      const meta = JSON.parse((dpEl && dpEl.getAttribute('data-props')) || '{}');
+      const bag = {};
+      for (const k in meta)
+        if (k[0] !== '$' && meta[k] && meta[k].default !== undefined)
+          bag[k] = meta[k].default;
+      if (Object.keys(bag).length) {
+        window.__dcSetProps(window.__dcRootName(), bag);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    } catch (e) {}
+  }
+  // Reveal content gated on scroll or visibility before printing. Lazy <img>,
+  // IntersectionObserver fade-ins, and collapsed <details> don't render while
+  // off-screen, so a long page would print with them blank or closed. Open
+  // every <details>, force native-lazy images eager, and scroll the document
+  // through its full height to trip lazy-load + IO; then wait (bounded) for the
+  // newly-triggered images. Inert for deck-stage (slides aren't scroll-gated).
+  try {
+    for (const d of document.querySelectorAll('details')) d.open = true;
+    for (const img of document.querySelectorAll('img[loading="lazy"]'))
+      img.loading = 'eager';
+    const scroller = document.scrollingElement || document.documentElement;
+    const full = Math.max(scroller.scrollHeight, document.body.scrollHeight);
+    const step = window.innerHeight || 800;
+    for (let y = 0; y <= full; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, 0);
+    await Promise.race([
+      Promise.all(
+        [...document.images].map((img) =>
+          img.complete
+            ? null
+            : new Promise((res) => {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+              })
+        )
+      ),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
+  } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  // Re-append deck-stage's @page last so no author @page can add a margin and
+  // spill each full-bleed slide onto two sheets. Backstop for old copies.
+  if (ds) {
+    let pg = document.getElementById('deck-stage-print-page');
+    if (!pg) {
+      pg = document.createElement('style');
+      pg.textContent = '@page{size:' + (+ds.getAttribute('width') || 1920) +
+        'px ' + (+ds.getAttribute('height') || 1080) + 'px;margin:0}';
+    }
+    document.body.appendChild(pg);
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  // Size the PDF page to the rendered design unless the file opted into
+  // standard paper via @page{size:letter|A4|…}. Decks own their own @page.
+  // Wrappers (body, …) lose padding+margin so the frame sits at (0,0); the
+  // frame itself loses only margin — its padding is INSIDE the measured
+  // rect and must stay, or content shifts and leaves a gap at bottom/right.
+  var __m = null;
+  try { __m = (() => {
+  var STAMP = true;
+  var docEl = document.documentElement;
+  var doc = { width: docEl.scrollWidth, height: docEl.scrollHeight };
+
+  var ds = document.querySelector('deck-stage');
+  if (ds) {
+    var dw = Number(ds.getAttribute('width')) || 1920;
+    var dh = Number(ds.getAttribute('height')) || 1080;
+    var n = typeof ds.length === 'number' ? ds.length : ds.children.length;
+    var idx = typeof ds.index === 'number' ? ds.index : 0;
+    var frames = [];
+    for (var i = 0; i < n; i++) frames.push({ left: 0, top: 0, width: dw, height: dh });
+    return { kind: 'deck', source: 'declared', doc: doc, frames: frames,
+      authored: frames.map(function(){return{width:true,height:true}}),
+      deck: { width: dw, height: dh, slideCount: n, index: idx },
+      signals: { paperPage: false, pxPage: false } };
+  }
+
+  // Declared kind: a doc-page tag names the kind outright, so no signal
+  // heuristics run (like the deck branch above, signals report false —
+  // they describe inferred classifications only). The tag alone is not
+  // trusted: the element must have upgraded (shadowRoot present), so a
+  // leftover tag whose script was deleted falls through to the heuristics
+  // that handle plain markup.
+  var stageSx = window.scrollX || 0, stageSy = window.scrollY || 0;
+  var dp = document.querySelector('doc-page');
+  if (dp && dp.shadowRoot) {
+    // Crop to the sheet, not the host — the desk around it is screen-only
+    // chrome that must not land in PNG exports.
+    var sheet = dp.shadowRoot.querySelector('.sheet');
+    var sr = (sheet || dp).getBoundingClientRect();
+    return { kind: 'paper-doc', source: 'declared', doc: doc,
+      frames: [{ left: sr.left + stageSx, top: sr.top + stageSy,
+        width: sr.width, height: sr.height }],
+      authored: [{ width: false, height: false }],
+      signals: { paperPage: false, pxPage: false } };
+  }
+  var paperPage = false, pxPage = false;
+  var eachRule = function (fn) {
+    for (var s = 0; s < document.styleSheets.length; s++) {
+      var rs; try { rs = document.styleSheets[s].cssRules; } catch (e) { continue; }
+      for (var r = 0; r < rs.length; r++) {
+        fn(rs[r]);
+        if (rs[r].cssRules) for (var n = 0; n < rs[r].cssRules.length; n++) fn(rs[r].cssRules[n]);
+      }
+    }
+  };
+  eachRule(function (r) {
+    if (r.type !== 6) return;
+    var m = /\bsize\s*:\s*([^;}]+)/i.exec(r.cssText || '');
+    if (!m) return;
+    if (/\b(letter|a[3-5]|legal|ledger)\b/i.test(m[1])) paperPage = true;
+    if (/\d+(?:\.\d+)?px\b/i.test(m[1])) pxPage = true;
+  });
+  var signals = { paperPage: paperPage, pxPage: pxPage };
+
+  var pxVal = function (v) {
+    var m = /^(\d+(?:\.\d+)?)px$/.exec(v || ''); return m ? +m[1] : 0;
+  };
+  var authoredPx = function (el, prop) {
+    if (pxVal(el.style[prop])) return true;
+    var attr = el.getAttribute(prop);
+    if (attr && /^\d+$/.test(attr)) return true;
+    var hit = false;
+    eachRule(function (r) {
+      if (hit || r.type !== 1 || !r.style) return;
+      try { if (el.matches(r.selectorText) && pxVal(r.style[prop])) hit = true; } catch (e) {}
+    });
+    return hit;
+  };
+
+  var el = document.body, rootPxW = false;
+  for (;;) {
+    var kids = [];
+    for (var c = 0; c < el.children.length; c++) {
+      var t = el.children[c].tagName;
+      if (t !== 'SCRIPT' && t !== 'STYLE' && t !== 'TEMPLATE') kids.push(el.children[c]);
+    }
+    if (kids.length !== 1 || !(kids[0] instanceof HTMLElement)) break;
+    if (STAMP) el.setAttribute('data-om-frame-wrap', '');
+    el = kids[0];
+    rootPxW = authoredPx(el, 'width');
+    if (rootPxW) break;
+  }
+  if (!rootPxW) rootPxW = authoredPx(el, 'width');
+
+  // @page{size:letter} alone is a flowing doc; with a px-width root it's a
+  // fixed sheet pretending to be paper — fall through and size to render.
+  if (paperPage && !rootPxW) {
+    return { kind: 'paper-doc', source: 'inferred', doc: doc, signals: signals,
+      frames: [{ left: 0, top: 0, width: doc.width, height: doc.height }],
+      authored: [{ width: false, height: false }] };
+  }
+
+  var sx = window.scrollX || 0, sy = window.scrollY || 0;
+  var rectOf = function (e) {
+    var r = e.getBoundingClientRect();
+    var oy; try { oy = getComputedStyle(e).overflowY; } catch (err) {}
+    var h = oy === 'visible' ? Math.max(r.height, e.scrollHeight || 0) : r.height;
+    return { left: r.left + sx, top: r.top + sy, width: r.width, height: h };
+  };
+
+  // Multi-frame: ≥2 visible non-fixed children, each with authored px width
+  // AND height, all within ±2px of each other. Off unless the page opts in
+  // via data-om-multi-frame on the stop element — guards against card grids
+  // and pricing tables that match the geometry but aren't separate canvases.
+  if (el.hasAttribute('data-om-multi-frame')) {
+    var cands = [];
+    for (var k = 0; k < el.children.length; k++) {
+      var ch = el.children[k];
+      var cs; try { cs = getComputedStyle(ch); } catch (e) { continue; }
+      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.position === 'fixed') continue;
+      var rc = rectOf(ch);
+      if (rc.width < 2 || rc.height < 2) continue;
+      if (!authoredPx(ch, 'width') || !authoredPx(ch, 'height')) continue;
+      cands.push(rc);
+    }
+    if (cands.length >= 2) {
+      var w0 = cands[0].width, h0 = cands[0].height, ok = true;
+      for (var q = 1; q < cands.length; q++)
+        if (Math.abs(cands[q].width - w0) > 2 || Math.abs(cands[q].height - h0) > 2) ok = false;
+      if (ok) return { kind: 'multi-frame', source: 'inferred', doc: doc, signals: signals,
+        frames: cands, authored: cands.map(function(){return{width:true,height:true}}) };
+    }
+  }
+
+  if (STAMP) el.setAttribute('data-om-frame', '');
+  return { kind: 'single-canvas', source: 'inferred', doc: doc, signals: signals,
+    frames: [rectOf(el)],
+    authored: [{ width: rootPxW, height: authoredPx(el, 'height') }] };
+})(); } catch (e) {}
+  var frame = null;
+  if (__m && __m.kind === 'single-canvas') {
+    var f = __m.frames && __m.frames[0];
+    if (f && f.width >= 200 && f.height >= 200) {
+      frame = f;
+      var fst = document.createElement('style');
+      fst.textContent = '@media print{@page{size:' + Math.ceil(f.width) + 'px ' +
+        Math.ceil(f.height) + 'px;margin:0}' +
+        'html,body,[data-om-frame-wrap]{padding:0!important;margin:0!important;background:none!important}' +
+        '[data-om-frame]{margin:0!important}}';
+      document.body.appendChild(fst);
+    }
+  }
+  // Relax break-inside on oversized elements. An element taller than a
+  // printable page can't honor break-inside: avoid — browsers either overflow
+  // it or push it whole to the next page, leaving a blank gap, then break it
+  // anyway at an arbitrary point. After the final layout (content revealed,
+  // animations jumped), find elements taller than a page that still compute
+  // break-inside: avoid and reset them to auto, so the browser breaks them at
+  // their children's boundaries instead (children keep their own avoid). PAGE_PX
+  // is a conservative portrait estimate at 96 CSS px/in — Letter/A4 usable
+  // height minus our 0.5in margins — so only clearly-oversized elements are
+  // touched and under-page elements still stay whole. Skipped for decks (slides
+  // are sized to the page) and for fixed-size canvases (frame set, or an author
+  // px-based @page) — runs as before for flowing docs on letter/A4.
+  try {
+    if (!ds && !frame && !(__m && __m.signals && __m.signals.pxPage)) {
+      const PAGE_PX = 1024;
+      // Our print defaults add a real @page margin only when the source has
+      // no @page of its own; computed style can't tell us (it reports screen
+      // media), so read the injected rule directly.
+      const defaults = document.querySelector('style[data-omelette-print-defaults]');
+      const pageInset = /@page\s*\{[^}]*margin/.test(defaults ? defaults.textContent || '' : '');
+      const SEL = 'section,article,figure,table,pre,blockquote,[class~="card" i],[class~="page" i],[class~="sheet" i]';
+      for (const el of document.body.querySelectorAll(SEL)) {
+        if (el instanceof HTMLElement && el.offsetHeight > PAGE_PX) {
+          el.setAttribute('data-om-oversized', '');
+          // Fake-paged docs simulate sheets with over-tall break-after:page
+          // boxes; honoring the break spills half-blank pages and ends a
+          // colored box mid-sheet. Flow them, and (only when we own the page
+          // inset) drop the redundant padding/background via the rule below.
+          const cs = getComputedStyle(el);
+          if (cs.breakAfter === 'page' || cs.pageBreakAfter === 'always') {
+            el.setAttribute('data-om-fakepage', '');
+          }
+        }
+      }
+      const ost = document.createElement('style');
+      ost.textContent = '@media print{' +
+        '[data-om-oversized]{break-inside:auto !important;page-break-inside:auto !important}' +
+        '[data-om-fakepage]{break-after:auto !important;page-break-after:auto !important}' +
+        (pageInset ? '[data-om-fakepage]{padding:0 !important;background:none !important}' : '') +
+        '}';
+      document.head.appendChild(ost);
+    }
+  } catch (e) {}
+  // macOS Preview renders Skia-PDF Luminosity soft-masks as opaque grey boxes;
+  // swap the CSS that triggers them for Preview-safe forms.
+  try {
+    for (const el of document.body.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+
+      if (cs.boxShadow !== 'none' && cs.filter === 'none') {
+        const outs = [], kept = [];
+        for (const s of cs.boxShadow.split(/,(?![^(]*[)])/)) {
+          const t = s.trim();
+          const m = t.match(/^(rgba?[(][^)]+[)]) (-?[0-9.]+px) (-?[0-9.]+px) ([0-9.]+px) -?[0-9.]+px$/);
+          if (m && parseFloat(m[4]) > 0) outs.push('drop-shadow(' + m[2] + ' ' + m[3] + ' ' + m[4] + ' ' + m[1] + ')');
+          else kept.push(t);
+        }
+        if (outs.length) {
+          el.style.setProperty('filter', outs.join(' '), 'important');
+          el.style.setProperty('box-shadow', kept.join(', ') || 'none', 'important');
+        }
+      }
+
+      const mask = cs.maskImage && cs.maskImage !== 'none' ? cs.maskImage : cs.webkitMaskImage;
+      if (mask && mask !== 'none' && cs.filter === 'none') el.style.setProperty('filter', 'opacity(1)', 'important');
+    }
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>
