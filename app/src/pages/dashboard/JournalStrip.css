@@ -1,0 +1,39 @@
+.journal-strip {
+  padding: 18px 22px;
+}
+
+.journal-strip__row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.journal-pill {
+  color: oklch(0.42 0.12 300);
+  background: oklch(0.91 0.04 300);
+  flex: none;
+}
+
+.journal-strip__preview {
+  font: 600 15px var(--font-body);
+  color: oklch(0.35 0.02 240);
+  flex: 1;
+}
+
+.journal-strip__empty {
+  font: 600 15px var(--font-body);
+  color: var(--color-text-muted-2);
+  flex: 1;
+}
+
+.journal-strip__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.journal-plus {
+  width: 38px;
+  height: 38px;
+  background: oklch(0.55 0.14 300);
+  font-size: 18px;
+}

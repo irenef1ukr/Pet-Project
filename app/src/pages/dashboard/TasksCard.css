@@ -1,0 +1,80 @@
+.tasks-pill {
+  color: oklch(0.42 0.13 280);
+  background: oklch(0.91 0.04 280);
+}
+
+.tasks-plus {
+  background: oklch(0.55 0.14 280);
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.task-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  font: 700 12px var(--font-body);
+}
+
+.task-icon--todo {
+  border-radius: 5px;
+  border: 2px solid oklch(0.55 0.14 280);
+  background: #fff;
+}
+
+.task-icon--in_progress {
+  border-radius: 50%;
+  background: conic-gradient(oklch(0.55 0.14 280) 50%, oklch(0.9 0.03 280) 0);
+}
+
+.task-icon__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.task-icon--done {
+  border-radius: 5px;
+  background: oklch(0.55 0.14 280);
+  color: #fff;
+}
+
+.task-label {
+  font: 600 15px var(--font-body);
+  color: var(--color-text-primary-2);
+  flex: 1;
+}
+
+.task-label--done {
+  color: var(--color-text-muted-2);
+  text-decoration: line-through;
+}
+
+.task-recurring {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.task-overdue-tag {
+  font: 700 11px var(--font-body);
+  color: oklch(0.55 0.16 20);
+  background: oklch(0.91 0.045 20);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.task-hint {
+  font: 600 11px var(--font-body);
+  color: var(--color-text-muted);
+}

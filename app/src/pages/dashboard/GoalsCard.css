@@ -1,0 +1,44 @@
+.goals-pill {
+  color: oklch(0.4 0.11 190);
+  background: oklch(0.91 0.04 190);
+}
+
+.goals-plus {
+  background: oklch(0.5 0.12 190);
+}
+
+.goal-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.goal-row__labels {
+  display: flex;
+  justify-content: space-between;
+  font: 600 13.5px var(--font-body);
+  color: var(--color-text-primary-2);
+}
+
+.goal-row__track {
+  height: 8px;
+  border-radius: 999px;
+  background: oklch(0.91 0.04 190);
+}
+
+.goal-row__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: oklch(0.62 0.13 190);
+}
+
+.goals-more-link {
+  align-self: flex-end;
+  font: 700 12.5px var(--font-body);
+  color: oklch(0.42 0.13 190);
+  cursor: pointer;
+}
+
+.goals-more-link:hover {
+  text-decoration: underline;
+}

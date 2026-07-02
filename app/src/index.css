@@ -1,0 +1,30 @@
+:root {
+  --color-bg: oklch(0.97 0.01 240);
+  --color-nav: oklch(0.24 0.015 240);
+  --color-card: oklch(0.995 0.004 240);
+  --color-card-shadow: 0 2px 10px oklch(0.3 0.02 240 / 0.06);
+  --color-text-primary: oklch(0.24 0.015 240);
+  --color-text-primary-2: oklch(0.3 0.02 240);
+  --color-text-muted: oklch(0.55 0.015 240);
+  --color-text-muted-2: oklch(0.6 0.015 240);
+  --color-hero-bg: oklch(0.93 0.03 330);
+
+  --font-display: 'Fredoka', sans-serif;
+  --font-body: 'Nunito', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  color: var(--color-text-primary-2);
+}
+
+button {
+  font-family: inherit;
+}

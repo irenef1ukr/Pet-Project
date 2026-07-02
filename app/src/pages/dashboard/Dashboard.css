@@ -1,0 +1,39 @@
+.page {
+  width: 1440px;
+  max-width: 100%;
+  min-height: 920px;
+  margin: 0 auto;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 36px 52px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-sizing: border-box;
+}
+
+.dashboard-main__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 20px;
+  margin-top: -10px;
+}
+
+.dashboard-grid--today {
+  grid-template-columns: 1fr 1fr;
+}
+
+.dashboard-grid--progress {
+  grid-template-columns: 1.3fr 1fr 1fr;
+}

@@ -1,0 +1,38 @@
+.habits-pill {
+  color: oklch(0.4 0.1 165);
+  background: oklch(0.91 0.04 165);
+}
+
+.habits-plus {
+  background: oklch(0.5 0.12 165);
+}
+
+.habits-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.habit-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 13px var(--font-body);
+  color: var(--color-text-primary-2);
+  background: oklch(0.95 0.008 240);
+  border: 2px solid oklch(0.87 0.015 240);
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.habit-chip--done {
+  color: #fff;
+  background: oklch(0.62 0.13 165);
+  border-color: oklch(0.62 0.13 165);
+}
+
+.habits-hint {
+  font: 600 11.5px var(--font-body);
+  color: var(--color-text-muted);
+}
