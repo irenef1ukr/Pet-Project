@@ -38,3 +38,28 @@ export interface JournalEntry {
   date: string;
   preview: string;
 }
+
+export type CalendarView = 'month' | 'week' | 'day';
+
+export type CalendarEventType = 'event' | 'task' | 'lesson';
+
+export type CalendarEventCategory = 'work' | 'personal' | 'lesson' | 'task';
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  date: string;
+  endDate?: string;
+  startTime?: string;
+  endTime?: string;
+  allDay?: boolean;
+  type: CalendarEventType;
+  category: CalendarEventCategory;
+  recurring?: boolean;
+}
+
+export interface DayMeta {
+  spend?: number;
+  mood?: string;
+  weather?: string;
+}
