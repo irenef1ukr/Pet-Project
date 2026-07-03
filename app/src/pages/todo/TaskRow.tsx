@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { TodoCategory, TodoPriority, TodoTask } from '../../types';
 import { StatusIcon } from './StatusIcon';
-import { PRIORITY_COLOR, dueColor, dueLabel } from './todoUtils';
+import { PRIORITY_COLOR, dueColor, dueLabel } from '../../lib/todoUtils';
 import './TaskRow.css';
 
 interface TaskRowProps {

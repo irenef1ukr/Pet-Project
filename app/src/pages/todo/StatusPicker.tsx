@@ -1,5 +1,5 @@
 import type { TodoStatus } from '../../types';
-import { STATUS_LABEL, STATUS_ORDER, statusVisual } from './todoUtils';
+import { STATUS_LABEL, STATUS_ORDER, statusVisual } from '../../lib/todoUtils';
 import './StatusPicker.css';
 
 interface StatusPickerProps {

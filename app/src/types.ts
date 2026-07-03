@@ -92,3 +92,23 @@ export interface TodoTask {
   subtasks: TodoSubtask[];
   description: string;
 }
+
+export interface TaskEditPatch {
+  status: TodoStatus;
+  priority: TodoPriority;
+  categoryId: string;
+  dueDate: string;
+  recurring: TodoRecurrence;
+  description: string;
+  subtasks: TodoSubtask[];
+}
+
+export interface TaskCreateDraft {
+  title: string;
+  priority: TodoPriority;
+  dueDate: string;
+  categoryId: string;
+  recurring: TodoRecurrence;
+  subtasks: TodoSubtask[];
+  description: string;
+}
