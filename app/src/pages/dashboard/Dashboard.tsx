@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopNav } from '../../components/TopNav';
 import { HeroGreeting } from './HeroGreeting';
@@ -10,42 +10,61 @@ import { FinanceCard } from './FinanceCard';
 import { JournalStrip } from './JournalStrip';
 import {
   NOW_TIME,
+  TODAY_ISO,
   allGoals,
   financeSummary,
   greetingDate,
   greetingQuote,
   initialHabits,
-  initialTasks,
   latestJournalEntry,
   moodOptions,
-  todaysEvents,
   userName,
   weatherOptions,
 } from '../../data/mockData';
-import type { DashboardTask, Habit, TaskStatus } from '../../types';
+import { isMyDay, isOverdue } from '../../lib/todoUtils';
+import { useAppData } from '../../store/AppDataContext';
+import type { CalendarEvent, DashboardEvent, DashboardTask, Habit, TodoTask } from '../../types';
 import './dashboard-shared.css';
 import './Dashboard.css';
 
-const STATUS_ORDER: TaskStatus[] = ['todo', 'in_progress', 'done'];
+function toDashboardTask(task: TodoTask): DashboardTask {
+  return {
+    id: task.id,
+    label: task.title,
+    status: task.status === 'complete' ? 'done' : task.status === 'in_progress' ? 'in_progress' : 'todo',
+    overdue: isOverdue(task, TODAY_ISO),
+    recurring: task.recurring !== 'none',
+  };
+}
+
+function toDashboardEvent(event: CalendarEvent): DashboardEvent {
+  const [hour, minute] = (event.startTime ?? '0:00').split(':');
+  return {
+    id: event.id,
+    time: `${Number(hour)}:${minute}`,
+    title: event.title,
+    recurring: event.recurring,
+  };
+}
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const { tasks: todoTasks, events, cycleTaskStatus } = useAppData();
 
-  const [tasks, setTasks] = useState<DashboardTask[]>(initialTasks);
   const [habits, setHabits] = useState<Habit[]>(initialHabits);
   const [moodIndex, setMoodIndex] = useState(0);
   const [weatherIndex, setWeatherIndex] = useState(0);
   const [loggedToday, setLoggedToday] = useState(false);
 
-  const cycleTaskStatus = (id: string) => {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? { ...t, status: STATUS_ORDER[(STATUS_ORDER.indexOf(t.status) + 1) % STATUS_ORDER.length] }
-          : t,
-      ),
-    );
-  };
+  const tasks = useMemo(
+    () => todoTasks.filter((t) => isMyDay(t, TODAY_ISO)).map(toDashboardTask),
+    [todoTasks],
+  );
+
+  const todaysEvents = useMemo(
+    () => events.filter((e) => !e.allDay && e.date === TODAY_ISO).map(toDashboardEvent),
+    [events],
+  );
 
   const toggleHabit = (id: string) => {
     setHabits((prev) => prev.map((h) => (h.id === id ? { ...h, done: !h.done } : h)));

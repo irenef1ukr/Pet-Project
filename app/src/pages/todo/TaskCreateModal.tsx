@@ -1,19 +1,9 @@
 import { useState } from 'react';
-import type { TodoCategory, TodoPriority, TodoRecurrence, TodoSubtask } from '../../types';
+import type { TaskCreateDraft, TodoCategory, TodoPriority, TodoRecurrence } from '../../types';
 import { SubtasksEditor } from './SubtasksEditor';
-import { generateId } from './todoUtils';
+import { generateId } from '../../lib/todoUtils';
 import './modal-shared.css';
 import './TaskCreateModal.css';
-
-export interface TaskCreateDraft {
-  title: string;
-  priority: TodoPriority;
-  dueDate: string;
-  categoryId: string;
-  recurring: TodoRecurrence;
-  subtasks: TodoSubtask[];
-  description: string;
-}
 
 interface TaskCreateModalProps {
   categories: TodoCategory[];

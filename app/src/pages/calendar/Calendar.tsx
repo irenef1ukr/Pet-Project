@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { TopNav } from '../../components/TopNav';
-import { CALENDAR_TODAY, NOW_TIME, calendarEvents, dayMeta } from '../../data/mockData';
+import { NOW_TIME, TODAY_DATE, dayMeta } from '../../data/mockData';
+import { useAppData } from '../../store/AppDataContext';
 import type { CalendarView } from '../../types';
 import { DayView } from './DayView';
 import { MiniMonthPicker } from './MiniMonthPicker';
@@ -12,8 +13,9 @@ import { addDays, addMonths, getUpcomingEvents } from './calendarUtils';
 import './Calendar.css';
 
 export function Calendar() {
+  const { calendarEntries } = useAppData();
   const [view, setView] = useState<CalendarView>('month');
-  const [selectedDate, setSelectedDate] = useState(CALENDAR_TODAY);
+  const [selectedDate, setSelectedDate] = useState(TODAY_DATE);
 
   const goToDay = (date: Date) => {
     setSelectedDate(date);
@@ -32,7 +34,7 @@ export function Calendar() {
     else setSelectedDate((d) => addDays(d, 1));
   };
 
-  const upcoming = useMemo(() => getUpcomingEvents(calendarEvents, CALENDAR_TODAY, 4), []);
+  const upcoming = useMemo(() => getUpcomingEvents(calendarEntries, TODAY_DATE, 4), [calendarEntries]);
 
   return (
     <div className="page">
@@ -44,8 +46,8 @@ export function Calendar() {
           {view === 'month' && (
             <MonthView
               selectedDate={selectedDate}
-              today={CALENDAR_TODAY}
-              events={calendarEvents}
+              today={TODAY_DATE}
+              events={calendarEntries}
               dayMeta={dayMeta}
               onPrev={goToPrev}
               onNext={goToNext}
@@ -55,8 +57,8 @@ export function Calendar() {
           {view === 'week' && (
             <WeekView
               selectedDate={selectedDate}
-              today={CALENDAR_TODAY}
-              events={calendarEvents}
+              today={TODAY_DATE}
+              events={calendarEntries}
               onPrev={goToPrev}
               onNext={goToNext}
               onSelectDay={goToDay}
@@ -65,9 +67,9 @@ export function Calendar() {
           {view === 'day' && (
             <DayView
               selectedDate={selectedDate}
-              today={CALENDAR_TODAY}
+              today={TODAY_DATE}
               nowTime={NOW_TIME}
-              events={calendarEvents}
+              events={calendarEntries}
               dayMeta={dayMeta}
               onPrev={goToPrev}
               onNext={goToNext}

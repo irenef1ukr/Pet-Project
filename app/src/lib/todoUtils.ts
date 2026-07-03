@@ -1,4 +1,4 @@
-import type { TodoPriority, TodoStatus, TodoTask } from '../../types';
+import type { TodoPriority, TodoStatus, TodoTask } from '../types';
 
 export const PRIORITY_COLOR: Record<TodoPriority, string> = {
   High: 'oklch(0.65 0.28 25)',

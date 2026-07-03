@@ -1,7 +1,5 @@
 import type {
   CalendarEvent,
-  DashboardEvent,
-  DashboardTask,
   DayMeta,
   FinanceSummary,
   Goal,
@@ -13,26 +11,15 @@ import type {
 
 export const NOW_TIME = '12:40';
 
+export const TODAY_ISO = '2026-07-01';
+export const TODAY_DATE = new Date(2026, 6, 1);
+
 export const userName = 'Iryna';
 export const greetingDate = 'Monday, July 1';
 export const greetingQuote = 'small steps every day';
 
 export const moodOptions = ['🙂', '😁', '😐', '🙁', '😢'];
 export const weatherOptions = ['☀️', '⛅', '🌧️', '❄️'];
-
-export const initialTasks: DashboardTask[] = [
-  { id: 'report', label: 'Finish report', status: 'todo', overdue: true },
-  { id: 'proposal', label: 'Draft proposal', status: 'in_progress' },
-  { id: 'grocery', label: 'Grocery shopping', status: 'todo' },
-  { id: 'email', label: 'Reply to emails', status: 'done', recurring: true },
-];
-
-export const todaysEvents: DashboardEvent[] = [
-  { id: 'sync', time: '9:00', title: 'Team sync' },
-  { id: 'piano', time: '11:30', title: 'Piano lesson', recurring: true },
-  { id: 'dentist', time: '13:00', title: 'Dentist' },
-  { id: 'mom', time: '18:00', title: 'Call with mom' },
-];
 
 export const initialHabits: Habit[] = [
   { id: 'read', label: 'read', done: true },
@@ -60,8 +47,6 @@ export const latestJournalEntry: JournalEntry | null = {
   date: 'Jun 29',
   preview: 'Today was calm, finished the report draft and went for a walk…',
 };
-
-export const CALENDAR_TODAY = new Date(2026, 6, 1);
 
 export const calendarEvents: CalendarEvent[] = [
   {
@@ -102,20 +87,6 @@ export const calendarEvents: CalendarEvent[] = [
     category: 'personal',
   },
   {
-    id: 'report',
-    title: 'Finish report',
-    date: '2026-07-01',
-    type: 'task',
-    category: 'task',
-  },
-  {
-    id: 'proposal',
-    title: 'Draft proposal',
-    date: '2026-07-02',
-    type: 'task',
-    category: 'task',
-  },
-  {
     id: 'piano-2',
     title: 'Piano lesson',
     date: '2026-07-03',
@@ -144,20 +115,6 @@ export const calendarEvents: CalendarEvent[] = [
     category: 'lesson',
     recurring: true,
   },
-  {
-    id: 'report-due',
-    title: 'Report due',
-    date: '2026-07-09',
-    type: 'task',
-    category: 'task',
-  },
-  {
-    id: 'grocery',
-    title: 'Grocery shopping',
-    date: '2026-07-15',
-    type: 'task',
-    category: 'task',
-  },
 ];
 
 export const dayMeta: Record<string, DayMeta> = {
@@ -165,8 +122,6 @@ export const dayMeta: Record<string, DayMeta> = {
   '2026-07-02': { spend: 18 },
   '2026-07-03': { mood: '😐', weather: '🌧️' },
 };
-
-export const TODO_TODAY = '2026-07-01';
 
 export const todoCategories: TodoCategory[] = [
   { id: 'work', name: 'Work' },

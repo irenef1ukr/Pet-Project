@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react';
 import { TopNav } from '../../components/TopNav';
-import { TODO_TODAY, todoCategories, todoTasks } from '../../data/mockData';
-import type { TodoCategory, TodoPriority, TodoTask } from '../../types';
+import { TODAY_ISO } from '../../data/mockData';
+import { useAppData } from '../../store/AppDataContext';
+import type { TodoTask } from '../../types';
 import { CategoryManagerModal } from './CategoryManagerModal';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { FilterBar, type Filters } from './FilterBar';
-import { TaskCreateModal, type TaskCreateDraft } from './TaskCreateModal';
-import { TaskDetailModal, type TaskEditPatch } from './TaskDetailModal';
+import { TaskCreateModal } from './TaskCreateModal';
+import { TaskDetailModal } from './TaskDetailModal';
 import { TaskList } from './TaskList';
-import { generateId, isMyDay, nextStatus, sortTasks } from './todoUtils';
+import { isMyDay, sortTasks } from '../../lib/todoUtils';
 import './Todo.css';
 
 const DEFAULT_FILTERS: Filters = {
@@ -28,13 +29,25 @@ type ModalState =
   | { type: 'categories' };
 
 export function Todo() {
-  const [tasks, setTasks] = useState<TodoTask[]>(todoTasks);
-  const [categories, setCategories] = useState<TodoCategory[]>(todoCategories);
+  const {
+    tasks,
+    categories,
+    cycleTaskStatus,
+    renameTaskTitle,
+    changeTaskPriority,
+    changeTaskCategory,
+    saveTaskEdits,
+    createTask,
+    deleteTask,
+    addCategory,
+    renameCategory,
+    deleteCategory,
+  } = useAppData();
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [modal, setModal] = useState<ModalState>({ type: 'none' });
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  const today = TODO_TODAY;
+  const today = TODAY_ISO;
 
   const { myDayTasks, allTasks } = useMemo(() => {
     const q = filters.searchQuery.trim().toLowerCase();
@@ -55,57 +68,20 @@ export function Todo() {
     };
   }, [tasks, filters, today]);
 
-  const cycleStatus = (id: string) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status: nextStatus(t.status) } : t)));
-  };
-
-  const renameTitle = (id: string, title: string) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, title } : t)));
-  };
-
-  const changePriority = (id: string, priority: TodoPriority) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, priority } : t)));
-  };
-
-  const changeCategory = (id: string, categoryId: string) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, categoryId } : t)));
-  };
-
-  const saveTaskEdits = (id: string, patch: TaskEditPatch) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));
-    setModal({ type: 'none' });
-  };
-
-  const createTask = (draft: TaskCreateDraft) => {
-    const newTask: TodoTask = {
-      id: generateId('task'),
-      title: draft.title,
-      categoryId: draft.categoryId || categories[0]?.id || '',
-      priority: draft.priority,
-      dueDate: draft.dueDate,
-      status: 'not_started',
-      recurring: draft.recurring,
-      subtasks: draft.subtasks,
-      description: draft.description,
-    };
-    setTasks((prev) => [...prev, newTask]);
-    setModal({ type: 'none' });
-  };
-
   const requestDelete = (id: string) => setPendingDeleteId(id);
   const confirmDelete = () => {
-    setTasks((prev) => prev.filter((t) => t.id !== pendingDeleteId));
+    if (pendingDeleteId) deleteTask(pendingDeleteId);
     setPendingDeleteId(null);
   };
 
-  const addCategory = (name: string) => {
-    setCategories((prev) => [...prev, { id: generateId('cat'), name }]);
+  const handleSaveTaskEdits: typeof saveTaskEdits = (id, patch) => {
+    saveTaskEdits(id, patch);
+    setModal({ type: 'none' });
   };
-  const renameCategory = (id: string, name: string) => {
-    setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c)));
-  };
-  const deleteCategory = (id: string) => {
-    setCategories((prev) => prev.filter((c) => c.id !== id));
+
+  const handleCreateTask: typeof createTask = (draft) => {
+    createTask(draft);
+    setModal({ type: 'none' });
   };
 
   const selectedTask = modal.type === 'detail' ? tasks.find((t) => t.id === modal.taskId) : undefined;
@@ -114,10 +90,10 @@ export function Todo() {
   const rowHandlers = {
     categories,
     today,
-    onCycleStatus: cycleStatus,
-    onRenameTitle: renameTitle,
-    onChangePriority: changePriority,
-    onChangeCategory: changeCategory,
+    onCycleStatus: cycleTaskStatus,
+    onRenameTitle: renameTaskTitle,
+    onChangePriority: changeTaskPriority,
+    onChangeCategory: changeTaskCategory,
     onEdit: (id: string) => setModal({ type: 'detail', taskId: id }),
     onDelete: requestDelete,
   };
@@ -144,13 +120,17 @@ export function Todo() {
           key={selectedTask.id}
           task={selectedTask}
           categories={categories}
-          onSave={saveTaskEdits}
+          onSave={handleSaveTaskEdits}
           onClose={() => setModal({ type: 'none' })}
         />
       )}
 
       {modal.type === 'create' && (
-        <TaskCreateModal categories={categories} onCreate={createTask} onClose={() => setModal({ type: 'none' })} />
+        <TaskCreateModal
+          categories={categories}
+          onCreate={handleCreateTask}
+          onClose={() => setModal({ type: 'none' })}
+        />
       )}
 
       {modal.type === 'categories' && (

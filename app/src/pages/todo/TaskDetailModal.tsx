@@ -1,20 +1,10 @@
 import { useState } from 'react';
-import type { TodoCategory, TodoPriority, TodoRecurrence, TodoStatus, TodoSubtask, TodoTask } from '../../types';
+import type { TaskEditPatch, TodoCategory, TodoPriority, TodoRecurrence, TodoTask } from '../../types';
 import { StatusPicker } from './StatusPicker';
 import { SubtasksEditor } from './SubtasksEditor';
-import { PRIORITY_COLOR, generateId } from './todoUtils';
+import { PRIORITY_COLOR, generateId } from '../../lib/todoUtils';
 import './modal-shared.css';
 import './TaskDetailModal.css';
-
-export interface TaskEditPatch {
-  status: TodoStatus;
-  priority: TodoPriority;
-  categoryId: string;
-  dueDate: string;
-  recurring: TodoRecurrence;
-  description: string;
-  subtasks: TodoSubtask[];
-}
 
 interface TaskDetailModalProps {
   task: TodoTask;
