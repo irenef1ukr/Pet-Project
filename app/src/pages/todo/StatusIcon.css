@@ -1,0 +1,26 @@
+.status-icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.status-icon--sm {
+  width: 17px;
+  height: 17px;
+}
+
+.status-icon--md {
+  width: 22px;
+  height: 22px;
+}
+
+.status-icon__check {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}

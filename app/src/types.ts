@@ -63,3 +63,32 @@ export interface DayMeta {
   mood?: string;
   weather?: string;
 }
+
+export type TodoStatus = 'not_started' | 'in_progress' | 'complete';
+
+export type TodoPriority = 'High' | 'Medium' | 'Low';
+
+export type TodoRecurrence = 'none' | 'daily' | 'weekly' | 'monthly';
+
+export interface TodoCategory {
+  id: string;
+  name: string;
+}
+
+export interface TodoSubtask {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
+export interface TodoTask {
+  id: string;
+  title: string;
+  categoryId: string;
+  priority: TodoPriority;
+  dueDate: string;
+  status: TodoStatus;
+  recurring: TodoRecurrence;
+  subtasks: TodoSubtask[];
+  description: string;
+}

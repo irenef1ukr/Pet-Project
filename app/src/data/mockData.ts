@@ -7,6 +7,8 @@ import type {
   Goal,
   Habit,
   JournalEntry,
+  TodoCategory,
+  TodoTask,
 } from '../types';
 
 export const NOW_TIME = '12:40';
@@ -163,3 +165,80 @@ export const dayMeta: Record<string, DayMeta> = {
   '2026-07-02': { spend: 18 },
   '2026-07-03': { mood: '😐', weather: '🌧️' },
 };
+
+export const TODO_TODAY = '2026-07-01';
+
+export const todoCategories: TodoCategory[] = [
+  { id: 'work', name: 'Work' },
+  { id: 'personal', name: 'Personal' },
+  { id: 'health', name: 'Health' },
+];
+
+export const todoTasks: TodoTask[] = [
+  {
+    id: 't1',
+    title: 'Finish project proposal',
+    categoryId: 'work',
+    priority: 'High',
+    dueDate: '2026-07-01',
+    status: 'in_progress',
+    recurring: 'none',
+    subtasks: [{ id: 's1', title: 'Write intro', completed: false }],
+    description: '',
+  },
+  {
+    id: 't2',
+    title: 'Schedule meeting with client',
+    categoryId: 'work',
+    priority: 'High',
+    dueDate: '2026-06-29',
+    status: 'not_started',
+    recurring: 'none',
+    subtasks: [],
+    description: '',
+  },
+  {
+    id: 't3',
+    title: 'Review team feedback',
+    categoryId: 'personal',
+    priority: 'Medium',
+    dueDate: '2026-07-01',
+    status: 'complete',
+    recurring: 'none',
+    subtasks: [{ id: 's2', title: 'Check email', completed: true }],
+    description: '',
+  },
+  {
+    id: 't4',
+    title: 'Update documentation',
+    categoryId: 'work',
+    priority: 'Low',
+    dueDate: '2026-07-05',
+    status: 'not_started',
+    recurring: 'none',
+    subtasks: [],
+    description: '',
+  },
+  {
+    id: 't5',
+    title: 'Buy groceries',
+    categoryId: 'personal',
+    priority: 'Medium',
+    dueDate: '2026-07-03',
+    status: 'in_progress',
+    recurring: 'weekly',
+    subtasks: [],
+    description: '',
+  },
+  {
+    id: 't6',
+    title: 'Gym session',
+    categoryId: 'health',
+    priority: 'High',
+    dueDate: '2026-07-03',
+    status: 'complete',
+    recurring: 'daily',
+    subtasks: [],
+    description: '',
+  },
+];

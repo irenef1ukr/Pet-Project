@@ -1,0 +1,124 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 26px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+.modal-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-card__title {
+  font: 700 24px var(--font-display);
+  color: var(--color-text-primary);
+  margin: 0;
+  word-break: break-word;
+}
+
+.modal-card__close {
+  font: 600 24px var(--font-body);
+  background: none;
+  border: none;
+  color: oklch(0.5 0.05 240);
+  cursor: pointer;
+  line-height: 1;
+  flex: none;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-field label {
+  display: block;
+  font: 700 12px var(--font-display);
+  color: var(--color-text-primary);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.modal-field input[type='text'],
+.modal-field input[type='date'],
+.modal-field select,
+.modal-field textarea {
+  width: 100%;
+  padding: 9px 11px;
+  font: 400 14px var(--font-body);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: var(--color-text-primary);
+}
+
+.modal-field select {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-row {
+  display: grid;
+  gap: 13px;
+}
+
+.modal-row--3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.modal-row--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-actions__cancel {
+  flex: 1;
+  padding: 14px;
+  font: 600 13px var(--font-display);
+  background: oklch(0.94 0.01 240);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  transition: background 0.15s ease;
+}
+
+.modal-actions__cancel:hover {
+  background: oklch(0.92 0.015 240);
+}
+
+.modal-actions__primary {
+  flex: 1;
+  padding: 14px;
+  font: 600 13px var(--font-display);
+  background: linear-gradient(135deg, oklch(0.65 0.28 25) 0%, oklch(0.65 0.28 15) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(214, 107, 66, 0.3);
+}

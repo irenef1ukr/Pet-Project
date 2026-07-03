@@ -1,0 +1,8 @@
+.todo-main {
+  flex: 1;
+  padding: 36px 52px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  box-sizing: border-box;
+}

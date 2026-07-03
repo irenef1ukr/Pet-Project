@@ -1,0 +1,9 @@
+.task-create {
+  max-width: 500px;
+}
+
+.task-create__body {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}

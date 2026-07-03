@@ -1,0 +1,86 @@
+.subtasks-editor__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.subtasks-editor__header label {
+  font: 700 12px var(--font-display);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.subtasks-editor__box {
+  background: var(--color-bg);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subtasks-editor__row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid oklch(0.92 0.01 240);
+}
+
+.subtasks-editor__checkbox {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  accent-color: oklch(0.7 0.22 120);
+  flex: none;
+}
+
+.subtasks-editor__title-input {
+  flex: 1;
+  padding: 8px 10px;
+  font: 400 13px var(--font-body);
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+}
+
+.subtasks-editor__delete {
+  padding: 4px 8px;
+  font: 600 12px var(--font-body);
+  background: none;
+  border: none;
+  color: oklch(0.5 0.05 240);
+  cursor: pointer;
+  flex: none;
+}
+
+.subtasks-editor__add-row {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+}
+
+.subtasks-editor__new-input {
+  flex: 1;
+  padding: 8px 10px;
+  font: 400 13px var(--font-body);
+  border: 1px solid oklch(0.85 0.04 240);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--color-text-primary);
+}
+
+.subtasks-editor__add-btn {
+  padding: 6px 11px;
+  font: 600 11px var(--font-display);
+  background: linear-gradient(135deg, oklch(0.65 0.28 180) 0%, oklch(0.65 0.28 170) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
