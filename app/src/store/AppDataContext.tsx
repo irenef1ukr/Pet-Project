@@ -1,6 +1,7 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { calendarEvents, todoCategories, todoTasks } from '../data/mockData';
 import { generateId, nextStatus } from '../lib/todoUtils';
+import { useLocalStorageState } from '../lib/useLocalStorageState';
 import type {
   CalendarEvent,
   TaskCreateDraft,
@@ -42,9 +43,9 @@ function taskToCalendarEvent(task: TodoTask): CalendarEvent | null {
 }
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
-  const [tasks, setTasks] = useState<TodoTask[]>(todoTasks);
-  const [categories, setCategories] = useState<TodoCategory[]>(todoCategories);
-  const [events] = useState<CalendarEvent[]>(calendarEvents);
+  const [tasks, setTasks] = useLocalStorageState<TodoTask[]>('hi-app:tasks', todoTasks);
+  const [categories, setCategories] = useLocalStorageState<TodoCategory[]>('hi-app:categories', todoCategories);
+  const [events] = useLocalStorageState<CalendarEvent[]>('hi-app:events', calendarEvents);
 
   const value = useMemo<AppDataContextValue>(() => {
     const calendarEntries = [...events, ...tasks.map(taskToCalendarEvent).filter((e): e is CalendarEvent => e !== null)];
@@ -82,7 +83,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       renameCategory: (id, name) => setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
       deleteCategory: (id) => setCategories((prev) => prev.filter((c) => c.id !== id)),
     };
-  }, [tasks, categories, events]);
+  }, [tasks, categories, events, setTasks, setCategories]);
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
 }

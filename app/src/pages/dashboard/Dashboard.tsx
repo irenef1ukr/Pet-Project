@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopNav } from '../../components/TopNav';
 import { HeroGreeting } from './HeroGreeting';
@@ -22,6 +22,7 @@ import {
   weatherOptions,
 } from '../../data/mockData';
 import { isMyDay, isOverdue } from '../../lib/todoUtils';
+import { useLocalStorageState } from '../../lib/useLocalStorageState';
 import { useAppData } from '../../store/AppDataContext';
 import type { CalendarEvent, DashboardEvent, DashboardTask, Habit, TodoTask } from '../../types';
 import './dashboard-shared.css';
@@ -51,10 +52,10 @@ export function Dashboard() {
   const navigate = useNavigate();
   const { tasks: todoTasks, events, cycleTaskStatus } = useAppData();
 
-  const [habits, setHabits] = useState<Habit[]>(initialHabits);
-  const [moodIndex, setMoodIndex] = useState(0);
-  const [weatherIndex, setWeatherIndex] = useState(0);
-  const [loggedToday, setLoggedToday] = useState(false);
+  const [habits, setHabits] = useLocalStorageState<Habit[]>('hi-app:habits', initialHabits);
+  const [moodIndex, setMoodIndex] = useLocalStorageState('hi-app:mood-index', 0);
+  const [weatherIndex, setWeatherIndex] = useLocalStorageState('hi-app:weather-index', 0);
+  const [loggedToday, setLoggedToday] = useLocalStorageState('hi-app:logged-today', false);
 
   const tasks = useMemo(
     () => todoTasks.filter((t) => isMyDay(t, TODAY_ISO)).map(toDashboardTask),
