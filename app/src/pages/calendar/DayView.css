@@ -41,6 +41,28 @@
   padding: 6px 10px;
   border-radius: 6px;
   width: fit-content;
+  cursor: pointer;
+}
+
+.day-view__finance {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.1s ease;
+}
+
+.day-view__finance:hover {
+  background: oklch(0.96 0.01 240);
+}
+
+.day-view__finance-amount {
+  font: 700 14px var(--font-body);
+  color: var(--color-text-primary);
+}
+
+.day-view__finance-link {
+  font: 700 11px var(--font-body);
+  color: oklch(0.5 0.14 230);
+  width: fit-content;
 }
 
 .day-view__timed-list {
@@ -75,4 +97,5 @@
   padding: 0 12px;
   font: 700 12px var(--font-body);
   color: #fff;
+  cursor: pointer;
 }

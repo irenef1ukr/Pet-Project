@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { TopNav } from '../../components/TopNav';
-import { TODAY_ISO } from '../../data/mockData';
+import { getTodayISO } from '../../data/mockData';
 import { useAppData } from '../../store/AppDataContext';
 import type { TodoTask } from '../../types';
 import { CategoryManagerModal } from './CategoryManagerModal';
@@ -47,7 +47,7 @@ export function Todo() {
   const [modal, setModal] = useState<ModalState>({ type: 'none' });
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
-  const today = TODAY_ISO;
+  const today = getTodayISO();
 
   const { myDayTasks, allTasks } = useMemo(() => {
     const q = filters.searchQuery.trim().toLowerCase();

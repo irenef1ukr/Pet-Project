@@ -1,0 +1,15 @@
+.event-form {
+  max-width: 520px;
+}
+
+.event-form__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.event-form__reminders {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

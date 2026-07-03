@@ -1,8 +1,8 @@
 import type { CalendarEvent, DayMeta } from '../../types';
 import {
-  CATEGORY_COLOR,
   EVENT_TYPE_ICON,
   WEEKDAY_LABELS,
+  eventColor,
   eventsOnDate,
   formatMonthYear,
   getMonthGridDays,
@@ -19,9 +19,19 @@ interface MonthViewProps {
   onPrev: () => void;
   onNext: () => void;
   onSelectDay: (date: Date) => void;
+  onSelectEvent: (event: CalendarEvent) => void;
 }
 
-export function MonthView({ selectedDate, today, events, dayMeta, onPrev, onNext, onSelectDay }: MonthViewProps) {
+export function MonthView({
+  selectedDate,
+  today,
+  events,
+  dayMeta,
+  onPrev,
+  onNext,
+  onSelectDay,
+  onSelectEvent,
+}: MonthViewProps) {
   const days = getMonthGridDays(selectedDate);
 
   return (
@@ -73,16 +83,27 @@ export function MonthView({ selectedDate, today, events, dayMeta, onPrev, onNext
               </div>
               {dayEvents.length > 0 && (
                 <div className="month-view__chips">
-                  {dayEvents.map((e) => (
-                    <span
-                      key={e.id}
-                      className="month-view__chip"
-                      style={{ background: CATEGORY_COLOR[e.category] }}
-                    >
-                      {EVENT_TYPE_ICON[e.type]} {e.title}
-                      {e.recurring ? ' ↻' : ''}
-                    </span>
-                  ))}
+                  {dayEvents.map((e) => {
+                    const isRealEvent = !e.id.startsWith('task-');
+                    return (
+                      <span
+                        key={e.id}
+                        className="month-view__chip"
+                        style={{ background: eventColor(e) }}
+                        onClick={
+                          isRealEvent
+                            ? (ev) => {
+                                ev.stopPropagation();
+                                onSelectEvent(e);
+                              }
+                            : undefined
+                        }
+                      >
+                        {EVENT_TYPE_ICON[e.type]} {e.title}
+                        {e.recurring !== 'none' ? ' ↻' : ''}
+                      </span>
+                    );
+                  })}
                 </div>
               )}
             </div>

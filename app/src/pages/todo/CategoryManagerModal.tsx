@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { TodoCategory } from '../../types';
-import './modal-shared.css';
+import '../../components/modal-shared.css';
 import './CategoryManagerModal.css';
 
 interface CategoryManagerModalProps {

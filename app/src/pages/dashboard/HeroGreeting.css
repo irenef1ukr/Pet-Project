@@ -46,6 +46,10 @@
   gap: 10px;
 }
 
+.hero__emoji-wrap {
+  position: relative;
+}
+
 .hero__emoji {
   display: inline-flex;
   align-items: center;
@@ -62,13 +66,49 @@
   transition: box-shadow 0.15s ease;
 }
 
-.hero__emoji--logged {
-  box-shadow:
-    0 0 0 3px oklch(0.55 0.14 330 / 0.5),
-    0 2px 6px oklch(0.3 0.02 240 / 0.12);
+.hero__emoji--empty {
+  background: transparent;
+  border: 2px dashed oklch(0.55 0.05 330 / 0.5);
+  box-shadow: none;
 }
 
-.hero__helper {
-  font: 600 11px var(--font-body);
-  color: oklch(0.45 0.03 330);
+.hero__picker-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+}
+
+.hero__picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 200;
+  display: flex;
+  gap: 6px;
+  background: var(--color-card);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: 0 8px 24px oklch(0.3 0.02 240 / 0.2);
+}
+
+.hero__picker-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  font-size: 19px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.hero__picker-option:hover {
+  background: var(--color-bg);
+}
+
+.hero__picker-option--selected {
+  background: oklch(0.91 0.04 330);
 }

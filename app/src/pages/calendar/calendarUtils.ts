@@ -1,4 +1,7 @@
+import { addDaysIso, fromISODate, pad2, toISODate } from '../../lib/dateUtils';
 import type { CalendarEvent, CalendarEventCategory, CalendarEventType } from '../../types';
+
+export { addDaysIso, fromISODate, pad2, toISODate };
 
 export const EVENT_TYPE_ICON: Record<CalendarEventType, string> = {
   event: '●',
@@ -13,6 +16,19 @@ export const CATEGORY_COLOR: Record<CalendarEventCategory, string> = {
   task: 'oklch(0.5 0.08 0)',
 };
 
+export const COLOR_SWATCHES = [
+  'oklch(0.64 0.22 280)',
+  'oklch(0.68 0.25 20)',
+  'oklch(0.65 0.18 160)',
+  'oklch(0.6 0.2 230)',
+  'oklch(0.65 0.2 100)',
+  'oklch(0.6 0.22 340)',
+];
+
+export function eventColor(event: CalendarEvent): string {
+  return event.colorOverride ?? CATEGORY_COLOR[event.category];
+}
+
 export const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export const WEEKDAY_INITIALS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -25,19 +41,6 @@ const MONTH_SHORT = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ];
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-export function pad2(n: number) {
-  return n.toString().padStart(2, '0');
-}
-
-export function toISODate(date: Date): string {
-  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
-}
-
-export function fromISODate(iso: string): Date {
-  const [y, m, d] = iso.split('-').map(Number);
-  return new Date(y, m - 1, d);
-}
 
 export function isSameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();

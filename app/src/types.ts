@@ -18,7 +18,8 @@ export interface DashboardEvent {
 export interface Habit {
   id: string;
   label: string;
-  done: boolean;
+  streakCount: number;
+  lastCompletedDate: string | null;
 }
 
 export interface Goal {
@@ -55,7 +56,24 @@ export interface CalendarEvent {
   allDay?: boolean;
   type: CalendarEventType;
   category: CalendarEventCategory;
-  recurring?: boolean;
+  recurring: TodoRecurrence;
+  colorOverride?: string;
+  /** Minutes before the event start to show an in-app reminder banner. */
+  reminders?: number[];
+}
+
+export interface CalendarEventDraft {
+  title: string;
+  type: CalendarEventType;
+  category: CalendarEventCategory;
+  date: string;
+  endDate?: string;
+  allDay: boolean;
+  startTime?: string;
+  endTime?: string;
+  recurring: TodoRecurrence;
+  colorOverride?: string;
+  reminders: number[];
 }
 
 export interface DayMeta {

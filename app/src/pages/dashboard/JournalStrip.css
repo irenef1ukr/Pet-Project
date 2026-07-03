@@ -18,6 +18,10 @@
   font: 600 15px var(--font-body);
   color: oklch(0.35 0.02 240);
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .journal-strip__empty {

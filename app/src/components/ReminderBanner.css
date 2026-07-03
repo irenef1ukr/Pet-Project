@@ -1,0 +1,41 @@
+.reminder-stack {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 320px;
+}
+
+.reminder-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-nav);
+  color: var(--color-bg);
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.reminder-banner__text {
+  font: 600 13px var(--font-body);
+  flex: 1;
+}
+
+.reminder-banner__dismiss {
+  font: 600 16px var(--font-body);
+  background: none;
+  border: none;
+  color: var(--color-bg);
+  opacity: 0.7;
+  cursor: pointer;
+  line-height: 1;
+  flex: none;
+}
+
+.reminder-banner__dismiss:hover {
+  opacity: 1;
+}

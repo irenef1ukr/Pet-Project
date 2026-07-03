@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { TaskCreateDraft, TodoCategory, TodoPriority, TodoRecurrence } from '../../types';
 import { SubtasksEditor } from './SubtasksEditor';
 import { generateId } from '../../lib/todoUtils';
-import './modal-shared.css';
+import '../../components/modal-shared.css';
 import './TaskCreateModal.css';
 
 interface TaskCreateModalProps {

@@ -1,9 +1,9 @@
 import type { CalendarEvent } from '../../types';
 import {
-  CATEGORY_COLOR,
   EVENT_TYPE_ICON,
   WEEKDAY_LABELS,
   allDayEventsInRange,
+  eventColor,
   eventsOnDate,
   formatHourLabel,
   formatWeekRange,
@@ -22,6 +22,7 @@ interface WeekViewProps {
   onPrev: () => void;
   onNext: () => void;
   onSelectDay: (date: Date) => void;
+  onSelectEvent: (event: CalendarEvent) => void;
 }
 
 const HOUR_START = 8;
@@ -35,7 +36,7 @@ function offsetForTime(time: string) {
   return Math.max(0, (minutes / 60) * HOUR_HEIGHT);
 }
 
-export function WeekView({ selectedDate, today, events, onPrev, onNext, onSelectDay }: WeekViewProps) {
+export function WeekView({ selectedDate, today, events, onPrev, onNext, onSelectDay, onSelectEvent }: WeekViewProps) {
   const days = getWeekDays(selectedDate);
   const rangeStart = days[0];
   const rangeEnd = days[days.length - 1];
@@ -78,7 +79,11 @@ export function WeekView({ selectedDate, today, events, onPrev, onNext, onSelect
                 <span
                   key={e.id}
                   className="week-view__chip"
-                  style={{ background: CATEGORY_COLOR[e.category] }}
+                  style={{ background: eventColor(e) }}
+                  onClick={(ev) => {
+                    ev.stopPropagation();
+                    onSelectEvent(e);
+                  }}
                 >
                   {EVENT_TYPE_ICON[e.type]} {e.title}
                 </span>
@@ -111,11 +116,20 @@ export function WeekView({ selectedDate, today, events, onPrev, onNext, onSelect
                 if (!e.startTime) return null;
                 const top = offsetForTime(e.startTime);
                 const height = e.endTime ? Math.max(20, offsetForTime(e.endTime) - top) : 24;
+                const isRealEvent = !e.id.startsWith('task-');
                 return (
                   <div
                     key={e.id}
                     className="week-view__event"
-                    style={{ top, height, background: CATEGORY_COLOR[e.category] }}
+                    style={{ top, height, background: eventColor(e) }}
+                    onClick={
+                      isRealEvent
+                        ? (ev) => {
+                            ev.stopPropagation();
+                            onSelectEvent(e);
+                          }
+                        : undefined
+                    }
                   >
                     {EVENT_TYPE_ICON[e.type]} {e.title}
                   </div>

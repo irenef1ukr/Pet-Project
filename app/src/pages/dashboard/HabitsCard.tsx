@@ -1,8 +1,14 @@
-import type { Habit } from '../../types';
 import './HabitsCard.css';
 
+export interface HabitView {
+  id: string;
+  label: string;
+  done: boolean;
+  streakCount: number;
+}
+
 interface HabitsCardProps {
-  habits: Habit[];
+  habits: HabitView[];
   onToggle: (id: string) => void;
   onNavigate: () => void;
   onAdd: () => void;
@@ -43,6 +49,7 @@ export function HabitsCard({ habits, onToggle, onNavigate, onAdd }: HabitsCardPr
               >
                 {h.done && <span>✓</span>}
                 {h.label}
+                {h.streakCount > 0 && <span className="habit-chip__streak">{h.streakCount}d</span>}
               </span>
             ))}
           </div>
