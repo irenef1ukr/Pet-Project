@@ -1,0 +1,14 @@
+.task-detail {
+  max-width: 600px;
+}
+
+.task-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.task-detail__description {
+  min-height: 140px;
+  resize: none;
+}

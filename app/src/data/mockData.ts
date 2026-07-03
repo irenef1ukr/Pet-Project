@@ -1,10 +1,14 @@
 import type {
+  CalendarEvent,
   DashboardEvent,
   DashboardTask,
+  DayMeta,
   FinanceSummary,
   Goal,
   Habit,
   JournalEntry,
+  TodoCategory,
+  TodoTask,
 } from '../types';
 
 export const NOW_TIME = '12:40';
@@ -56,3 +60,185 @@ export const latestJournalEntry: JournalEntry | null = {
   date: 'Jun 29',
   preview: 'Today was calm, finished the report draft and went for a walk…',
 };
+
+export const CALENDAR_TODAY = new Date(2026, 6, 1);
+
+export const calendarEvents: CalendarEvent[] = [
+  {
+    id: 'sync',
+    title: 'Team sync',
+    date: '2026-07-01',
+    startTime: '09:00',
+    endTime: '10:00',
+    type: 'event',
+    category: 'work',
+  },
+  {
+    id: 'piano-1',
+    title: 'Piano lesson',
+    date: '2026-07-01',
+    startTime: '11:30',
+    endTime: '12:15',
+    type: 'lesson',
+    category: 'lesson',
+    recurring: true,
+  },
+  {
+    id: 'dentist',
+    title: 'Dentist',
+    date: '2026-07-01',
+    startTime: '13:00',
+    endTime: '14:00',
+    type: 'event',
+    category: 'personal',
+  },
+  {
+    id: 'mom',
+    title: 'Call with mom',
+    date: '2026-07-01',
+    startTime: '18:00',
+    endTime: '18:30',
+    type: 'event',
+    category: 'personal',
+  },
+  {
+    id: 'report',
+    title: 'Finish report',
+    date: '2026-07-01',
+    type: 'task',
+    category: 'task',
+  },
+  {
+    id: 'proposal',
+    title: 'Draft proposal',
+    date: '2026-07-02',
+    type: 'task',
+    category: 'task',
+  },
+  {
+    id: 'piano-2',
+    title: 'Piano lesson',
+    date: '2026-07-03',
+    startTime: '11:30',
+    endTime: '12:15',
+    type: 'lesson',
+    category: 'lesson',
+    recurring: true,
+  },
+  {
+    id: 'trip',
+    title: 'Trip to coast',
+    date: '2026-07-06',
+    endDate: '2026-07-08',
+    allDay: true,
+    type: 'event',
+    category: 'personal',
+  },
+  {
+    id: 'piano-3',
+    title: 'Piano lesson',
+    date: '2026-07-10',
+    startTime: '11:30',
+    endTime: '12:15',
+    type: 'lesson',
+    category: 'lesson',
+    recurring: true,
+  },
+  {
+    id: 'report-due',
+    title: 'Report due',
+    date: '2026-07-09',
+    type: 'task',
+    category: 'task',
+  },
+  {
+    id: 'grocery',
+    title: 'Grocery shopping',
+    date: '2026-07-15',
+    type: 'task',
+    category: 'task',
+  },
+];
+
+export const dayMeta: Record<string, DayMeta> = {
+  '2026-07-01': { spend: 42, mood: '🙂', weather: '☀️' },
+  '2026-07-02': { spend: 18 },
+  '2026-07-03': { mood: '😐', weather: '🌧️' },
+};
+
+export const TODO_TODAY = '2026-07-01';
+
+export const todoCategories: TodoCategory[] = [
+  { id: 'work', name: 'Work' },
+  { id: 'personal', name: 'Personal' },
+  { id: 'health', name: 'Health' },
+];
+
+export const todoTasks: TodoTask[] = [
+  {
+    id: 't1',
+    title: 'Finish project proposal',
+    categoryId: 'work',
+    priority: 'High',
+    dueDate: '2026-07-01',
+    status: 'in_progress',
+    recurring: 'none',
+    subtasks: [{ id: 's1', title: 'Write intro', completed: false }],
+    description: '',
+  },
+  {
+    id: 't2',
+    title: 'Schedule meeting with client',
+    categoryId: 'work',
+    priority: 'High',
+    dueDate: '2026-06-29',
+    status: 'not_started',
+    recurring: 'none',
+    subtasks: [],
+    description: '',
+  },
+  {
+    id: 't3',
+    title: 'Review team feedback',
+    categoryId: 'personal',
+    priority: 'Medium',
+    dueDate: '2026-07-01',
+    status: 'complete',
+    recurring: 'none',
+    subtasks: [{ id: 's2', title: 'Check email', completed: true }],
+    description: '',
+  },
+  {
+    id: 't4',
+    title: 'Update documentation',
+    categoryId: 'work',
+    priority: 'Low',
+    dueDate: '2026-07-05',
+    status: 'not_started',
+    recurring: 'none',
+    subtasks: [],
+    description: '',
+  },
+  {
+    id: 't5',
+    title: 'Buy groceries',
+    categoryId: 'personal',
+    priority: 'Medium',
+    dueDate: '2026-07-03',
+    status: 'in_progress',
+    recurring: 'weekly',
+    subtasks: [],
+    description: '',
+  },
+  {
+    id: 't6',
+    title: 'Gym session',
+    categoryId: 'health',
+    priority: 'High',
+    dueDate: '2026-07-03',
+    status: 'complete',
+    recurring: 'daily',
+    subtasks: [],
+    description: '',
+  },
+];

@@ -1,0 +1,27 @@
+.todo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.todo-section__title {
+  font: 700 20px var(--font-display);
+  color: var(--color-text-primary);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.todo-section__card {
+  background: var(--color-card);
+  border-radius: 12px;
+  border: 1.5px solid oklch(0.92 0.02 240);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.todo-section__empty {
+  padding: 36px;
+  text-align: center;
+  color: oklch(0.6 0.03 240);
+  font: 600 14px var(--font-body);
+}
