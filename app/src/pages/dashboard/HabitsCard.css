@@ -32,6 +32,11 @@
   border-color: oklch(0.62 0.13 165);
 }
 
+.habit-chip__streak {
+  font: 700 11px var(--font-body);
+  opacity: 0.85;
+}
+
 .habits-hint {
   font: 600 11.5px var(--font-body);
   color: var(--color-text-muted);

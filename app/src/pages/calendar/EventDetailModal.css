@@ -1,0 +1,42 @@
+.event-detail {
+  max-width: 420px;
+}
+
+.event-detail .modal-card__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.event-detail__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 13px;
+  flex: none;
+}
+
+.event-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.event-detail__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font: 600 14px var(--font-body);
+  color: var(--color-text-primary);
+}
+
+.event-detail__label {
+  font: 700 11px var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--color-text-muted);
+}

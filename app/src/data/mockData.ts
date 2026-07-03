@@ -1,3 +1,4 @@
+import { dayOfYear, toISODate } from '../lib/dateUtils';
 import type {
   CalendarEvent,
   DayMeta,
@@ -11,21 +12,41 @@ import type {
 
 export const NOW_TIME = '12:40';
 
-export const TODAY_ISO = '2026-07-01';
-export const TODAY_DATE = new Date(2026, 6, 1);
+export function getTodayDate(): Date {
+  return new Date();
+}
+
+export function getTodayISO(): string {
+  return toISODate(getTodayDate());
+}
 
 export const userName = 'Iryna';
-export const greetingDate = 'Monday, July 1';
-export const greetingQuote = 'small steps every day';
+
+export const QUOTES = [
+  'small steps every day',
+  'progress, not perfection',
+  'done is better than perfect',
+  'one task at a time',
+  'consistency beats intensity',
+  'you don’t have to see the whole staircase',
+  'a little bit further than you think you can',
+  'today is a good day to try',
+  'discipline is choosing what you want most',
+  'rest is productive too',
+];
+
+export function getDailyQuote(date: Date): string {
+  return QUOTES[dayOfYear(date) % QUOTES.length];
+}
 
 export const moodOptions = ['🙂', '😁', '😐', '🙁', '😢'];
 export const weatherOptions = ['☀️', '⛅', '🌧️', '❄️'];
 
 export const initialHabits: Habit[] = [
-  { id: 'read', label: 'read', done: true },
-  { id: 'workout', label: 'workout', done: false },
-  { id: 'water', label: 'water', done: true },
-  { id: 'meditate', label: 'meditate', done: false },
+  { id: 'read', label: 'read', streakCount: 5, lastCompletedDate: getTodayISO() },
+  { id: 'workout', label: 'workout', streakCount: 0, lastCompletedDate: null },
+  { id: 'water', label: 'water', streakCount: 3, lastCompletedDate: getTodayISO() },
+  { id: 'meditate', label: 'meditate', streakCount: 0, lastCompletedDate: null },
 ];
 
 export const allGoals: Goal[] = [
@@ -57,6 +78,7 @@ export const calendarEvents: CalendarEvent[] = [
     endTime: '10:00',
     type: 'event',
     category: 'work',
+    recurring: 'none',
   },
   {
     id: 'piano-1',
@@ -66,7 +88,7 @@ export const calendarEvents: CalendarEvent[] = [
     endTime: '12:15',
     type: 'lesson',
     category: 'lesson',
-    recurring: true,
+    recurring: 'weekly',
   },
   {
     id: 'dentist',
@@ -76,6 +98,7 @@ export const calendarEvents: CalendarEvent[] = [
     endTime: '14:00',
     type: 'event',
     category: 'personal',
+    recurring: 'none',
   },
   {
     id: 'mom',
@@ -85,6 +108,7 @@ export const calendarEvents: CalendarEvent[] = [
     endTime: '18:30',
     type: 'event',
     category: 'personal',
+    recurring: 'none',
   },
   {
     id: 'piano-2',
@@ -94,7 +118,7 @@ export const calendarEvents: CalendarEvent[] = [
     endTime: '12:15',
     type: 'lesson',
     category: 'lesson',
-    recurring: true,
+    recurring: 'weekly',
   },
   {
     id: 'trip',
@@ -104,6 +128,7 @@ export const calendarEvents: CalendarEvent[] = [
     allDay: true,
     type: 'event',
     category: 'personal',
+    recurring: 'none',
   },
   {
     id: 'piano-3',
@@ -113,7 +138,7 @@ export const calendarEvents: CalendarEvent[] = [
     endTime: '12:15',
     type: 'lesson',
     category: 'lesson',
-    recurring: true,
+    recurring: 'weekly',
   },
 ];
 

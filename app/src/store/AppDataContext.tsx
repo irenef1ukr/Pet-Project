@@ -4,6 +4,7 @@ import { generateId, nextStatus } from '../lib/todoUtils';
 import { useLocalStorageState } from '../lib/useLocalStorageState';
 import type {
   CalendarEvent,
+  CalendarEventDraft,
   TaskCreateDraft,
   TaskEditPatch,
   TodoCategory,
@@ -26,6 +27,9 @@ interface AppDataContextValue {
   addCategory: (name: string) => void;
   renameCategory: (id: string, name: string) => void;
   deleteCategory: (id: string) => void;
+  createEvent: (draft: CalendarEventDraft) => void;
+  updateEvent: (id: string, draft: CalendarEventDraft) => void;
+  deleteEvent: (id: string) => void;
 }
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
@@ -38,14 +42,31 @@ function taskToCalendarEvent(task: TodoTask): CalendarEvent | null {
     date: task.dueDate,
     type: 'task',
     category: 'task',
-    recurring: task.recurring !== 'none',
+    recurring: task.recurring,
+  };
+}
+
+function draftToEvent(id: string, draft: CalendarEventDraft): CalendarEvent {
+  return {
+    id,
+    title: draft.title,
+    date: draft.date,
+    endDate: draft.allDay ? draft.endDate : undefined,
+    startTime: draft.allDay ? undefined : draft.startTime,
+    endTime: draft.allDay ? undefined : draft.endTime,
+    allDay: draft.allDay,
+    type: draft.type,
+    category: draft.category,
+    recurring: draft.recurring,
+    colorOverride: draft.colorOverride,
+    reminders: draft.reminders,
   };
 }
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useLocalStorageState<TodoTask[]>('hi-app:tasks', todoTasks);
   const [categories, setCategories] = useLocalStorageState<TodoCategory[]>('hi-app:categories', todoCategories);
-  const [events] = useLocalStorageState<CalendarEvent[]>('hi-app:events', calendarEvents);
+  const [events, setEvents] = useLocalStorageState<CalendarEvent[]>('hi-app:events', calendarEvents);
 
   const value = useMemo<AppDataContextValue>(() => {
     const calendarEntries = [...events, ...tasks.map(taskToCalendarEvent).filter((e): e is CalendarEvent => e !== null)];
@@ -82,8 +103,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       addCategory: (name) => setCategories((prev) => [...prev, { id: generateId('cat'), name }]),
       renameCategory: (id, name) => setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
       deleteCategory: (id) => setCategories((prev) => prev.filter((c) => c.id !== id)),
+      createEvent: (draft) => setEvents((prev) => [...prev, draftToEvent(generateId('event'), draft)]),
+      updateEvent: (id, draft) =>
+        setEvents((prev) => prev.map((e) => (e.id === id ? draftToEvent(id, draft) : e))),
+      deleteEvent: (id) => setEvents((prev) => prev.filter((e) => e.id !== id)),
     };
-  }, [tasks, categories, events, setTasks, setCategories]);
+  }, [tasks, categories, events, setTasks, setCategories, setEvents]);
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
 }

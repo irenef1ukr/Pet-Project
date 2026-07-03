@@ -1,5 +1,5 @@
 import type { TodoTask } from '../../types';
-import './modal-shared.css';
+import '../../components/modal-shared.css';
 import './DeleteConfirmModal.css';
 
 interface DeleteConfirmModalProps {

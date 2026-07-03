@@ -3,7 +3,7 @@ import type { TaskEditPatch, TodoCategory, TodoPriority, TodoRecurrence, TodoTas
 import { StatusPicker } from './StatusPicker';
 import { SubtasksEditor } from './SubtasksEditor';
 import { PRIORITY_COLOR, generateId } from '../../lib/todoUtils';
-import './modal-shared.css';
+import '../../components/modal-shared.css';
 import './TaskDetailModal.css';
 
 interface TaskDetailModalProps {

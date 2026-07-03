@@ -30,6 +30,10 @@
   align-items: center;
 }
 
+.upcoming-list__row--clickable {
+  cursor: pointer;
+}
+
 .upcoming-list__badge {
   font: 10px var(--font-body);
   color: #fff;

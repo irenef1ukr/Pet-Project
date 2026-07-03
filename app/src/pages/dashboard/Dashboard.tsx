@@ -1,26 +1,28 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopNav } from '../../components/TopNav';
 import { HeroGreeting } from './HeroGreeting';
 import { TasksCard } from './TasksCard';
 import { EventsCard } from './EventsCard';
 import { GoalsCard } from './GoalsCard';
-import { HabitsCard } from './HabitsCard';
+import { HabitsCard, type HabitView } from './HabitsCard';
 import { FinanceCard } from './FinanceCard';
 import { JournalStrip } from './JournalStrip';
+import { QuickAddTaskModal } from './QuickAddTaskModal';
+import { QuickAddEventModal } from './QuickAddEventModal';
 import {
-  NOW_TIME,
-  TODAY_ISO,
   allGoals,
   financeSummary,
-  greetingDate,
-  greetingQuote,
+  getDailyQuote,
+  getTodayDate,
+  getTodayISO,
   initialHabits,
   latestJournalEntry,
   moodOptions,
   userName,
   weatherOptions,
 } from '../../data/mockData';
+import { addDaysIso, formatFullDate, getGreetingPrefix } from '../../lib/dateUtils';
 import { isMyDay, isOverdue } from '../../lib/todoUtils';
 import { useLocalStorageState } from '../../lib/useLocalStorageState';
 import { useAppData } from '../../store/AppDataContext';
@@ -28,12 +30,12 @@ import type { CalendarEvent, DashboardEvent, DashboardTask, Habit, TodoTask } fr
 import './dashboard-shared.css';
 import './Dashboard.css';
 
-function toDashboardTask(task: TodoTask): DashboardTask {
+function toDashboardTask(task: TodoTask, today: string): DashboardTask {
   return {
     id: task.id,
     label: task.title,
     status: task.status === 'complete' ? 'done' : task.status === 'in_progress' ? 'in_progress' : 'todo',
-    overdue: isOverdue(task, TODAY_ISO),
+    overdue: isOverdue(task, today),
     recurring: task.recurring !== 'none',
   };
 }
@@ -44,41 +46,55 @@ function toDashboardEvent(event: CalendarEvent): DashboardEvent {
     id: event.id,
     time: `${Number(hour)}:${minute}`,
     title: event.title,
-    recurring: event.recurring,
+    recurring: event.recurring !== 'none',
   };
 }
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const { tasks: todoTasks, events, cycleTaskStatus } = useAppData();
+  const { tasks: todoTasks, events, cycleTaskStatus, createTask, createEvent } = useAppData();
+
+  const today = getTodayDate();
+  const todayIso = getTodayISO();
 
   const [habits, setHabits] = useLocalStorageState<Habit[]>('hi-app:habits', initialHabits);
-  const [moodIndex, setMoodIndex] = useLocalStorageState('hi-app:mood-index', 0);
-  const [weatherIndex, setWeatherIndex] = useLocalStorageState('hi-app:weather-index', 0);
-  const [loggedToday, setLoggedToday] = useLocalStorageState('hi-app:logged-today', false);
+  const [moodEmoji, setMoodEmoji] = useLocalStorageState<string | null>('hi-app:mood', null);
+  const [weatherEmoji, setWeatherEmoji] = useLocalStorageState<string | null>('hi-app:weather', null);
+  const [quickAddModal, setQuickAddModal] = useState<'none' | 'task' | 'event'>('none');
 
   const tasks = useMemo(
-    () => todoTasks.filter((t) => isMyDay(t, TODAY_ISO)).map(toDashboardTask),
-    [todoTasks],
+    () => todoTasks.filter((t) => isMyDay(t, todayIso)).map((t) => toDashboardTask(t, todayIso)),
+    [todoTasks, todayIso],
   );
 
   const todaysEvents = useMemo(
-    () => events.filter((e) => !e.allDay && e.date === TODAY_ISO).map(toDashboardEvent),
-    [events],
+    () => events.filter((e) => !e.allDay && e.date === todayIso).map(toDashboardEvent),
+    [events, todayIso],
+  );
+
+  const habitViews = useMemo<HabitView[]>(
+    () =>
+      habits.map((h) => ({
+        id: h.id,
+        label: h.label,
+        done: h.lastCompletedDate === todayIso,
+        streakCount: h.streakCount,
+      })),
+    [habits, todayIso],
   );
 
   const toggleHabit = (id: string) => {
-    setHabits((prev) => prev.map((h) => (h.id === id ? { ...h, done: !h.done } : h)));
-  };
-
-  const cycleMood = () => {
-    setMoodIndex((i) => (i + 1) % moodOptions.length);
-    setLoggedToday(true);
-  };
-
-  const cycleWeather = () => {
-    setWeatherIndex((i) => (i + 1) % weatherOptions.length);
-    setLoggedToday(true);
+    setHabits((prev) =>
+      prev.map((h) => {
+        if (h.id !== id) return h;
+        const doneToday = h.lastCompletedDate === todayIso;
+        if (doneToday) {
+          return { ...h, lastCompletedDate: null, streakCount: Math.max(0, h.streakCount - 1) };
+        }
+        const continuing = h.lastCompletedDate === addDaysIso(todayIso, -1);
+        return { ...h, lastCompletedDate: todayIso, streakCount: continuing ? h.streakCount + 1 : 1 };
+      }),
+    );
   };
 
   return (
@@ -92,13 +108,15 @@ export function Dashboard() {
 
         <HeroGreeting
           userName={userName}
-          date={greetingDate}
-          quote={greetingQuote}
-          moodEmoji={moodOptions[moodIndex]}
-          weatherEmoji={weatherOptions[weatherIndex]}
-          loggedToday={loggedToday}
-          onCycleMood={cycleMood}
-          onCycleWeather={cycleWeather}
+          greeting={getGreetingPrefix(today)}
+          date={formatFullDate(today)}
+          quote={getDailyQuote(today)}
+          moodEmoji={moodEmoji}
+          weatherEmoji={weatherEmoji}
+          moodOptions={moodOptions}
+          weatherOptions={weatherOptions}
+          onSelectMood={setMoodEmoji}
+          onSelectWeather={setWeatherEmoji}
         />
 
         <span className="zone-label">Today</span>
@@ -107,13 +125,13 @@ export function Dashboard() {
             tasks={tasks}
             onCycleStatus={cycleTaskStatus}
             onNavigate={() => navigate('/todo')}
-            onAdd={() => navigate('/todo')}
+            onAdd={() => setQuickAddModal('task')}
           />
           <EventsCard
             events={todaysEvents}
-            nowTime={NOW_TIME}
+            nowTime={`${today.getHours()}:${today.getMinutes().toString().padStart(2, '0')}`}
             onNavigate={() => navigate('/calendar')}
-            onAdd={() => navigate('/calendar')}
+            onAdd={() => setQuickAddModal('event')}
           />
         </div>
 
@@ -125,7 +143,7 @@ export function Dashboard() {
             onAdd={() => navigate('/goals')}
           />
           <HabitsCard
-            habits={habits}
+            habits={habitViews}
             onToggle={toggleHabit}
             onNavigate={() => navigate('/habits')}
             onAdd={() => navigate('/habits')}
@@ -139,6 +157,28 @@ export function Dashboard() {
           onAdd={() => navigate('/journal')}
         />
       </div>
+
+      {quickAddModal === 'task' && (
+        <QuickAddTaskModal
+          today={todayIso}
+          onCreate={(draft) => {
+            createTask(draft);
+            setQuickAddModal('none');
+          }}
+          onClose={() => setQuickAddModal('none')}
+        />
+      )}
+
+      {quickAddModal === 'event' && (
+        <QuickAddEventModal
+          today={todayIso}
+          onCreate={(draft) => {
+            createEvent(draft);
+            setQuickAddModal('none');
+          }}
+          onClose={() => setQuickAddModal('none')}
+        />
+      )}
     </div>
   );
 }

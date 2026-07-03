@@ -1,8 +1,8 @@
 import type { CalendarEvent, DayMeta } from '../../types';
 import {
-  CATEGORY_COLOR,
   EVENT_TYPE_ICON,
   allDayEventsInRange,
+  eventColor,
   eventsOnDate,
   formatDayHeading,
   isSameDay,
@@ -19,9 +19,21 @@ interface DayViewProps {
   dayMeta: Record<string, DayMeta>;
   onPrev: () => void;
   onNext: () => void;
+  onSelectEvent: (event: CalendarEvent) => void;
+  onNavigateFinance: () => void;
 }
 
-export function DayView({ selectedDate, today, nowTime, events, dayMeta, onPrev, onNext }: DayViewProps) {
+export function DayView({
+  selectedDate,
+  today,
+  nowTime,
+  events,
+  dayMeta,
+  onPrev,
+  onNext,
+  onSelectEvent,
+  onNavigateFinance,
+}: DayViewProps) {
   const iso = toISODate(selectedDate);
   const meta = dayMeta[iso];
   const allDay = allDayEventsInRange(events, selectedDate, selectedDate);
@@ -48,15 +60,24 @@ export function DayView({ selectedDate, today, nowTime, events, dayMeta, onPrev,
       </div>
 
       <div className="day-view__meta">
-        {meta ? (
+        {meta?.mood || meta?.weather ? (
           <span>
-            {meta.spend !== undefined ? `₴${meta.spend} ` : ''}
             {meta.mood ?? ''}
             {meta.weather ?? ''}
           </span>
         ) : (
-          <span className="day-view__meta--empty">No mood, weather or spend logged</span>
+          <span className="day-view__meta--empty">No mood or weather logged</span>
         )}
+      </div>
+
+      <div className="day-view__section day-view__finance" onClick={onNavigateFinance} role="button" tabIndex={0}>
+        <span className="day-view__section-label">Finance</span>
+        {meta?.spend !== undefined ? (
+          <span className="day-view__finance-amount">Spent today: ₴{meta.spend}</span>
+        ) : (
+          <span className="day-view__empty">No spending logged</span>
+        )}
+        <span className="day-view__finance-link">View in Finance →</span>
       </div>
 
       <div className="day-view__section">
@@ -66,7 +87,12 @@ export function DayView({ selectedDate, today, nowTime, events, dayMeta, onPrev,
         ) : (
           <div className="day-view__allday-list">
             {allDay.map((e) => (
-              <span key={e.id} className="day-view__allday-chip" style={{ background: CATEGORY_COLOR[e.category] }}>
+              <span
+                key={e.id}
+                className="day-view__allday-chip"
+                style={{ background: eventColor(e) }}
+                onClick={() => onSelectEvent(e)}
+              >
                 {EVENT_TYPE_ICON[e.type]} {e.title}
               </span>
             ))}
@@ -82,12 +108,17 @@ export function DayView({ selectedDate, today, nowTime, events, dayMeta, onPrev,
           <div className="day-view__timed-list">
             {timed.map((e) => {
               const isPast = isPastDay || (isToday && !!e.startTime && timeToMinutes(e.startTime) < nowMinutes);
+              const isRealEvent = !e.id.startsWith('task-');
               return (
                 <div key={e.id} className={`day-view__timed-row${isPast ? ' day-view__timed-row--past' : ''}`}>
                   <span className="day-view__timed-time">{e.startTime ?? '—'}</span>
-                  <div className="day-view__timed-bar" style={{ background: CATEGORY_COLOR[e.category] }}>
+                  <div
+                    className="day-view__timed-bar"
+                    style={{ background: eventColor(e) }}
+                    onClick={isRealEvent ? () => onSelectEvent(e) : undefined}
+                  >
                     {EVENT_TYPE_ICON[e.type]} {e.title}
-                    {e.recurring ? ' ↻' : ''}
+                    {e.recurring !== 'none' ? ' ↻' : ''}
                   </div>
                 </div>
               );
