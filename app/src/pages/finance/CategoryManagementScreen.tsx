@@ -1,4 +1,4 @@
-import { HUE_SWATCHES } from '../../lib/financeUtils';
+import { CATEGORY_ICONS, HUE_SWATCHES } from '../../lib/financeUtils';
 import type { FinanceCategory, FinanceNewCategoryDraft } from '../../types';
 import './CategoryManagementScreen.css';
 
@@ -36,13 +36,17 @@ export function CategoryManagementScreen({
         <div className="finance-card category-screen__list">
           {categories.map((c) => (
             <div key={c.id} className="category-row">
-              <input
-                type="text"
-                maxLength={2}
+              <select
                 value={c.emoji}
                 onChange={(e) => onEmojiChange(c.id, e.target.value)}
-                className="category-row__emoji"
-              />
+                className="category-row__emoji-select"
+              >
+                {(CATEGORY_ICONS.includes(c.emoji) ? CATEGORY_ICONS : [c.emoji, ...CATEGORY_ICONS]).map((icon) => (
+                  <option key={icon} value={icon}>
+                    {icon}
+                  </option>
+                ))}
+              </select>
               <input
                 type="text"
                 value={c.name}
@@ -58,15 +62,25 @@ export function CategoryManagementScreen({
 
         <div className="finance-card category-screen__add">
           <div className="finance-section-title category-screen__add-title">Add Category</div>
+
+          <div className="category-screen__icons">
+            <span className="category-screen__swatch-label">Icon:</span>
+            {CATEGORY_ICONS.map((icon) => (
+              <button
+                key={icon}
+                type="button"
+                className={`category-icon-btn${newCategory.emoji === icon ? ' category-icon-btn--selected' : ''}`}
+                onClick={() => onNewCategoryChange({ emoji: icon })}
+              >
+                {icon}
+              </button>
+            ))}
+          </div>
+
           <div className="category-screen__add-row">
-            <input
-              type="text"
-              maxLength={2}
-              placeholder="🙂"
-              value={newCategory.emoji}
-              onChange={(e) => onNewCategoryChange({ emoji: e.target.value })}
-              className="category-row__emoji"
-            />
+            <div className="category-screen__preview" aria-hidden="true">
+              {newCategory.emoji}
+            </div>
             <input
               type="text"
               placeholder="Category name"
@@ -79,7 +93,7 @@ export function CategoryManagementScreen({
             </button>
           </div>
           <div className="category-screen__swatches">
-            <span className="category-screen__swatch-label">Swatch:</span>
+            <span className="category-screen__swatch-label">Color:</span>
             {HUE_SWATCHES.map((hue) => (
               <div
                 key={hue}
