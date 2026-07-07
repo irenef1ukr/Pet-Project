@@ -9,6 +9,7 @@ import {
   formatShortDate,
   getCategory,
   getPeriodRange,
+  inRange,
   last6MonthTotals,
   sumTotals,
   totalsByCategory,
@@ -78,6 +79,7 @@ export function Finance() {
   const changeFilter = (f: FinancePeriod) => {
     setFilter(f);
     setPeriodOffset(0);
+    setPage(0);
   };
 
   const periodRange = getPeriodRange(filter, periodOffset, today);
@@ -126,10 +128,11 @@ export function Finance() {
 
   const filteredSortedTransactions = useMemo(() => {
     const indexed = financeTransactions.map((t, i) => ({ t, i }));
-    const filtered = txCategoryFilter === 'all' ? indexed : indexed.filter(({ t }) => t.categoryId === txCategoryFilter);
+    let filtered = indexed.filter(({ t }) => inRange(t.date, periodRange));
+    if (txCategoryFilter !== 'all') filtered = filtered.filter(({ t }) => t.categoryId === txCategoryFilter);
     filtered.sort((a, b) => (a.t.date !== b.t.date ? (a.t.date < b.t.date ? 1 : -1) : b.i - a.i));
     return filtered.map(({ t }) => t);
-  }, [financeTransactions, txCategoryFilter]);
+  }, [financeTransactions, txCategoryFilter, periodRange]);
 
   const totalPages = Math.max(1, Math.ceil(filteredSortedTransactions.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages - 1);
@@ -221,8 +224,14 @@ export function Finance() {
               onFilterChange={changeFilter}
               periodLabel={formatPeriodLabel(filter, periodRange)}
               canGoNext={periodOffset < 0}
-              onPrev={() => setPeriodOffset((o) => o - 1)}
-              onNext={() => setPeriodOffset((o) => Math.min(0, o + 1))}
+              onPrev={() => {
+                setPeriodOffset((o) => o - 1);
+                setPage(0);
+              }}
+              onNext={() => {
+                setPeriodOffset((o) => Math.min(0, o + 1));
+                setPage(0);
+              }}
             />
 
             <div className="finance-summary-grid">

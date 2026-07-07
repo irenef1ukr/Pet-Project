@@ -4,6 +4,12 @@ import type { FinanceCategory, FinancePeriod, FinanceSummary, FinanceTransaction
 export const HUE_SWATCHES = [230, 60, 25, 165, 300, 340, 100, 200, 20, 280];
 export const OTHER_CATEGORY: FinanceCategory = { id: 'other', name: 'Other', emoji: '📦', hue: 240, budget: 0 };
 
+export const CATEGORY_ICONS = [
+  '🍔', '🚗', '🎬', '💊', '📦', '🏠', '💡', '🎓', '✈️', '🎁',
+  '🐾', '💰', '📱', '🎮', '📚', '🛒', '☕', '🍺', '🏋️', '🧾',
+  '👕', '🎵', '🖥️', '🚿', '🌿', '🐶', '🧸', '🎨', '🧴', '🚌',
+];
+
 export interface PeriodRange {
   start: string;
   end: string;
