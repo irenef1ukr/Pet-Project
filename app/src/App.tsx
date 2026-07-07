@@ -3,12 +3,13 @@ import { Dashboard } from './pages/dashboard/Dashboard';
 import { Calendar } from './pages/calendar/Calendar';
 import { Todo } from './pages/todo/Todo';
 import { Finance } from './pages/finance/Finance';
+import { Journal } from './pages/journal/Journal';
 import { StubPage } from './pages/StubPage';
 import { NAV_ITEMS } from './components/navConfig';
 import { ReminderBanner } from './components/ReminderBanner';
 import { AppDataProvider } from './store/AppDataContext';
 
-const BUILT_PATHS = ['/', '/calendar', '/todo', '/finance'];
+const BUILT_PATHS = ['/', '/calendar', '/todo', '/finance', '/journal'];
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/todo" element={<Todo />} />
         <Route path="/finance" element={<Finance />} />
+        <Route path="/journal" element={<Journal />} />
         {NAV_ITEMS.filter((item) => !BUILT_PATHS.includes(item.path)).map((item) => (
           <Route
             key={item.path}

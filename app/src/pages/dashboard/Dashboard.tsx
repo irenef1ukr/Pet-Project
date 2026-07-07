@@ -11,12 +11,10 @@ import { JournalStrip } from './JournalStrip';
 import { QuickAddTaskModal } from './QuickAddTaskModal';
 import { QuickAddEventModal } from './QuickAddEventModal';
 import {
-  allGoals,
   getDailyQuote,
   getTodayDate,
   getTodayISO,
   initialHabits,
-  latestJournalEntry,
   moodOptions,
   userName,
   weatherOptions,
@@ -52,7 +50,16 @@ function toDashboardEvent(event: CalendarEvent): DashboardEvent {
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const { tasks: todoTasks, events, financeTransactions, cycleTaskStatus, createTask, createEvent } = useAppData();
+  const {
+    tasks: todoTasks,
+    events,
+    financeTransactions,
+    goals,
+    journalEntries,
+    cycleTaskStatus,
+    createTask,
+    createEvent,
+  } = useAppData();
 
   const today = getTodayDate();
   const todayIso = getTodayISO();
@@ -75,6 +82,14 @@ export function Dashboard() {
   const todaysEvents = useMemo(
     () => events.filter((e) => !e.allDay && e.date === todayIso).map(toDashboardEvent),
     [events, todayIso],
+  );
+
+  const latestJournalEntry = useMemo(
+    () =>
+      journalEntries.length === 0
+        ? null
+        : [...journalEntries].sort((a, b) => (a.date < b.date ? 1 : -1))[0],
+    [journalEntries],
   );
 
   const habitViews = useMemo<HabitView[]>(
@@ -143,7 +158,7 @@ export function Dashboard() {
         <span className="zone-label">Progress</span>
         <div className="dashboard-grid dashboard-grid--progress">
           <GoalsCard
-            goals={allGoals}
+            goals={goals}
             onNavigate={() => navigate('/goals')}
             onAdd={() => navigate('/goals')}
           />

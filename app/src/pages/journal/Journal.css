@@ -1,0 +1,200 @@
+.journal-main {
+  flex: 1;
+  padding: 36px 52px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.journal-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.journal-stat-card {
+  background: var(--color-card);
+  border-radius: 18px;
+  padding: 20px 24px;
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.journal-stat-card__label {
+  font: 800 11.5px var(--font-display);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.journal-stat-card__value {
+  font: 700 26px var(--font-display);
+  color: oklch(0.42 0.12 300);
+}
+
+.journal-stat-card__value--small {
+  font: 700 16px var(--font-body);
+  color: var(--color-text-primary);
+}
+
+.journal-welcome-banner {
+  background: oklch(0.91 0.045 300);
+  border-radius: 18px;
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.journal-welcome-banner__title {
+  font: 800 14px var(--font-display);
+  color: oklch(0.42 0.12 300);
+}
+
+.journal-welcome-banner__body {
+  font: 600 13px var(--font-body);
+  color: oklch(0.35 0.08 300);
+}
+
+.journal-on-this-day {
+  background: oklch(0.95 0.03 300);
+  border-radius: 18px;
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journal-on-this-day__label {
+  font: 800 11.5px var(--font-display);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: oklch(0.42 0.12 300);
+}
+
+.journal-on-this-day__row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.journal-on-this-day__year {
+  font: 700 12.5px var(--font-display);
+  color: oklch(0.42 0.12 300);
+}
+
+.journal-on-this-day__title {
+  font: 700 13.5px var(--font-body);
+  color: oklch(0.3 0.06 300);
+}
+
+.journal-on-this-day__preview {
+  font: 600 12.5px var(--font-body);
+  color: oklch(0.42 0.08 300);
+}
+
+.journal-entries-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.journal-entries-header__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.journal-entries-header__label {
+  font: 800 12px var(--font-display);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.journal-filter-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.journal-filter-chip {
+  padding: 6px 14px;
+  font: 700 11.5px var(--font-display);
+  border-radius: 999px;
+  background: oklch(0.91 0.045 300 / 0.5);
+  color: oklch(0.42 0.12 300);
+  cursor: pointer;
+}
+
+.journal-filter-chip--active {
+  background: oklch(0.42 0.12 300);
+  color: #fff;
+}
+
+.journal-date-range {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.journal-date-range__input {
+  padding: 6px 8px;
+  font: 700 11.5px var(--font-body);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.journal-date-range__sep {
+  color: var(--color-text-muted-2);
+  font: 700 11.5px var(--font-body);
+}
+
+.journal-date-range__clear {
+  font: 700 11.5px var(--font-display);
+  color: oklch(0.5 0.18 230);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.journal-view-toggle {
+  display: flex;
+  gap: 4px;
+  background: oklch(0.93 0.02 230);
+  padding: 4px;
+  border-radius: 999px;
+}
+
+.journal-view-toggle__btn {
+  padding: 6px 16px;
+  font: 700 12px var(--font-display);
+  border-radius: 999px;
+  color: oklch(0.4 0.03 230);
+  cursor: pointer;
+}
+
+.journal-view-toggle__btn--active {
+  background: var(--color-text-primary);
+  color: #fff;
+}
+
+.journal-empty {
+  background: var(--color-card);
+  border-radius: 18px;
+  padding: 40px;
+  text-align: center;
+  font: 600 13px var(--font-body);
+  color: var(--color-text-muted-2);
+  box-shadow: var(--color-card-shadow);
+}
