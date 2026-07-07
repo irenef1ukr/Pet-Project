@@ -34,6 +34,42 @@ export interface FinanceSummary {
   spentYesterday: number;
 }
 
+export type FinancePeriod = 'day' | 'week' | 'month';
+
+export interface FinanceCategory {
+  id: string;
+  name: string;
+  emoji: string;
+  hue: number;
+  budget: number;
+}
+
+export interface FinanceTransaction {
+  id: string;
+  date: string;
+  desc: string;
+  categoryId: string;
+  amount: number;
+}
+
+export interface FinanceTransactionDraft {
+  date: string;
+  desc: string;
+  categoryId: string;
+  amount: string;
+}
+
+export interface FinanceBudgetDraft {
+  categoryId: string;
+  amount: string;
+}
+
+export interface FinanceNewCategoryDraft {
+  emoji: string;
+  name: string;
+  hue: number;
+}
+
 export interface JournalEntry {
   id: string;
   date: string;

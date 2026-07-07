@@ -1,10 +1,12 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
-import { calendarEvents, todoCategories, todoTasks } from '../data/mockData';
+import { calendarEvents, financeCategories, financeTransactions, todoCategories, todoTasks } from '../data/mockData';
 import { generateId, nextStatus } from '../lib/todoUtils';
 import { useLocalStorageState } from '../lib/useLocalStorageState';
 import type {
   CalendarEvent,
   CalendarEventDraft,
+  FinanceCategory,
+  FinanceTransaction,
   TaskCreateDraft,
   TaskEditPatch,
   TodoCategory,
@@ -30,6 +32,16 @@ interface AppDataContextValue {
   createEvent: (draft: CalendarEventDraft) => void;
   updateEvent: (id: string, draft: CalendarEventDraft) => void;
   deleteEvent: (id: string) => void;
+  financeCategories: FinanceCategory[];
+  financeTransactions: FinanceTransaction[];
+  addTransaction: (tx: Omit<FinanceTransaction, 'id'>) => void;
+  updateTransaction: (id: string, patch: Omit<FinanceTransaction, 'id'>) => void;
+  deleteTransaction: (id: string) => void;
+  addFinanceCategory: (category: Omit<FinanceCategory, 'id'>) => void;
+  renameFinanceCategory: (id: string, name: string) => void;
+  changeFinanceCategoryEmoji: (id: string, emoji: string) => void;
+  deleteFinanceCategory: (id: string) => void;
+  setCategoryBudget: (id: string, budget: number) => void;
 }
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
@@ -67,6 +79,14 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useLocalStorageState<TodoTask[]>('hi-app:tasks', todoTasks);
   const [categories, setCategories] = useLocalStorageState<TodoCategory[]>('hi-app:categories', todoCategories);
   const [events, setEvents] = useLocalStorageState<CalendarEvent[]>('hi-app:events', calendarEvents);
+  const [financeCats, setFinanceCats] = useLocalStorageState<FinanceCategory[]>(
+    'hi-app:finance-categories',
+    financeCategories,
+  );
+  const [financeTxs, setFinanceTxs] = useLocalStorageState<FinanceTransaction[]>(
+    'hi-app:finance-transactions',
+    financeTransactions,
+  );
 
   const value = useMemo<AppDataContextValue>(() => {
     const calendarEntries = [...events, ...tasks.map(taskToCalendarEvent).filter((e): e is CalendarEvent => e !== null)];
@@ -107,8 +127,23 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       updateEvent: (id, draft) =>
         setEvents((prev) => prev.map((e) => (e.id === id ? draftToEvent(id, draft) : e))),
       deleteEvent: (id) => setEvents((prev) => prev.filter((e) => e.id !== id)),
+      financeCategories: financeCats,
+      financeTransactions: financeTxs,
+      addTransaction: (tx) => setFinanceTxs((prev) => [...prev, { ...tx, id: generateId('tx') }]),
+      updateTransaction: (id, patch) =>
+        setFinanceTxs((prev) => prev.map((t) => (t.id === id ? { ...patch, id } : t))),
+      deleteTransaction: (id) => setFinanceTxs((prev) => prev.filter((t) => t.id !== id)),
+      addFinanceCategory: (category) =>
+        setFinanceCats((prev) => [...prev, { ...category, id: generateId('fcat') }]),
+      renameFinanceCategory: (id, name) =>
+        setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
+      changeFinanceCategoryEmoji: (id, emoji) =>
+        setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, emoji } : c))),
+      deleteFinanceCategory: (id) => setFinanceCats((prev) => prev.filter((c) => c.id !== id)),
+      setCategoryBudget: (id, budget) =>
+        setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, budget } : c))),
     };
-  }, [tasks, categories, events, setTasks, setCategories, setEvents]);
+  }, [tasks, categories, events, financeCats, financeTxs, setTasks, setCategories, setEvents, setFinanceCats, setFinanceTxs]);
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
 }

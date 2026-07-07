@@ -1,0 +1,26 @@
+.stat-cards {
+  display: flex;
+  gap: 14px;
+}
+
+.stat-card {
+  flex: 1;
+  padding: 18px 22px;
+}
+
+.stat-card__label {
+  font: 800 11.5px var(--font-display);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.stat-card__value {
+  font: 700 24px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.stat-card__value--accent {
+  color: oklch(0.4 0.16 230);
+}

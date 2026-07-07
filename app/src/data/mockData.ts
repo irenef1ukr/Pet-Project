@@ -1,8 +1,9 @@
-import { dayOfYear, toISODate } from '../lib/dateUtils';
+import { addDaysIso, dayOfYear, toISODate } from '../lib/dateUtils';
 import type {
   CalendarEvent,
   DayMeta,
-  FinanceSummary,
+  FinanceCategory,
+  FinanceTransaction,
   Goal,
   Habit,
   JournalEntry,
@@ -58,10 +59,30 @@ export const allGoals: Goal[] = [
   { id: 'guitar', label: 'Learn guitar basics', percent: 10, active: true },
 ];
 
-export const financeSummary: FinanceSummary = {
-  spentThisMonth: 860,
-  spentYesterday: 42,
-};
+export const financeCategories: FinanceCategory[] = [
+  { id: 'food', name: 'Food', emoji: '🍔', hue: 230, budget: 800 },
+  { id: 'transport', name: 'Transport', emoji: '🚗', hue: 60, budget: 300 },
+  { id: 'entertainment', name: 'Entertainment', emoji: '🎬', hue: 25, budget: 250 },
+  { id: 'health', name: 'Health', emoji: '💊', hue: 165, budget: 200 },
+  { id: 'other', name: 'Other', emoji: '📦', hue: 300, budget: 150 },
+];
+
+const today0 = getTodayISO();
+
+export const financeTransactions: FinanceTransaction[] = [
+  { id: 'tx1', date: today0, desc: 'Grocery run', categoryId: 'food', amount: 420 },
+  { id: 'tx2', date: today0, desc: 'Bus pass', categoryId: 'transport', amount: 180 },
+  { id: 'tx3', date: addDaysIso(today0, -1), desc: 'Movie tickets', categoryId: 'entertainment', amount: 242 },
+  { id: 'tx4', date: addDaysIso(today0, -1), desc: 'Coffee', categoryId: 'food', amount: 85 },
+  { id: 'tx5', date: addDaysIso(today0, -2), desc: 'Pharmacy', categoryId: 'health', amount: 130 },
+  { id: 'tx6', date: addDaysIso(today0, -3), desc: 'Taxi ride', categoryId: 'transport', amount: 95 },
+  { id: 'tx7', date: addDaysIso(today0, -4), desc: 'Dinner out', categoryId: 'food', amount: 310 },
+  { id: 'tx8', date: addDaysIso(today0, -5), desc: 'Streaming sub', categoryId: 'entertainment', amount: 149 },
+  { id: 'tx9', date: addDaysIso(today0, -6), desc: 'Gym class', categoryId: 'health', amount: 120 },
+  { id: 'tx10', date: addDaysIso(today0, -8), desc: 'Bookstore', categoryId: 'other', amount: 68 },
+  { id: 'tx11', date: addDaysIso(today0, -10), desc: 'Groceries', categoryId: 'food', amount: 275 },
+  { id: 'tx12', date: addDaysIso(today0, -12), desc: 'Fuel', categoryId: 'transport', amount: 210 },
+];
 
 export const latestJournalEntry: JournalEntry | null = {
   id: 'jun29',

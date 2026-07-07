@@ -12,7 +12,6 @@ import { QuickAddTaskModal } from './QuickAddTaskModal';
 import { QuickAddEventModal } from './QuickAddEventModal';
 import {
   allGoals,
-  financeSummary,
   getDailyQuote,
   getTodayDate,
   getTodayISO,
@@ -23,6 +22,7 @@ import {
   weatherOptions,
 } from '../../data/mockData';
 import { addDaysIso, formatFullDate, getGreetingPrefix } from '../../lib/dateUtils';
+import { computeFinanceSummary } from '../../lib/financeUtils';
 import { isMyDay, isOverdue } from '../../lib/todoUtils';
 import { useLocalStorageState } from '../../lib/useLocalStorageState';
 import { useAppData } from '../../store/AppDataContext';
@@ -52,10 +52,15 @@ function toDashboardEvent(event: CalendarEvent): DashboardEvent {
 
 export function Dashboard() {
   const navigate = useNavigate();
-  const { tasks: todoTasks, events, cycleTaskStatus, createTask, createEvent } = useAppData();
+  const { tasks: todoTasks, events, financeTransactions, cycleTaskStatus, createTask, createEvent } = useAppData();
 
   const today = getTodayDate();
   const todayIso = getTodayISO();
+
+  const financeSummary = useMemo(
+    () => computeFinanceSummary(financeTransactions, todayIso),
+    [financeTransactions, todayIso],
+  );
 
   const [habits, setHabits] = useLocalStorageState<Habit[]>('hi-app:habits', initialHabits);
   const [moodEmoji, setMoodEmoji] = useLocalStorageState<string | null>('hi-app:mood', null);
