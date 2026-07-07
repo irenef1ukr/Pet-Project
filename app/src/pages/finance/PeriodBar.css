@@ -1,0 +1,66 @@
+.period-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.period-bar__filters {
+  display: flex;
+  gap: 4px;
+  background: oklch(0.93 0.02 230);
+  padding: 5px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.period-bar__filter {
+  padding: 8px 20px;
+  font: 600 13px var(--font-display);
+  border-radius: 999px;
+  background: none;
+  border: none;
+  color: oklch(0.4 0.03 230);
+  cursor: pointer;
+}
+
+.period-bar__filter--active {
+  background: var(--color-nav);
+  color: var(--color-bg);
+}
+
+.period-bar__nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font: 700 15px var(--font-display);
+  color: var(--color-text-primary);
+  justify-self: center;
+}
+
+.period-bar__label {
+  min-width: 150px;
+  text-align: center;
+}
+
+.period-bar__arrow {
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  font: 700 15px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.period-bar__arrow:hover:not(:disabled) {
+  background: oklch(0.93 0.02 230);
+}
+
+.period-bar__arrow:disabled {
+  cursor: default;
+  opacity: 0.3;
+}

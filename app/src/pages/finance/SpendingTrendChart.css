@@ -1,0 +1,49 @@
+.trend-card {
+  padding: 24px 26px;
+}
+
+.trend-card__title {
+  margin-bottom: 16px;
+}
+
+.trend-card__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  height: 150px;
+  padding: 0 6px;
+}
+
+.trend-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.trend-bar__value {
+  font: 700 11px var(--font-body);
+  color: oklch(0.5 0.03 240);
+}
+
+.trend-bar__fill {
+  width: 100%;
+  background: oklch(0.8 0.06 230);
+  border-radius: 6px 6px 0 0;
+}
+
+.trend-bar__fill--current {
+  background: oklch(0.55 0.18 230);
+}
+
+.trend-bar__label {
+  font: 600 11px var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.trend-bar__label--current {
+  color: var(--color-text-primary);
+}

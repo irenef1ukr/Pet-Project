@@ -1,0 +1,72 @@
+.donut-card {
+  padding: 24px 26px;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.donut-card__ring {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-card__hole {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background: var(--color-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-card__value {
+  font: 700 24px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.donut-card__label {
+  font: 600 11px var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.donut-card__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.donut-card__legend-row {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.donut-card__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.donut-card__legend-name {
+  font: 700 13px var(--font-body);
+  color: var(--color-text-primary);
+}
+
+.donut-card__legend-pct {
+  font: 700 13px var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.donut-card__empty {
+  font: 600 12.5px var(--font-body);
+  color: var(--color-text-muted-2);
+}

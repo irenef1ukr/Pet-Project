@@ -1,0 +1,111 @@
+.category-screen {
+  width: 640px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.category-screen__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-screen__back {
+  cursor: pointer;
+  font: 700 15px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.category-screen__list {
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 40px;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid oklch(0.94 0.01 240);
+}
+
+.category-row:last-child {
+  border-bottom: none;
+}
+
+.category-row__emoji {
+  width: 44px;
+  padding: 8px;
+  font: 16px var(--font-body);
+  text-align: center;
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.category-row__name {
+  padding: 9px 10px;
+  font: 700 13px var(--font-body);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+}
+
+.category-row__delete {
+  text-align: center;
+  color: oklch(0.55 0.2 25);
+  cursor: pointer;
+  font: 600 18px var(--font-body);
+}
+
+.category-screen__add {
+  padding: 18px 20px;
+}
+
+.category-screen__add-title {
+  margin-bottom: 12px;
+}
+
+.category-screen__add-row {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.category-screen__add-btn {
+  padding: 9px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.category-screen__swatches {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.category-screen__swatch-label {
+  font: 600 11.5px var(--font-body);
+  color: var(--color-text-muted-2);
+  margin-right: 4px;
+}
+
+.category-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2.5px solid transparent;
+}
+
+.category-swatch--selected {
+  border-color: var(--color-text-primary);
+}
