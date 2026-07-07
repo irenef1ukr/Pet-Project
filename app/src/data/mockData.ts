@@ -5,6 +5,7 @@ import type {
   FinanceCategory,
   FinanceTransaction,
   Goal,
+  GoalCategory,
   Habit,
   JournalEntry,
   JournalFolder,
@@ -51,13 +52,70 @@ export const initialHabits: Habit[] = [
   { id: 'meditate', label: 'meditate', streakCount: 0, lastCompletedDate: null },
 ];
 
+const today0 = getTodayISO();
+
+export const initialGoalCategories: GoalCategory[] = [
+  { id: 'health', name: 'Health', emoji: '🩺' },
+  { id: 'learning', name: 'Learning', emoji: '📚' },
+  { id: 'finance', name: 'Finance', emoji: '💰' },
+  { id: 'personal', name: 'Personal', emoji: '🌱' },
+];
+
 export const initialGoals: Goal[] = [
-  { id: 'spanish', label: 'Learn Spanish', percent: 60, active: true },
-  { id: 'save', label: 'Save $5,000', percent: 35, active: true },
-  { id: '5k', label: 'Run a 5k', percent: 20, active: true },
-  { id: 'books', label: 'Read 12 books', percent: 80, active: true },
-  { id: 'declutter', label: 'Declutter closet', percent: 45, active: true },
-  { id: 'guitar', label: 'Learn guitar basics', percent: 10, active: true },
+  {
+    id: '5k',
+    title: 'Run a 5k',
+    categoryId: 'health',
+    status: 'in_progress',
+    percent: 20,
+    dueDate: addDaysIso(today0, 60),
+    description: 'Build up from couch to 5k over 10 weeks.',
+  },
+  {
+    id: 'guitar',
+    title: 'Learn guitar basics',
+    categoryId: 'health',
+    status: 'not_started',
+    percent: 10,
+    dueDate: '',
+    description: '',
+  },
+  {
+    id: 'spanish',
+    title: 'Learn Spanish',
+    categoryId: 'learning',
+    status: 'in_progress',
+    percent: 60,
+    dueDate: addDaysIso(today0, 150),
+    description: 'Conversational level before the trip to Barcelona.',
+  },
+  {
+    id: 'books',
+    title: 'Read 12 books',
+    categoryId: 'learning',
+    status: 'in_progress',
+    percent: 80,
+    dueDate: addDaysIso(today0, 180),
+    description: '',
+  },
+  {
+    id: 'save',
+    title: 'Save ₴50,000',
+    categoryId: 'finance',
+    status: 'on_hold',
+    percent: 35,
+    dueDate: addDaysIso(today0, 180),
+    description: 'Paused while covering an unexpected car repair.',
+  },
+  {
+    id: 'declutter',
+    title: 'Declutter closet',
+    categoryId: 'personal',
+    status: 'in_progress',
+    percent: 45,
+    dueDate: '',
+    description: '',
+  },
 ];
 
 export const financeCategories: FinanceCategory[] = [
@@ -67,8 +125,6 @@ export const financeCategories: FinanceCategory[] = [
   { id: 'health', name: 'Health', emoji: '💊', hue: 165, budget: 200 },
   { id: 'other', name: 'Other', emoji: '📦', hue: 300, budget: 150 },
 ];
-
-const today0 = getTodayISO();
 
 export const financeTransactions: FinanceTransaction[] = [
   { id: 'tx1', date: today0, desc: 'Grocery run', categoryId: 'food', amount: 420 },
@@ -243,6 +299,7 @@ export const todoTasks: TodoTask[] = [
     recurring: 'none',
     subtasks: [{ id: 's1', title: 'Write intro', completed: false }],
     description: '',
+    goalId: '',
   },
   {
     id: 't2',
@@ -254,6 +311,7 @@ export const todoTasks: TodoTask[] = [
     recurring: 'none',
     subtasks: [],
     description: '',
+    goalId: '',
   },
   {
     id: 't3',
@@ -265,6 +323,7 @@ export const todoTasks: TodoTask[] = [
     recurring: 'none',
     subtasks: [{ id: 's2', title: 'Check email', completed: true }],
     description: '',
+    goalId: '',
   },
   {
     id: 't4',
@@ -276,6 +335,7 @@ export const todoTasks: TodoTask[] = [
     recurring: 'none',
     subtasks: [],
     description: '',
+    goalId: '',
   },
   {
     id: 't5',
@@ -287,6 +347,7 @@ export const todoTasks: TodoTask[] = [
     recurring: 'weekly',
     subtasks: [],
     description: '',
+    goalId: '',
   },
   {
     id: 't6',
@@ -298,5 +359,30 @@ export const todoTasks: TodoTask[] = [
     recurring: 'daily',
     subtasks: [],
     description: '',
+    goalId: '5k',
+  },
+  {
+    id: 't7',
+    title: 'Buy running shoes',
+    categoryId: 'health',
+    priority: 'Medium',
+    dueDate: addDaysIso(today0, 8),
+    status: 'not_started',
+    recurring: 'none',
+    subtasks: [],
+    description: '',
+    goalId: '5k',
+  },
+  {
+    id: 't8',
+    title: 'Book conversation tutor',
+    categoryId: 'personal',
+    priority: 'Medium',
+    dueDate: addDaysIso(today0, 13),
+    status: 'not_started',
+    recurring: 'none',
+    subtasks: [],
+    description: '',
+    goalId: 'spanish',
   },
 ];

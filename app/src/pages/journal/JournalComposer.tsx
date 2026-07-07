@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { moodOptions, weatherOptions } from '../../data/mockData';
 import { JOURNAL_PROMPTS, stripHtml } from '../../lib/journalUtils';
-import type { Goal, JournalEntry, JournalEntryDraft, JournalFolder, JournalMediaType } from '../../types';
+import type { Goal, GoalDraft, JournalEntry, JournalEntryDraft, JournalFolder, JournalMediaType } from '../../types';
 import { MediaSlot } from './MediaSlot';
 import './JournalComposer.css';
 
@@ -13,7 +13,7 @@ interface JournalComposerProps {
   onSave: (draft: JournalEntryDraft) => void;
   onCancelEdit?: () => void;
   onOpenFolders: () => void;
-  onCreateGoal: (label: string) => Goal;
+  onCreateGoal: (draft: GoalDraft) => Goal;
 }
 
 export function JournalComposer({
@@ -66,7 +66,14 @@ export function JournalComposer({
   const createGoal = () => {
     const name = newGoalName.trim();
     if (!name) return;
-    const goal = onCreateGoal(name);
+    const goal = onCreateGoal({
+      title: name,
+      categoryId: '',
+      status: 'not_started',
+      percent: 0,
+      dueDate: '',
+      description: '',
+    });
     setGoalId(goal.id);
     setNewGoalName('');
   };
@@ -146,7 +153,7 @@ export function JournalComposer({
           <option value="">No linked goal</option>
           {goals.map((g) => (
             <option key={g.id} value={g.id}>
-              🎯 {g.label}
+              🎯 {g.title}
             </option>
           ))}
         </select>

@@ -3,6 +3,7 @@ import {
   calendarEvents,
   financeCategories,
   financeTransactions,
+  initialGoalCategories,
   initialGoals,
   initialJournalEntries,
   initialJournalFolders,
@@ -17,6 +18,8 @@ import type {
   FinanceCategory,
   FinanceTransaction,
   Goal,
+  GoalCategory,
+  GoalDraft,
   JournalEntry,
   JournalEntryDraft,
   JournalFolder,
@@ -56,7 +59,15 @@ interface AppDataContextValue {
   deleteFinanceCategory: (id: string) => void;
   setCategoryBudget: (id: string, budget: number) => void;
   goals: Goal[];
-  addGoal: (label: string) => Goal;
+  addGoal: (draft: GoalDraft) => Goal;
+  updateGoal: (id: string, draft: GoalDraft) => void;
+  deleteGoal: (id: string) => void;
+  goalCategories: GoalCategory[];
+  addGoalCategory: (name: string, emoji: string) => void;
+  renameGoalCategory: (id: string, name: string) => void;
+  changeGoalCategoryEmoji: (id: string, emoji: string) => void;
+  deleteGoalCategory: (id: string) => void;
+  unlinkTaskFromGoal: (taskId: string) => void;
   journalFolders: JournalFolder[];
   addJournalFolder: (name: string) => void;
   renameJournalFolder: (id: string, name: string) => void;
@@ -111,6 +122,10 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     financeTransactions,
   );
   const [goals, setGoals] = useLocalStorageState<Goal[]>('hi-app:goals', initialGoals);
+  const [goalCategories, setGoalCategories] = useLocalStorageState<GoalCategory[]>(
+    'hi-app:goal-categories',
+    initialGoalCategories,
+  );
   const [journalFolders, setJournalFolders] = useLocalStorageState<JournalFolder[]>(
     'hi-app:journal-folders',
     initialJournalFolders,
@@ -149,9 +164,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
             recurring: draft.recurring,
             subtasks: draft.subtasks,
             description: draft.description,
+            goalId: draft.goalId || '',
           },
         ]),
       deleteTask: (id) => setTasks((prev) => prev.filter((t) => t.id !== id)),
+      unlinkTaskFromGoal: (taskId) =>
+        setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, goalId: '' } : t))),
       addCategory: (name) => setCategories((prev) => [...prev, { id: generateId('cat'), name }]),
       renameCategory: (id, name) => setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
       deleteCategory: (id) => setCategories((prev) => prev.filter((c) => c.id !== id)),
@@ -175,10 +193,52 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       setCategoryBudget: (id, budget) =>
         setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, budget } : c))),
       goals,
-      addGoal: (label) => {
-        const goal: Goal = { id: generateId('goal'), label, percent: 0, active: true };
+      addGoal: (draft) => {
+        const goal: Goal = {
+          id: generateId('goal'),
+          title: draft.title,
+          categoryId: draft.categoryId || goalCategories[0]?.id || '',
+          status: draft.status,
+          percent: draft.percent,
+          dueDate: draft.dueDate,
+          description: draft.description,
+        };
         setGoals((prev) => [...prev, goal]);
         return goal;
+      },
+      updateGoal: (id, draft) =>
+        setGoals((prev) =>
+          prev.map((g) =>
+            g.id === id
+              ? {
+                  ...g,
+                  title: draft.title,
+                  categoryId: draft.categoryId,
+                  status: draft.status,
+                  percent: draft.percent,
+                  dueDate: draft.dueDate,
+                  description: draft.description,
+                }
+              : g,
+          ),
+        ),
+      deleteGoal: (id) => {
+        setGoals((prev) => prev.filter((g) => g.id !== id));
+        setTasks((prev) => prev.map((t) => (t.goalId === id ? { ...t, goalId: '' } : t)));
+        setJournalEntries((prev) => prev.map((e) => (e.goalId === id ? { ...e, goalId: '' } : e)));
+      },
+      goalCategories,
+      addGoalCategory: (name, emoji) =>
+        setGoalCategories((prev) => [...prev, { id: generateId('goalcat'), name, emoji }]),
+      renameGoalCategory: (id, name) =>
+        setGoalCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
+      changeGoalCategoryEmoji: (id, emoji) =>
+        setGoalCategories((prev) => prev.map((c) => (c.id === id ? { ...c, emoji } : c))),
+      deleteGoalCategory: (id) => {
+        const remaining = goalCategories.filter((c) => c.id !== id);
+        const fallback = remaining[0]?.id ?? '';
+        setGoalCategories(remaining);
+        setGoals((prev) => prev.map((g) => (g.categoryId === id ? { ...g, categoryId: fallback } : g)));
       },
       journalFolders,
       addJournalFolder: (name) => setJournalFolders((prev) => [...prev, { id: generateId('folder'), name }]),
@@ -201,6 +261,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     financeCats,
     financeTxs,
     goals,
+    goalCategories,
     journalFolders,
     journalEntries,
     setTasks,
@@ -209,6 +270,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setFinanceCats,
     setFinanceTxs,
     setGoals,
+    setGoalCategories,
     setJournalFolders,
     setJournalEntries,
   ]);
