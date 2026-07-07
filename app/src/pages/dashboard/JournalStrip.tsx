@@ -1,3 +1,5 @@
+import { entryPreview } from '../../lib/journalUtils';
+import { formatShortDate } from '../../lib/todoUtils';
 import type { JournalEntry } from '../../types';
 import './JournalStrip.css';
 
@@ -21,7 +23,7 @@ export function JournalStrip({ entry, onNavigate, onAdd }: JournalStripProps) {
         </span>
         {entry ? (
           <span className="journal-strip__preview">
-            {entry.date} — &quot;{entry.preview}&quot;
+            {formatShortDate(entry.date)} — &quot;{entryPreview(entry)}&quot;
           </span>
         ) : (
           <span className="journal-strip__empty">

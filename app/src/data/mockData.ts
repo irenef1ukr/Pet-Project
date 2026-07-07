@@ -7,6 +7,7 @@ import type {
   Goal,
   Habit,
   JournalEntry,
+  JournalFolder,
   TodoCategory,
   TodoTask,
 } from '../types';
@@ -50,7 +51,7 @@ export const initialHabits: Habit[] = [
   { id: 'meditate', label: 'meditate', streakCount: 0, lastCompletedDate: null },
 ];
 
-export const allGoals: Goal[] = [
+export const initialGoals: Goal[] = [
   { id: 'spanish', label: 'Learn Spanish', percent: 60, active: true },
   { id: 'save', label: 'Save $5,000', percent: 35, active: true },
   { id: '5k', label: 'Run a 5k', percent: 20, active: true },
@@ -84,11 +85,67 @@ export const financeTransactions: FinanceTransaction[] = [
   { id: 'tx12', date: addDaysIso(today0, -12), desc: 'Fuel', categoryId: 'transport', amount: 210 },
 ];
 
-export const latestJournalEntry: JournalEntry | null = {
-  id: 'jun29',
-  date: 'Jun 29',
-  preview: 'Today was calm, finished the report draft and went for a walk…',
-};
+export const initialJournalFolders: JournalFolder[] = [
+  { id: 'general', name: 'General' },
+  { id: 'work', name: 'Work' },
+  { id: 'personal', name: 'Personal' },
+];
+
+function yearsAgoIso(iso: string, years: number): string {
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${y - years}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+
+export const initialJournalEntries: JournalEntry[] = [
+  {
+    id: 'jentry-1',
+    date: today0,
+    title: 'Finished the finance module',
+    bodyHtml: 'Shipped the budget tracker with pagination and CSV export. Felt good to close it out before the weekend.',
+    mood: '🙂',
+    weather: '☀️',
+    folderId: 'work',
+    goalId: '',
+    mediaUrl: '',
+    mediaType: '',
+  },
+  {
+    id: 'jentry-2',
+    date: addDaysIso(today0, -2),
+    title: 'Slow start',
+    bodyHtml: "Didn't sleep great. Took a long walk at lunch and it helped clear my head a bit.",
+    mood: '😐',
+    weather: '⛅',
+    folderId: 'personal',
+    goalId: '',
+    mediaUrl: '',
+    mediaType: '',
+  },
+  {
+    id: 'jentry-3',
+    date: addDaysIso(today0, -6),
+    title: 'New month, fresh start',
+    bodyHtml: '<b>Goals for this month:</b><ul><li>Read more</li><li>Cook at home</li></ul>',
+    mood: '😁',
+    weather: '☀️',
+    folderId: 'general',
+    goalId: 'spanish',
+    mediaUrl: '',
+    mediaType: '',
+  },
+  {
+    id: 'jentry-4',
+    date: yearsAgoIso(today0, 1),
+    title: 'A year ago today',
+    bodyHtml: 'Started planning the "hi" app for the first time. Little did I know where it would go.',
+    mood: '😁',
+    weather: '☀️',
+    folderId: 'general',
+    goalId: '',
+    mediaUrl: '',
+    mediaType: '',
+  },
+];
 
 export const calendarEvents: CalendarEvent[] = [
   {

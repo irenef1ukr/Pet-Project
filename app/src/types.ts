@@ -70,10 +70,36 @@ export interface FinanceNewCategoryDraft {
   hue: number;
 }
 
+export interface JournalFolder {
+  id: string;
+  name: string;
+}
+
+export type JournalMediaType = 'image' | 'video' | '';
+
 export interface JournalEntry {
   id: string;
   date: string;
-  preview: string;
+  title: string;
+  bodyHtml: string;
+  mood: string;
+  weather: string;
+  folderId: string;
+  goalId: string;
+  mediaUrl: string;
+  mediaType: JournalMediaType;
+}
+
+export interface JournalEntryDraft {
+  title: string;
+  date: string;
+  bodyHtml: string;
+  mood: string;
+  weather: string;
+  folderId: string;
+  goalId: string;
+  mediaUrl: string;
+  mediaType: JournalMediaType;
 }
 
 export type CalendarView = 'month' | 'week' | 'day';

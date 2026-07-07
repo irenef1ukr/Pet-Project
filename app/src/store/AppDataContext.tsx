@@ -1,5 +1,14 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
-import { calendarEvents, financeCategories, financeTransactions, todoCategories, todoTasks } from '../data/mockData';
+import {
+  calendarEvents,
+  financeCategories,
+  financeTransactions,
+  initialGoals,
+  initialJournalEntries,
+  initialJournalFolders,
+  todoCategories,
+  todoTasks,
+} from '../data/mockData';
 import { generateId, nextStatus } from '../lib/todoUtils';
 import { useLocalStorageState } from '../lib/useLocalStorageState';
 import type {
@@ -7,6 +16,10 @@ import type {
   CalendarEventDraft,
   FinanceCategory,
   FinanceTransaction,
+  Goal,
+  JournalEntry,
+  JournalEntryDraft,
+  JournalFolder,
   TaskCreateDraft,
   TaskEditPatch,
   TodoCategory,
@@ -42,6 +55,16 @@ interface AppDataContextValue {
   changeFinanceCategoryEmoji: (id: string, emoji: string) => void;
   deleteFinanceCategory: (id: string) => void;
   setCategoryBudget: (id: string, budget: number) => void;
+  goals: Goal[];
+  addGoal: (label: string) => Goal;
+  journalFolders: JournalFolder[];
+  addJournalFolder: (name: string) => void;
+  renameJournalFolder: (id: string, name: string) => void;
+  deleteJournalFolder: (id: string) => void;
+  journalEntries: JournalEntry[];
+  addJournalEntry: (draft: JournalEntryDraft) => void;
+  updateJournalEntry: (id: string, draft: JournalEntryDraft) => void;
+  deleteJournalEntry: (id: string) => void;
 }
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
@@ -86,6 +109,15 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [financeTxs, setFinanceTxs] = useLocalStorageState<FinanceTransaction[]>(
     'hi-app:finance-transactions',
     financeTransactions,
+  );
+  const [goals, setGoals] = useLocalStorageState<Goal[]>('hi-app:goals', initialGoals);
+  const [journalFolders, setJournalFolders] = useLocalStorageState<JournalFolder[]>(
+    'hi-app:journal-folders',
+    initialJournalFolders,
+  );
+  const [journalEntries, setJournalEntries] = useLocalStorageState<JournalEntry[]>(
+    'hi-app:journal-entries',
+    initialJournalEntries,
   );
 
   const value = useMemo<AppDataContextValue>(() => {
@@ -142,8 +174,44 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       deleteFinanceCategory: (id) => setFinanceCats((prev) => prev.filter((c) => c.id !== id)),
       setCategoryBudget: (id, budget) =>
         setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, budget } : c))),
+      goals,
+      addGoal: (label) => {
+        const goal: Goal = { id: generateId('goal'), label, percent: 0, active: true };
+        setGoals((prev) => [...prev, goal]);
+        return goal;
+      },
+      journalFolders,
+      addJournalFolder: (name) => setJournalFolders((prev) => [...prev, { id: generateId('folder'), name }]),
+      renameJournalFolder: (id, name) =>
+        setJournalFolders((prev) => prev.map((f) => (f.id === id ? { ...f, name } : f))),
+      deleteJournalFolder: (id) => {
+        setJournalFolders((prev) => prev.filter((f) => f.id !== id));
+        setJournalEntries((prev) => prev.map((e) => (e.folderId === id ? { ...e, folderId: 'general' } : e)));
+      },
+      journalEntries,
+      addJournalEntry: (draft) => setJournalEntries((prev) => [{ ...draft, id: generateId('jentry') }, ...prev]),
+      updateJournalEntry: (id, draft) =>
+        setJournalEntries((prev) => prev.map((e) => (e.id === id ? { ...draft, id } : e))),
+      deleteJournalEntry: (id) => setJournalEntries((prev) => prev.filter((e) => e.id !== id)),
     };
-  }, [tasks, categories, events, financeCats, financeTxs, setTasks, setCategories, setEvents, setFinanceCats, setFinanceTxs]);
+  }, [
+    tasks,
+    categories,
+    events,
+    financeCats,
+    financeTxs,
+    goals,
+    journalFolders,
+    journalEntries,
+    setTasks,
+    setCategories,
+    setEvents,
+    setFinanceCats,
+    setFinanceTxs,
+    setGoals,
+    setJournalFolders,
+    setJournalEntries,
+  ]);
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
 }
