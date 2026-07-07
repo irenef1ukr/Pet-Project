@@ -22,11 +22,37 @@ export interface Habit {
   lastCompletedDate: string | null;
 }
 
+export type GoalStatus = 'not_started' | 'in_progress' | 'completed' | 'on_hold';
+
+export interface GoalCategory {
+  id: string;
+  name: string;
+  emoji: string;
+}
+
 export interface Goal {
   id: string;
-  label: string;
+  title: string;
+  categoryId: string;
+  status: GoalStatus;
   percent: number;
-  active: boolean;
+  dueDate: string;
+  description: string;
+}
+
+export interface GoalDraft {
+  title: string;
+  categoryId: string;
+  status: GoalStatus;
+  percent: number;
+  dueDate: string;
+  description: string;
+}
+
+export interface GoalTaskDraft {
+  title: string;
+  priority: TodoPriority;
+  dueDate: string;
 }
 
 export interface FinanceSummary {
@@ -171,6 +197,7 @@ export interface TodoTask {
   recurring: TodoRecurrence;
   subtasks: TodoSubtask[];
   description: string;
+  goalId: string;
 }
 
 export interface TaskEditPatch {
@@ -191,4 +218,5 @@ export interface TaskCreateDraft {
   recurring: TodoRecurrence;
   subtasks: TodoSubtask[];
   description: string;
+  goalId?: string;
 }

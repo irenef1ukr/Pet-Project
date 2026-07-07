@@ -41,7 +41,7 @@ export function Journal() {
   const editingEntry = editingId ? journalEntries.find((e) => e.id === editingId) : undefined;
 
   const folderName = (id: string) => journalFolders.find((f) => f.id === id)?.name ?? 'General';
-  const goalName = (id: string) => (id ? goals.find((g) => g.id === id)?.label ?? '' : '');
+  const goalName = (id: string) => (id ? goals.find((g) => g.id === id)?.title ?? '' : '');
 
   const filteredEntries = useMemo(
     () =>

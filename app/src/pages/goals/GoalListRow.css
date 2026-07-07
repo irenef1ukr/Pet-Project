@@ -1,0 +1,51 @@
+.goal-list-row {
+  padding: 16px 20px;
+  border-bottom: 1px solid oklch(0.94 0.01 240);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.goal-list-row:last-child {
+  border-bottom: none;
+}
+
+.goal-list-row__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.goal-list-row__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.goal-list-row__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 14.5px var(--font-body);
+  color: var(--color-text-primary);
+}
+
+.goal-list-row__track {
+  margin-top: 8px;
+  max-width: 340px;
+}
+
+.goal-list-row__percent {
+  font: 700 13px var(--font-display);
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+.goal-list-row__due {
+  font: 600 12px var(--font-body);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  width: 100px;
+}

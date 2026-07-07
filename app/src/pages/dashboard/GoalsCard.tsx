@@ -10,7 +10,7 @@ interface GoalsCardProps {
 const VISIBLE_LIMIT = 4;
 
 export function GoalsCard({ goals, onNavigate, onAdd }: GoalsCardProps) {
-  const active = goals.filter((g) => g.active);
+  const active = goals.filter((g) => g.status === 'in_progress');
   const visible = active.slice(0, VISIBLE_LIMIT);
   const remaining = active.length - visible.length;
 
@@ -40,7 +40,7 @@ export function GoalsCard({ goals, onNavigate, onAdd }: GoalsCardProps) {
           {visible.map((g) => (
             <div key={g.id} className="goal-row">
               <div className="goal-row__labels">
-                <span>{g.label}</span>
+                <span>{g.title}</span>
                 <span>{g.percent}%</span>
               </div>
               <div className="goal-row__track">

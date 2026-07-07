@@ -1,0 +1,103 @@
+.goal-form-screen {
+  display: flex;
+  justify-content: center;
+}
+
+.goal-form-card {
+  background: var(--color-card);
+  border-radius: 20px;
+  padding: 32px 34px;
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 560px;
+  max-width: 100%;
+}
+
+.goal-form-card__title {
+  font: 700 20px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.goal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.goal-field--row {
+  display: flex;
+  gap: 12px;
+}
+
+.goal-field--row > .goal-field {
+  flex: 1;
+}
+
+.goal-field__label {
+  font: 700 11.5px var(--font-display);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.goal-field input,
+.goal-field select,
+.goal-field textarea {
+  padding: 11px 12px;
+  font: 600 13.5px var(--font-body);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+}
+
+.goal-field input[type='text'] {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.goal-field textarea {
+  min-height: 70px;
+  resize: vertical;
+  font-family: var(--font-body);
+}
+
+.goal-field select {
+  cursor: pointer;
+}
+
+.goal-form-error {
+  font: 600 12.5px var(--font-body);
+  color: oklch(0.55 0.2 25);
+}
+
+.goal-form-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.goal-form-btn-cancel {
+  padding: 11px 20px;
+  font: 700 13px var(--font-display);
+  color: oklch(0.4 0.03 230);
+  border-radius: 999px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.goal-form-btn-save {
+  padding: 11px 24px;
+  font: 700 13px var(--font-display);
+  background: oklch(0.5 0.15 145);
+  color: #fff;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+}
