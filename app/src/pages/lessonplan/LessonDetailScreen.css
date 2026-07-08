@@ -1,0 +1,154 @@
+.lesson-detail-screen {
+  display: flex;
+  justify-content: center;
+}
+
+.lesson-detail-screen__inner {
+  width: 560px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lesson-detail-screen__back {
+  cursor: pointer;
+  font: 700 15px var(--font-display);
+  color: var(--color-text-primary);
+  width: fit-content;
+}
+
+.lesson-detail-card {
+  background: var(--color-card);
+  border-radius: 18px;
+  padding: 26px 28px;
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lesson-detail-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lesson-detail-card__title {
+  font: 700 22px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.lesson-detail-card__status {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font: 700 11px var(--font-display);
+  background: oklch(0.9 0.02 240 / 0.6);
+  color: oklch(0.5 0.02 240);
+  flex-shrink: 0;
+}
+
+.lesson-detail-card__status--done {
+  background: oklch(0.88 0.1 150 / 0.5);
+  color: oklch(0.42 0.13 150);
+}
+
+.lesson-detail-card__subject {
+  padding: 4px 11px;
+  border-radius: 999px;
+  font: 700 11px var(--font-display);
+  width: fit-content;
+}
+
+.lesson-detail-card__schedule {
+  background: var(--color-bg);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: 700 13px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.lesson-detail-card__schedule-note {
+  font: 600 12px var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.lesson-detail-card__section-label {
+  font: 800 11px var(--font-display);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.lesson-detail-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lesson-detail-card__tag {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: oklch(0.94 0.01 240);
+  font: 600 12px var(--font-body);
+  color: var(--color-text-primary-2);
+}
+
+.lesson-detail-card__notes {
+  font: 600 13.5px var(--font-body);
+  color: var(--color-text-primary-2);
+  line-height: 1.6;
+}
+
+.lesson-detail-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid oklch(0.94 0.01 240);
+}
+
+.lesson-detail-card__delete-confirm {
+  font: 600 12.5px var(--font-body);
+  color: oklch(0.55 0.2 25);
+}
+
+.lesson-detail-card__delete-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.lesson-detail-card__link-btn {
+  font: 700 13px var(--font-display);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.lesson-detail-card__link-btn--danger {
+  color: oklch(0.55 0.2 25);
+}
+
+.lesson-detail-card__link-btn--muted {
+  color: oklch(0.4 0.03 230);
+}
+
+.lesson-detail-card__delete {
+  font: 700 13px var(--font-display);
+  color: oklch(0.55 0.2 25);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.lesson-detail-card__edit {
+  padding: 10px 22px;
+  font: 700 13px var(--font-display);
+  background: var(--lesson-accent);
+  color: #fff;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+}

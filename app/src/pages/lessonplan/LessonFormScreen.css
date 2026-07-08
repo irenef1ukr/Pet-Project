@@ -1,0 +1,124 @@
+.lesson-form-screen {
+  display: flex;
+  justify-content: center;
+}
+
+.lesson-form-card {
+  background: var(--color-card);
+  border-radius: 20px;
+  padding: 32px 34px;
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 560px;
+  max-width: 100%;
+}
+
+.lesson-form-card__title {
+  font: 700 20px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.lesson-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lesson-field-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.lesson-field__label {
+  font: 700 11.5px var(--font-display);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.lesson-field input,
+.lesson-field select,
+.lesson-field textarea {
+  padding: 11px 12px;
+  font: 600 13.5px var(--font-body);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+}
+
+.lesson-field input[type='text'] {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.lesson-field textarea {
+  min-height: 70px;
+  resize: vertical;
+  font-family: var(--font-body);
+}
+
+.lesson-field select {
+  cursor: pointer;
+}
+
+.lesson-status-toggle {
+  display: flex;
+  gap: 4px;
+  background: oklch(0.93 0.02 230);
+  padding: 4px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.lesson-status-toggle__btn {
+  padding: 7px 16px;
+  font: 700 12px var(--font-display);
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: oklch(0.4 0.03 230);
+}
+
+.lesson-status-toggle__btn--active {
+  background: var(--color-nav);
+  color: #fff;
+}
+
+.lesson-form-error {
+  font: 600 12.5px var(--font-body);
+  color: oklch(0.55 0.2 25);
+}
+
+.lesson-form-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.lesson-form-btn-cancel {
+  padding: 11px 20px;
+  font: 700 13px var(--font-display);
+  color: oklch(0.4 0.03 230);
+  border-radius: 999px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.lesson-form-btn-save {
+  padding: 11px 24px;
+  font: 700 13px var(--font-display);
+  background: var(--lesson-accent);
+  color: #fff;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+}

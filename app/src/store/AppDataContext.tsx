@@ -3,15 +3,22 @@ import {
   calendarEvents,
   financeCategories,
   financeTransactions,
+  getTodayISO,
   initialGoalCategories,
   initialGoals,
   initialHabitCategories,
   initialHabits,
   initialJournalEntries,
   initialJournalFolders,
+  initialLessonSubjects,
+  initialLessons,
+  initialRecipeCategories,
+  initialRecipes,
+  initialShoppingList,
   todoCategories,
   todoTasks,
 } from '../data/mockData';
+import { lessonsToCalendarEvents } from '../lib/lessonUtils';
 import { generateId, nextStatus } from '../lib/todoUtils';
 import { useLocalStorageState } from '../lib/useLocalStorageState';
 import type {
@@ -28,6 +35,13 @@ import type {
   JournalEntry,
   JournalEntryDraft,
   JournalFolder,
+  Lesson,
+  LessonDraft,
+  LessonSubject,
+  Recipe,
+  RecipeCategory,
+  RecipeDraft,
+  ShoppingListItem,
   TaskCreateDraft,
   TaskEditPatch,
   TodoCategory,
@@ -93,6 +107,30 @@ interface AppDataContextValue {
   addJournalEntry: (draft: JournalEntryDraft) => void;
   updateJournalEntry: (id: string, draft: JournalEntryDraft) => void;
   deleteJournalEntry: (id: string) => void;
+  lessons: Lesson[];
+  addLesson: (draft: LessonDraft) => void;
+  updateLesson: (id: string, draft: LessonDraft) => void;
+  deleteLesson: (id: string) => void;
+  lessonSubjects: LessonSubject[];
+  addLessonSubject: (name: string, emoji: string) => void;
+  renameLessonSubject: (id: string, name: string) => void;
+  changeLessonSubjectEmoji: (id: string, emoji: string) => void;
+  deleteLessonSubject: (id: string) => void;
+  recipes: Recipe[];
+  addRecipe: (draft: RecipeDraft) => void;
+  updateRecipe: (id: string, draft: RecipeDraft) => void;
+  deleteRecipe: (id: string) => void;
+  toggleRecipeFavorite: (id: string) => void;
+  recipeCategories: RecipeCategory[];
+  addRecipeCategory: (name: string, emoji: string) => void;
+  renameRecipeCategory: (id: string, name: string) => void;
+  changeRecipeCategoryEmoji: (id: string, emoji: string) => void;
+  deleteRecipeCategory: (id: string) => void;
+  shoppingList: ShoppingListItem[];
+  addShoppingListItem: (text: string) => void;
+  addRecipeIngredientsToShoppingList: (recipeId: string) => void;
+  updateShoppingListItem: (id: string, text: string) => void;
+  removeShoppingListItem: (id: string) => void;
 }
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
@@ -156,9 +194,28 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     'hi-app:journal-entries',
     initialJournalEntries,
   );
+  const [lessons, setLessons] = useLocalStorageState<Lesson[]>('hi-app:lessons', initialLessons);
+  const [lessonSubjects, setLessonSubjects] = useLocalStorageState<LessonSubject[]>(
+    'hi-app:lesson-subjects',
+    initialLessonSubjects,
+  );
+  const [recipes, setRecipes] = useLocalStorageState<Recipe[]>('hi-app:recipes', initialRecipes);
+  const [recipeCategories, setRecipeCategories] = useLocalStorageState<RecipeCategory[]>(
+    'hi-app:recipe-categories',
+    initialRecipeCategories,
+  );
+  const [shoppingList, setShoppingList] = useLocalStorageState<ShoppingListItem[]>(
+    'hi-app:shopping-list',
+    initialShoppingList,
+  );
 
   const value = useMemo<AppDataContextValue>(() => {
-    const calendarEntries = [...events, ...tasks.map(taskToCalendarEvent).filter((e): e is CalendarEvent => e !== null)];
+    const lessonEvents = lessonsToCalendarEvents(lessons, lessonSubjects, getTodayISO());
+    const calendarEntries = [
+      ...events,
+      ...tasks.map(taskToCalendarEvent).filter((e): e is CalendarEvent => e !== null),
+      ...lessonEvents,
+    ];
 
     return {
       tasks,
@@ -335,6 +392,123 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       updateJournalEntry: (id, draft) =>
         setJournalEntries((prev) => prev.map((e) => (e.id === id ? { ...draft, id } : e))),
       deleteJournalEntry: (id) => setJournalEntries((prev) => prev.filter((e) => e.id !== id)),
+      lessons,
+      addLesson: (draft) =>
+        setLessons((prev) => [
+          ...prev,
+          {
+            id: generateId('lesson'),
+            objective: draft.objective,
+            subjectId: draft.subjectId || lessonSubjects[0]?.id || '',
+            day: draft.day,
+            startTime: draft.startTime,
+            durationMinutes: draft.durationMinutes,
+            materials: draft.materials
+              .split(',')
+              .map((m) => m.trim())
+              .filter(Boolean),
+            status: draft.status,
+            notes: draft.notes,
+          },
+        ]),
+      updateLesson: (id, draft) =>
+        setLessons((prev) =>
+          prev.map((l) =>
+            l.id === id
+              ? {
+                  ...l,
+                  objective: draft.objective,
+                  subjectId: draft.subjectId,
+                  day: draft.day,
+                  startTime: draft.startTime,
+                  durationMinutes: draft.durationMinutes,
+                  materials: draft.materials
+                    .split(',')
+                    .map((m) => m.trim())
+                    .filter(Boolean),
+                  status: draft.status,
+                  notes: draft.notes,
+                }
+              : l,
+          ),
+        ),
+      deleteLesson: (id) => setLessons((prev) => prev.filter((l) => l.id !== id)),
+      lessonSubjects,
+      addLessonSubject: (name, emoji) =>
+        setLessonSubjects((prev) => [...prev, { id: generateId('subject'), name, emoji }]),
+      renameLessonSubject: (id, name) =>
+        setLessonSubjects((prev) => prev.map((s) => (s.id === id ? { ...s, name } : s))),
+      changeLessonSubjectEmoji: (id, emoji) =>
+        setLessonSubjects((prev) => prev.map((s) => (s.id === id ? { ...s, emoji } : s))),
+      deleteLessonSubject: (id) => {
+        const remaining = lessonSubjects.filter((s) => s.id !== id);
+        const fallback = remaining[0]?.id ?? '';
+        setLessonSubjects(remaining);
+        setLessons((prev) => prev.map((l) => (l.subjectId === id ? { ...l, subjectId: fallback } : l)));
+      },
+      recipes,
+      addRecipe: (draft) =>
+        setRecipes((prev) => [
+          ...prev,
+          {
+            id: generateId('recipe'),
+            title: draft.title,
+            categoryId: draft.categoryId || recipeCategories[0]?.id || '',
+            ingredients: draft.ingredients,
+            instructions: draft.instructions,
+            favorite: false,
+          },
+        ]),
+      updateRecipe: (id, draft) =>
+        setRecipes((prev) =>
+          prev.map((r) =>
+            r.id === id
+              ? {
+                  ...r,
+                  title: draft.title,
+                  categoryId: draft.categoryId,
+                  ingredients: draft.ingredients,
+                  instructions: draft.instructions,
+                }
+              : r,
+          ),
+        ),
+      deleteRecipe: (id) => setRecipes((prev) => prev.filter((r) => r.id !== id)),
+      toggleRecipeFavorite: (id) =>
+        setRecipes((prev) => prev.map((r) => (r.id === id ? { ...r, favorite: !r.favorite } : r))),
+      recipeCategories,
+      addRecipeCategory: (name, emoji) =>
+        setRecipeCategories((prev) => [...prev, { id: generateId('rcat'), name, emoji }]),
+      renameRecipeCategory: (id, name) =>
+        setRecipeCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
+      changeRecipeCategoryEmoji: (id, emoji) =>
+        setRecipeCategories((prev) => prev.map((c) => (c.id === id ? { ...c, emoji } : c))),
+      deleteRecipeCategory: (id) => {
+        const remaining = recipeCategories.filter((c) => c.id !== id);
+        const fallback = remaining[0]?.id ?? '';
+        setRecipeCategories(remaining);
+        setRecipes((prev) => prev.map((r) => (r.categoryId === id ? { ...r, categoryId: fallback } : r)));
+      },
+      shoppingList,
+      addShoppingListItem: (text) => {
+        const trimmed = text.trim();
+        if (!trimmed) return;
+        setShoppingList((prev) => (prev.some((i) => i.text === trimmed) ? prev : [...prev, { id: generateId('shop'), text: trimmed }]));
+      },
+      addRecipeIngredientsToShoppingList: (recipeId) => {
+        const recipe = recipes.find((r) => r.id === recipeId);
+        if (!recipe) return;
+        setShoppingList((prev) => {
+          const existing = new Set(prev.map((i) => i.text));
+          const additions = recipe.ingredients
+            .filter((ing) => !existing.has(ing))
+            .map((ing) => ({ id: generateId('shop'), text: ing }));
+          return [...prev, ...additions];
+        });
+      },
+      updateShoppingListItem: (id, text) =>
+        setShoppingList((prev) => prev.map((i) => (i.id === id ? { ...i, text } : i))),
+      removeShoppingListItem: (id) => setShoppingList((prev) => prev.filter((i) => i.id !== id)),
     };
   }, [
     tasks,
@@ -348,6 +522,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     habitCategories,
     journalFolders,
     journalEntries,
+    lessons,
+    lessonSubjects,
+    recipes,
+    recipeCategories,
+    shoppingList,
     setTasks,
     setCategories,
     setEvents,
@@ -359,6 +538,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setHabitCategories,
     setJournalFolders,
     setJournalEntries,
+    setLessons,
+    setLessonSubjects,
+    setRecipes,
+    setRecipeCategories,
+    setShoppingList,
   ]);
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;

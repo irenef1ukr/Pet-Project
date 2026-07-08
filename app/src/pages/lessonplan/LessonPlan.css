@@ -1,0 +1,151 @@
+.lesson-plan-main {
+  --lesson-accent: oklch(0.42 0.07 185);
+  flex: 1;
+  padding: 36px 52px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.lesson-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.lesson-plan-title {
+  font: 700 24px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.lesson-plan-header__actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.lesson-plan-btn {
+  padding: 9px 16px;
+  font: 700 12px var(--font-display);
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+}
+
+.lesson-plan-btn--manage {
+  color: var(--lesson-accent);
+  background: oklch(0.93 0.03 185);
+}
+
+.lesson-plan-btn--new {
+  padding: 9px 20px;
+  font-size: 12.5px;
+  background: var(--lesson-accent);
+  color: #fff;
+}
+
+.lesson-plan-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.lesson-plan-progress-card {
+  background: var(--color-card);
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.lesson-plan-progress-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.lesson-plan-progress-card__label {
+  font: 700 13px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.lesson-plan-progress-card__count {
+  font: 700 11.5px var(--font-display);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.lesson-plan-progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: oklch(0.93 0.01 240);
+  overflow: hidden;
+}
+
+.lesson-plan-progress-bar__fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.lesson-plan-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lesson-plan-chip {
+  padding: 7px 16px;
+  font: 700 12px var(--font-display);
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  background: oklch(0.93 0.02 230 / 0.6);
+  color: oklch(0.4 0.03 230);
+}
+
+.lesson-plan-chip--active {
+  background: var(--color-nav);
+  color: #fff;
+}
+
+.lesson-plan-week-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.lesson-plan-week-nav__arrow {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-card);
+  box-shadow: var(--color-card-shadow);
+  font: 700 14px var(--font-display);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.lesson-plan-week-nav__label {
+  font: 700 15px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.lesson-plan-empty {
+  background: var(--color-card);
+  border-radius: 18px;
+  padding: 40px;
+  text-align: center;
+  font: 600 13px var(--font-body);
+  color: var(--color-text-muted-2);
+  box-shadow: var(--color-card-shadow);
+}

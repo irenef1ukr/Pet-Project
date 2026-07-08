@@ -39,3 +39,17 @@ export function dayOfYear(date: Date): number {
   const diff = date.getTime() - start.getTime();
   return Math.floor(diff / 86400000);
 }
+
+const MONTH_SHORT_NAMES = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+export function formatDateRange(startIso: string, endIso: string): string {
+  const start = fromISODate(startIso);
+  const end = fromISODate(endIso);
+  const startLabel = `${MONTH_SHORT_NAMES[start.getMonth()]} ${start.getDate()}`;
+  const endLabel =
+    start.getMonth() === end.getMonth() ? `${end.getDate()}` : `${MONTH_SHORT_NAMES[end.getMonth()]} ${end.getDate()}`;
+  return `${startLabel} – ${endLabel}, ${end.getFullYear()}`;
+}
