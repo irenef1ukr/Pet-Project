@@ -5,7 +5,7 @@ import './TopNav.css';
 export function TopNav() {
   return (
     <div className="top-nav">
-      <span className="top-nav__logo">hi</span>
+      <span className="top-nav__logo">MyHub</span>
       <div className="top-nav__links">
         {NAV_ITEMS.map((item) => (
           <NavLink
