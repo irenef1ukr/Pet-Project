@@ -1,0 +1,140 @@
+.recipe-form-screen {
+  display: flex;
+  justify-content: center;
+}
+
+.recipe-form-card {
+  background: var(--color-card);
+  border-radius: 20px;
+  padding: 32px 34px;
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 560px;
+  max-width: 100%;
+}
+
+.recipe-form-card__title {
+  font: 700 20px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.recipe-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recipe-field__label {
+  font: 700 11.5px var(--font-display);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.recipe-field input,
+.recipe-field select,
+.recipe-field textarea {
+  padding: 11px 12px;
+  font: 600 13.5px var(--font-body);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.recipe-field input[type='text'] {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.recipe-field textarea {
+  min-height: 50px;
+  resize: vertical;
+  font-family: var(--font-body);
+}
+
+.recipe-field select {
+  cursor: pointer;
+}
+
+.recipe-form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.recipe-form-row--step {
+  align-items: flex-start;
+}
+
+.recipe-form-row__number {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin-top: 10px;
+  border-radius: 50%;
+  background: oklch(0.94 0.05 40);
+  color: var(--recipe-accent);
+  font: 700 11.5px var(--font-display);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recipe-form-row__remove {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: oklch(0.55 0.2 25);
+  font: 600 16px var(--font-body);
+  cursor: pointer;
+}
+
+.recipe-form-add-link {
+  font: 700 12.5px var(--font-display);
+  color: var(--recipe-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.recipe-form-error {
+  font: 600 12.5px var(--font-body);
+  color: oklch(0.55 0.2 25);
+}
+
+.recipe-form-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.recipe-form-btn-cancel {
+  padding: 11px 20px;
+  font: 700 13px var(--font-display);
+  color: oklch(0.4 0.03 230);
+  border-radius: 999px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.recipe-form-btn-save {
+  padding: 11px 24px;
+  font: 700 13px var(--font-display);
+  background: var(--recipe-accent);
+  color: #fff;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+}

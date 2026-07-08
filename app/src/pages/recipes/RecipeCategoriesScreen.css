@@ -1,0 +1,112 @@
+.recipes-screen-center {
+  display: flex;
+  justify-content: center;
+}
+
+.recipe-categories-screen {
+  width: 640px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.recipe-categories-screen__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recipe-categories-screen__back {
+  cursor: pointer;
+  font: 700 15px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.recipe-categories-screen__title {
+  font: 700 20px var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.recipe-categories-screen__list {
+  background: var(--color-card);
+  border-radius: 18px;
+  padding: 10px 20px;
+  box-shadow: var(--color-card-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-category-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 40px;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid oklch(0.94 0.01 240);
+}
+
+.recipe-category-row:last-child {
+  border-bottom: none;
+}
+
+.recipe-category-row__emoji {
+  width: 44px;
+  padding: 8px;
+  font: 16px var(--font-body);
+  text-align: center;
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.recipe-category-row__name {
+  padding: 9px 10px;
+  font: 700 13px var(--font-body);
+  border: 1.5px solid oklch(0.88 0.04 240);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+}
+
+.recipe-category-row__delete {
+  text-align: center;
+  color: oklch(0.55 0.2 25);
+  cursor: pointer;
+  font: 600 18px var(--font-body);
+  background: none;
+  border: none;
+}
+
+.recipe-categories-screen__add {
+  background: var(--color-card);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: var(--color-card-shadow);
+}
+
+.recipe-categories-screen__add-title {
+  font: 800 11.5px var(--font-display);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
+.recipe-categories-screen__add-row {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.recipe-categories-screen__add-btn {
+  padding: 9px 16px;
+  font: 700 12.5px var(--font-display);
+  background: var(--recipe-accent);
+  color: #fff;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+}

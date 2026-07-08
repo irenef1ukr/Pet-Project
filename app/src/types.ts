@@ -242,3 +242,62 @@ export interface TaskCreateDraft {
   description: string;
   goalId?: string;
 }
+
+export type LessonStatus = 'planned' | 'done';
+
+export interface LessonSubject {
+  id: string;
+  name: string;
+  emoji: string;
+}
+
+export interface Lesson {
+  id: string;
+  objective: string;
+  subjectId: string;
+  /** Mon-first day index, 0=Mon..4=Fri. */
+  day: number;
+  startTime: string;
+  durationMinutes: number;
+  materials: string[];
+  status: LessonStatus;
+  notes: string;
+}
+
+export interface LessonDraft {
+  objective: string;
+  subjectId: string;
+  day: number;
+  startTime: string;
+  durationMinutes: number;
+  materials: string;
+  status: LessonStatus;
+  notes: string;
+}
+
+export interface RecipeCategory {
+  id: string;
+  name: string;
+  emoji: string;
+}
+
+export interface Recipe {
+  id: string;
+  title: string;
+  categoryId: string;
+  ingredients: string[];
+  instructions: string[];
+  favorite: boolean;
+}
+
+export interface RecipeDraft {
+  title: string;
+  categoryId: string;
+  ingredients: string[];
+  instructions: string[];
+}
+
+export interface ShoppingListItem {
+  id: string;
+  text: string;
+}

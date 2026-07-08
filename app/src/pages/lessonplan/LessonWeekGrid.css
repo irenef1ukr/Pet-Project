@@ -1,0 +1,82 @@
+.lesson-week-grid {
+  background: var(--color-card);
+  border-radius: 16px;
+  box-shadow: var(--color-card-shadow);
+  overflow: hidden;
+}
+
+.lesson-week-grid__header {
+  display: flex;
+  background: var(--color-nav);
+}
+
+.lesson-week-grid__day-header {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+  font: 700 12.5px var(--font-display);
+  color: #fff;
+}
+
+.lesson-week-grid__time-col {
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.lesson-week-grid__body {
+  display: flex;
+}
+
+.lesson-week-grid__hour-label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 2px;
+  font: 700 10.5px var(--font-display);
+  color: var(--color-text-muted);
+  box-sizing: border-box;
+  border-top: 1px solid oklch(0.94 0.01 240);
+}
+
+.lesson-week-grid__day-col {
+  flex: 1;
+  position: relative;
+  border-left: 1px solid oklch(0.94 0.01 240);
+}
+
+.lesson-week-grid__hour-line {
+  border-top: 1px solid oklch(0.94 0.01 240);
+  box-sizing: border-box;
+}
+
+.lesson-week-grid__block {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 8px;
+  border-left: 3px solid;
+  padding: 5px 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lesson-week-grid__block-title {
+  font: 700 12px var(--font-display);
+}
+
+.lesson-week-grid__block-time {
+  font: 600 10.5px var(--font-body);
+  opacity: 0.8;
+}
+
+.lesson-week-grid__block--done {
+  opacity: 0.6;
+}
+
+.lesson-week-grid__block--done .lesson-week-grid__block-title {
+  text-decoration: line-through;
+}
