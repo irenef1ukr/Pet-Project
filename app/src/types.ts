@@ -15,11 +15,33 @@ export interface DashboardEvent {
   recurring?: boolean;
 }
 
+export type HabitFrequencyType = 'daily' | 'custom';
+
+export interface HabitCategory {
+  id: string;
+  name: string;
+  emoji: string;
+}
+
 export interface Habit {
   id: string;
-  label: string;
-  streakCount: number;
-  lastCompletedDate: string | null;
+  title: string;
+  categoryId: string;
+  frequencyType: HabitFrequencyType;
+  /** Mon-first day indices (0=Mon..6=Sun), used when frequencyType is 'custom'. */
+  activeDays: number[];
+  description: string;
+  archived: boolean;
+  /** ISO date -> note text (empty string if no note). Key presence means the habit was checked off that day. */
+  completions: Record<string, string>;
+}
+
+export interface HabitDraft {
+  title: string;
+  categoryId: string;
+  frequencyType: HabitFrequencyType;
+  activeDays: number[];
+  description: string;
 }
 
 export type GoalStatus = 'not_started' | 'in_progress' | 'completed' | 'on_hold';

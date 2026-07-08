@@ -1,4 +1,5 @@
 import { addDaysIso, dayOfYear, toISODate } from '../lib/dateUtils';
+import { isScheduled } from '../lib/habitUtils';
 import type {
   CalendarEvent,
   DayMeta,
@@ -7,6 +8,7 @@ import type {
   Goal,
   GoalCategory,
   Habit,
+  HabitCategory,
   JournalEntry,
   JournalFolder,
   TodoCategory,
@@ -45,14 +47,100 @@ export function getDailyQuote(date: Date): string {
 export const moodOptions = ['🙂', '😁', '😐', '🙁', '😢'];
 export const weatherOptions = ['☀️', '⛅', '🌧️', '❄️'];
 
-export const initialHabits: Habit[] = [
-  { id: 'read', label: 'read', streakCount: 5, lastCompletedDate: getTodayISO() },
-  { id: 'workout', label: 'workout', streakCount: 0, lastCompletedDate: null },
-  { id: 'water', label: 'water', streakCount: 3, lastCompletedDate: getTodayISO() },
-  { id: 'meditate', label: 'meditate', streakCount: 0, lastCompletedDate: null },
+const today0 = getTodayISO();
+
+export const initialHabitCategories: HabitCategory[] = [
+  { id: 'health', name: 'Health', emoji: '🩺' },
+  { id: 'mindfulness', name: 'Mindfulness', emoji: '🧘' },
+  { id: 'learning', name: 'Learning', emoji: '📚' },
+  { id: 'home', name: 'Home', emoji: '🏠' },
 ];
 
-const today0 = getTodayISO();
+function seedCompletions(
+  frequencyType: Habit['frequencyType'],
+  activeDays: number[],
+  skip: (dayOffset: number) => boolean,
+): Record<string, string> {
+  const completions: Record<string, string> = {};
+  for (let i = 0; i < 90; i++) {
+    const dateIso = addDaysIso(today0, -i);
+    if (isScheduled({ frequencyType, activeDays }, dateIso) && !skip(i)) completions[dateIso] = '';
+  }
+  return completions;
+}
+
+export const initialHabits: Habit[] = [
+  {
+    id: 'h1',
+    title: 'Drink water',
+    categoryId: 'health',
+    frequencyType: 'daily',
+    activeDays: [],
+    description: '8 glasses a day, tracked with a marked bottle.',
+    archived: false,
+    completions: seedCompletions('daily', [], (i) => i === 4 || i === 11),
+  },
+  {
+    id: 'h2',
+    title: 'Stretch',
+    categoryId: 'health',
+    frequencyType: 'custom',
+    activeDays: [0, 2, 4],
+    description: '',
+    archived: false,
+    completions: seedCompletions('custom', [0, 2, 4], (i) => i === 2),
+  },
+  {
+    id: 'h3',
+    title: 'Meditate',
+    categoryId: 'mindfulness',
+    frequencyType: 'daily',
+    activeDays: [],
+    description: '10 minutes, first thing in the morning.',
+    archived: false,
+    completions: seedCompletions('daily', [], (i) => i <= 2 || i % 4 === 0),
+  },
+  {
+    id: 'h4',
+    title: 'Journal before bed',
+    categoryId: 'mindfulness',
+    frequencyType: 'daily',
+    activeDays: [],
+    description: '',
+    archived: false,
+    completions: seedCompletions('daily', [], (i) => i === 0 || i % 5 === 0),
+  },
+  {
+    id: 'h5',
+    title: 'Read 20 minutes',
+    categoryId: 'learning',
+    frequencyType: 'daily',
+    activeDays: [],
+    description: 'Working through the Spanish grammar book.',
+    archived: false,
+    completions: seedCompletions('daily', [], (i) => i === 1 || i === 6 || i === 13),
+  },
+  {
+    id: 'h6',
+    title: 'Tidy kitchen',
+    categoryId: 'home',
+    frequencyType: 'custom',
+    activeDays: [0, 1, 2, 3, 4],
+    description: '',
+    archived: false,
+    completions: seedCompletions('custom', [0, 1, 2, 3, 4], (i) => i === 3),
+  },
+  {
+    id: 'h7',
+    title: 'Practice guitar',
+    categoryId: 'learning',
+    frequencyType: 'custom',
+    activeDays: [1, 3, 5],
+    description: 'Paused for the summer — picking back up in the fall.',
+    archived: true,
+    completions: seedCompletions('custom', [1, 3, 5], () => false),
+  },
+];
 
 export const initialGoalCategories: GoalCategory[] = [
   { id: 'health', name: 'Health', emoji: '🩺' },

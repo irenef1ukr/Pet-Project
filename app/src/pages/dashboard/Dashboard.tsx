@@ -10,21 +10,14 @@ import { FinanceCard } from './FinanceCard';
 import { JournalStrip } from './JournalStrip';
 import { QuickAddTaskModal } from './QuickAddTaskModal';
 import { QuickAddEventModal } from './QuickAddEventModal';
-import {
-  getDailyQuote,
-  getTodayDate,
-  getTodayISO,
-  initialHabits,
-  moodOptions,
-  userName,
-  weatherOptions,
-} from '../../data/mockData';
-import { addDaysIso, formatFullDate, getGreetingPrefix } from '../../lib/dateUtils';
+import { getDailyQuote, getTodayDate, getTodayISO, moodOptions, userName, weatherOptions } from '../../data/mockData';
+import { formatFullDate, getGreetingPrefix } from '../../lib/dateUtils';
 import { computeFinanceSummary } from '../../lib/financeUtils';
+import { computeStreak } from '../../lib/habitUtils';
 import { isMyDay, isOverdue } from '../../lib/todoUtils';
 import { useLocalStorageState } from '../../lib/useLocalStorageState';
 import { useAppData } from '../../store/AppDataContext';
-import type { CalendarEvent, DashboardEvent, DashboardTask, Habit, TodoTask } from '../../types';
+import type { CalendarEvent, DashboardEvent, DashboardTask, TodoTask } from '../../types';
 import './dashboard-shared.css';
 import './Dashboard.css';
 
@@ -55,6 +48,8 @@ export function Dashboard() {
     events,
     financeTransactions,
     goals,
+    habits,
+    toggleHabitCompletion,
     journalEntries,
     cycleTaskStatus,
     createTask,
@@ -69,7 +64,6 @@ export function Dashboard() {
     [financeTransactions, todayIso],
   );
 
-  const [habits, setHabits] = useLocalStorageState<Habit[]>('hi-app:habits', initialHabits);
   const [moodEmoji, setMoodEmoji] = useLocalStorageState<string | null>('hi-app:mood', null);
   const [weatherEmoji, setWeatherEmoji] = useLocalStorageState<string | null>('hi-app:weather', null);
   const [quickAddModal, setQuickAddModal] = useState<'none' | 'task' | 'event'>('none');
@@ -94,28 +88,16 @@ export function Dashboard() {
 
   const habitViews = useMemo<HabitView[]>(
     () =>
-      habits.map((h) => ({
-        id: h.id,
-        label: h.label,
-        done: h.lastCompletedDate === todayIso,
-        streakCount: h.streakCount,
-      })),
+      habits
+        .filter((h) => !h.archived)
+        .map((h) => ({
+          id: h.id,
+          label: h.title,
+          done: todayIso in h.completions,
+          streakCount: computeStreak(h, todayIso),
+        })),
     [habits, todayIso],
   );
-
-  const toggleHabit = (id: string) => {
-    setHabits((prev) =>
-      prev.map((h) => {
-        if (h.id !== id) return h;
-        const doneToday = h.lastCompletedDate === todayIso;
-        if (doneToday) {
-          return { ...h, lastCompletedDate: null, streakCount: Math.max(0, h.streakCount - 1) };
-        }
-        const continuing = h.lastCompletedDate === addDaysIso(todayIso, -1);
-        return { ...h, lastCompletedDate: todayIso, streakCount: continuing ? h.streakCount + 1 : 1 };
-      }),
-    );
-  };
 
   return (
     <div className="page">
@@ -164,7 +146,7 @@ export function Dashboard() {
           />
           <HabitsCard
             habits={habitViews}
-            onToggle={toggleHabit}
+            onToggle={(id) => toggleHabitCompletion(id, todayIso)}
             onNavigate={() => navigate('/habits')}
             onAdd={() => navigate('/habits')}
           />

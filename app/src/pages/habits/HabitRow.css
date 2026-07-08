@@ -1,0 +1,53 @@
+.habit-row {
+  padding: 14px 20px;
+  border-bottom: 1px solid oklch(0.94 0.01 240);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.habit-row:last-child {
+  border-bottom: none;
+}
+
+.habit-row__title-group {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.habit-row__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 14.5px var(--font-body);
+  color: var(--color-text-primary);
+}
+
+.habit-row__frequency {
+  font: 600 11.5px var(--font-body);
+  color: var(--color-text-muted);
+}
+
+.habit-row__week {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.habit-row__streak {
+  font: 700 12.5px var(--font-display);
+  color: oklch(0.58 0.19 35);
+  flex-shrink: 0;
+  width: 56px;
+}
+
+.habit-row__rate {
+  font: 600 12px var(--font-body);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  width: 80px;
+  text-align: right;
+}
