@@ -5,6 +5,8 @@ import {
   financeTransactions,
   initialGoalCategories,
   initialGoals,
+  initialHabitCategories,
+  initialHabits,
   initialJournalEntries,
   initialJournalFolders,
   todoCategories,
@@ -20,6 +22,9 @@ import type {
   Goal,
   GoalCategory,
   GoalDraft,
+  Habit,
+  HabitCategory,
+  HabitDraft,
   JournalEntry,
   JournalEntryDraft,
   JournalFolder,
@@ -68,6 +73,18 @@ interface AppDataContextValue {
   changeGoalCategoryEmoji: (id: string, emoji: string) => void;
   deleteGoalCategory: (id: string) => void;
   unlinkTaskFromGoal: (taskId: string) => void;
+  habits: Habit[];
+  addHabit: (draft: HabitDraft) => void;
+  updateHabit: (id: string, draft: HabitDraft) => void;
+  deleteHabit: (id: string) => void;
+  setHabitArchived: (id: string, archived: boolean) => void;
+  toggleHabitCompletion: (id: string, dateIso: string) => void;
+  setHabitCompletionNote: (id: string, dateIso: string, note: string) => void;
+  habitCategories: HabitCategory[];
+  addHabitCategory: (name: string, emoji: string) => void;
+  renameHabitCategory: (id: string, name: string) => void;
+  changeHabitCategoryEmoji: (id: string, emoji: string) => void;
+  deleteHabitCategory: (id: string) => void;
   journalFolders: JournalFolder[];
   addJournalFolder: (name: string) => void;
   renameJournalFolder: (id: string, name: string) => void;
@@ -125,6 +142,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   const [goalCategories, setGoalCategories] = useLocalStorageState<GoalCategory[]>(
     'hi-app:goal-categories',
     initialGoalCategories,
+  );
+  const [habits, setHabits] = useLocalStorageState<Habit[]>('hi-app:habits', initialHabits);
+  const [habitCategories, setHabitCategories] = useLocalStorageState<HabitCategory[]>(
+    'hi-app:habit-categories',
+    initialHabitCategories,
   );
   const [journalFolders, setJournalFolders] = useLocalStorageState<JournalFolder[]>(
     'hi-app:journal-folders',
@@ -240,6 +262,66 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         setGoalCategories(remaining);
         setGoals((prev) => prev.map((g) => (g.categoryId === id ? { ...g, categoryId: fallback } : g)));
       },
+      habits,
+      addHabit: (draft) =>
+        setHabits((prev) => [
+          ...prev,
+          {
+            id: generateId('habit'),
+            title: draft.title,
+            categoryId: draft.categoryId || habitCategories[0]?.id || '',
+            frequencyType: draft.frequencyType,
+            activeDays: draft.activeDays,
+            description: draft.description,
+            archived: false,
+            completions: {},
+          },
+        ]),
+      updateHabit: (id, draft) =>
+        setHabits((prev) =>
+          prev.map((h) =>
+            h.id === id
+              ? {
+                  ...h,
+                  title: draft.title,
+                  categoryId: draft.categoryId,
+                  frequencyType: draft.frequencyType,
+                  activeDays: draft.activeDays,
+                  description: draft.description,
+                }
+              : h,
+          ),
+        ),
+      deleteHabit: (id) => setHabits((prev) => prev.filter((h) => h.id !== id)),
+      setHabitArchived: (id, archived) =>
+        setHabits((prev) => prev.map((h) => (h.id === id ? { ...h, archived } : h))),
+      toggleHabitCompletion: (id, dateIso) =>
+        setHabits((prev) =>
+          prev.map((h) => {
+            if (h.id !== id) return h;
+            const completions = { ...h.completions };
+            if (dateIso in completions) delete completions[dateIso];
+            else completions[dateIso] = '';
+            return { ...h, completions };
+          }),
+        ),
+      setHabitCompletionNote: (id, dateIso, note) =>
+        setHabits((prev) =>
+          prev.map((h) => (h.id === id && dateIso in h.completions ? { ...h, completions: { ...h.completions, [dateIso]: note } } : h)),
+        ),
+      habitCategories,
+      addHabitCategory: (name, emoji) =>
+        setHabitCategories((prev) => [...prev, { id: generateId('habitcat'), name, emoji }]),
+      renameHabitCategory: (id, name) =>
+        setHabitCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
+      changeHabitCategoryEmoji: (id, emoji) =>
+        setHabitCategories((prev) => prev.map((c) => (c.id === id ? { ...c, emoji } : c))),
+      deleteHabitCategory: (id) => {
+        const remaining = habitCategories.filter((c) => c.id !== id);
+        const fallback = remaining[0]?.id ?? '';
+        setHabitCategories(remaining);
+        setHabits((prev) => prev.map((h) => (h.categoryId === id ? { ...h, categoryId: fallback } : h)));
+      },
       journalFolders,
       addJournalFolder: (name) => setJournalFolders((prev) => [...prev, { id: generateId('folder'), name }]),
       renameJournalFolder: (id, name) =>
@@ -262,6 +344,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     financeTxs,
     goals,
     goalCategories,
+    habits,
+    habitCategories,
     journalFolders,
     journalEntries,
     setTasks,
@@ -271,6 +355,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setFinanceTxs,
     setGoals,
     setGoalCategories,
+    setHabits,
+    setHabitCategories,
     setJournalFolders,
     setJournalEntries,
   ]);
