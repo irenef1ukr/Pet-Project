@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import {
   calendarEvents,
+  dayMeta as initialDayMeta,
   financeCategories,
   financeTransactions,
   getTodayISO,
@@ -24,6 +25,7 @@ import { useLocalStorageState } from '../lib/useLocalStorageState';
 import type {
   CalendarEvent,
   CalendarEventDraft,
+  DayMeta,
   FinanceCategory,
   FinanceTransaction,
   Goal,
@@ -54,6 +56,9 @@ interface AppDataContextValue {
   categories: TodoCategory[];
   events: CalendarEvent[];
   calendarEntries: CalendarEvent[];
+  dayMeta: Record<string, DayMeta>;
+  setDayMood: (dateIso: string, mood: string) => void;
+  setDayWeather: (dateIso: string, weather: string) => void;
   cycleTaskStatus: (id: string) => void;
   renameTaskTitle: (id: string, title: string) => void;
   changeTaskPriority: (id: string, priority: TodoPriority) => void;
@@ -208,6 +213,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     'hi-app:shopping-list',
     initialShoppingList,
   );
+  const [dayMeta, setDayMeta] = useLocalStorageState<Record<string, DayMeta>>('hi-app:day-meta', initialDayMeta);
 
   const value = useMemo<AppDataContextValue>(() => {
     const lessonEvents = lessonsToCalendarEvents(lessons, lessonSubjects, getTodayISO());
@@ -222,6 +228,11 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       categories,
       events,
       calendarEntries,
+      dayMeta,
+      setDayMood: (dateIso, mood) =>
+        setDayMeta((prev) => ({ ...prev, [dateIso]: { ...prev[dateIso], mood } })),
+      setDayWeather: (dateIso, weather) =>
+        setDayMeta((prev) => ({ ...prev, [dateIso]: { ...prev[dateIso], weather } })),
       cycleTaskStatus: (id) =>
         setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status: nextStatus(t.status) } : t))),
       renameTaskTitle: (id, title) => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, title } : t))),
@@ -527,6 +538,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     recipes,
     recipeCategories,
     shoppingList,
+    dayMeta,
     setTasks,
     setCategories,
     setEvents,
@@ -543,6 +555,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setRecipes,
     setRecipeCategories,
     setShoppingList,
+    setDayMeta,
   ]);
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;
