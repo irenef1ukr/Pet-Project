@@ -25,6 +25,7 @@ import type {
 import { BudgetByCategoryCard } from './BudgetByCategoryCard';
 import { BudgetFormScreen } from './BudgetFormScreen';
 import { CategoryManagementScreen } from './CategoryManagementScreen';
+import { DeleteTransactionConfirmModal } from './DeleteTransactionConfirmModal';
 import { DonutCard } from './DonutCard';
 import { PeriodBar } from './PeriodBar';
 import { SpendingTrendChart } from './SpendingTrendChart';
@@ -61,6 +62,7 @@ export function Finance() {
   const [txCategoryFilter, setTxCategoryFilter] = useState('all');
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [editingTxId, setEditingTxId] = useState<string | null>(null);
+  const [deletingTxId, setDeletingTxId] = useState<string | null>(null);
   const [txForm, setTxForm] = useState<FinanceTransactionDraft>({
     date: today,
     desc: '',
@@ -179,6 +181,11 @@ export function Finance() {
     setScreen('dashboard');
   };
 
+  const confirmDeleteTx = () => {
+    if (deletingTxId) deleteTransaction(deletingTxId);
+    setDeletingTxId(null);
+  };
+
   const openCategoriesFrom = (returnTo: CategoriesReturnTo) => {
     setCategoriesReturnTo(returnTo);
     setScreen('categories');
@@ -206,6 +213,8 @@ export function Finance() {
     setCategoryBudget(budgetForm.categoryId, amount);
     setScreen('dashboard');
   };
+
+  const deletingTx = deletingTxId ? financeTransactions.find((t) => t.id === deletingTxId) : undefined;
 
   const handleExport = () => {
     if (filteredSortedTransactions.length === 0) return;
@@ -274,6 +283,7 @@ export function Finance() {
                 amountLabel: formatCurrency(t.amount),
                 category: getCategory(financeCategories, t.categoryId),
                 onEdit: () => openEditTx(t.id),
+                onDelete: () => setDeletingTxId(t.id),
               }))}
               isEmpty={pageItems.length === 0}
               pageLabel={`Page ${currentPage + 1} of ${totalPages}`}
@@ -324,6 +334,14 @@ export function Finance() {
           />
         )}
       </div>
+
+      {deletingTx && (
+        <DeleteTransactionConfirmModal
+          transaction={deletingTx}
+          onCancel={() => setDeletingTxId(null)}
+          onConfirm={confirmDeleteTx}
+        />
+      )}
     </div>
   );
 }
