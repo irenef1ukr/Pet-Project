@@ -44,7 +44,7 @@ export function Dashboard() {
   const navigate = useNavigate();
   const {
     tasks: todoTasks,
-    events,
+    calendarEntries,
     financeTransactions,
     goals,
     habits,
@@ -76,8 +76,11 @@ export function Dashboard() {
   );
 
   const todaysEvents = useMemo(
-    () => events.filter((e) => !e.allDay && e.date === todayIso).map(toDashboardEvent),
-    [events, todayIso],
+    () =>
+      calendarEntries
+        .filter((e) => !e.allDay && e.date === todayIso && !e.id.startsWith('task-'))
+        .map(toDashboardEvent),
+    [calendarEntries, todayIso],
   );
 
   const latestJournalEntry = useMemo(
