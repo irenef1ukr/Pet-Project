@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TopNav } from '../../components/TopNav';
-import { NOW_TIME, dayMeta, getTodayDate, getTodayISO } from '../../data/mockData';
+import { NOW_TIME, getTodayDate, getTodayISO } from '../../data/mockData';
 import { useAppData } from '../../store/AppDataContext';
 import type { CalendarView } from '../../types';
 import { DayView } from './DayView';
@@ -25,7 +25,7 @@ type ModalState =
 
 export function Calendar() {
   const navigate = useNavigate();
-  const { events, calendarEntries, createEvent, updateEvent, deleteEvent } = useAppData();
+  const { events, calendarEntries, dayMeta, createEvent, updateEvent, deleteEvent } = useAppData();
   const [view, setView] = useState<CalendarView>('month');
   const [selectedDate, setSelectedDate] = useState(getTodayDate);
   const [modal, setModal] = useState<ModalState>({ type: 'none' });

@@ -15,7 +15,6 @@ import { formatFullDate, getGreetingPrefix } from '../../lib/dateUtils';
 import { computeFinanceSummary } from '../../lib/financeUtils';
 import { computeStreak } from '../../lib/habitUtils';
 import { isMyDay, isOverdue } from '../../lib/todoUtils';
-import { useLocalStorageState } from '../../lib/useLocalStorageState';
 import { useAppData } from '../../store/AppDataContext';
 import type { CalendarEvent, DashboardEvent, DashboardTask, TodoTask } from '../../types';
 import './dashboard-shared.css';
@@ -54,6 +53,9 @@ export function Dashboard() {
     cycleTaskStatus,
     createTask,
     createEvent,
+    dayMeta,
+    setDayMood,
+    setDayWeather,
   } = useAppData();
 
   const today = getTodayDate();
@@ -64,8 +66,8 @@ export function Dashboard() {
     [financeTransactions, todayIso],
   );
 
-  const [moodEmoji, setMoodEmoji] = useLocalStorageState<string | null>('hi-app:mood', null);
-  const [weatherEmoji, setWeatherEmoji] = useLocalStorageState<string | null>('hi-app:weather', null);
+  const moodEmoji = dayMeta[todayIso]?.mood ?? null;
+  const weatherEmoji = dayMeta[todayIso]?.weather ?? null;
   const [quickAddModal, setQuickAddModal] = useState<'none' | 'task' | 'event'>('none');
 
   const tasks = useMemo(
@@ -117,8 +119,8 @@ export function Dashboard() {
           weatherEmoji={weatherEmoji}
           moodOptions={moodOptions}
           weatherOptions={weatherOptions}
-          onSelectMood={setMoodEmoji}
-          onSelectWeather={setWeatherEmoji}
+          onSelectMood={(emoji) => setDayMood(todayIso, emoji)}
+          onSelectWeather={(emoji) => setDayWeather(todayIso, emoji)}
         />
 
         <span className="zone-label">Today</span>
