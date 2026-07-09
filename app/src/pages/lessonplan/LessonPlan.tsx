@@ -2,22 +2,32 @@ import { useMemo, useState } from 'react';
 import { TopNav } from '../../components/TopNav';
 import { getTodayISO } from '../../data/mockData';
 import { addDaysIso, formatDateRange } from '../../lib/dateUtils';
-import { mondayOfIso } from '../../lib/habitUtils';
-import { lessonSubjectColors, subjectProgress } from '../../lib/lessonUtils';
+import { monFirstDay, mondayOfIso } from '../../lib/habitUtils';
+import { lessonSubjectColors, resolvedLessonStatus, subjectProgress } from '../../lib/lessonUtils';
 import { useAppData } from '../../store/AppDataContext';
-import type { Lesson, LessonDraft } from '../../types';
+import type { Lesson, LessonDraft, LessonStatus } from '../../types';
 import { LessonDetailScreen } from './LessonDetailScreen';
 import { LessonFormScreen } from './LessonFormScreen';
+import { LessonStatusScopeModal } from './LessonStatusScopeModal';
 import { LessonSubjectsScreen } from './LessonSubjectsScreen';
 import { LessonWeekGrid } from './LessonWeekGrid';
 import './LessonPlan.css';
 
 type Screen = 'main' | 'detail' | 'form' | 'subjects';
 
+interface PendingStatusChoice {
+  lessonId: string;
+  dateIso: string;
+  status: LessonStatus;
+  restDraft: LessonDraft;
+}
+
 const EMPTY_FORM: LessonDraft = {
   objective: '',
   subjectId: '',
+  recurring: true,
   day: 0,
+  date: '',
   startTime: '09:00',
   durationMinutes: 60,
   materials: '',
@@ -32,6 +42,8 @@ export function LessonPlan() {
     addLesson,
     updateLesson,
     deleteLesson,
+    setLessonStatus,
+    setLessonOccurrenceStatus,
     addLessonSubject,
     renameLessonSubject,
     changeLessonSubjectEmoji,
@@ -43,10 +55,12 @@ export function LessonPlan() {
   const [weekMonday, setWeekMonday] = useState(() => mondayOfIso(todayIso));
   const [subjectFilter, setSubjectFilter] = useState<string>('all');
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [detailDateIso, setDetailDateIso] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<LessonDraft>(EMPTY_FORM);
   const [formError, setFormError] = useState('');
   const [newSubject, setNewSubject] = useState({ emoji: '📘', name: '' });
+  const [pendingStatusChoice, setPendingStatusChoice] = useState<PendingStatusChoice | null>(null);
 
   const weekDays = useMemo(() => Array.from({ length: 5 }, (_, i) => addDaysIso(weekMonday, i)), [weekMonday]);
   const weekRangeLabel = formatDateRange(weekDays[0], weekDays[4]);
@@ -56,8 +70,9 @@ export function LessonPlan() {
     [lessons, subjectFilter],
   );
 
-  const openDetail = (id: string) => {
+  const openDetail = (id: string, dateIso: string) => {
     setDetailId(id);
+    setDetailDateIso(dateIso);
     setScreen('detail');
   };
 
@@ -69,24 +84,35 @@ export function LessonPlan() {
   const openNewLesson = () => {
     setEditingId(null);
     setFormError('');
-    setForm({ ...EMPTY_FORM, subjectId: lessonSubjects[0]?.id ?? '' });
+    setForm({ ...EMPTY_FORM, subjectId: lessonSubjects[0]?.id ?? '', date: todayIso });
     setScreen('form');
   };
 
   const openEditLesson = (lesson: Lesson) => {
     setEditingId(lesson.id);
     setFormError('');
+    const occurrenceDate = lesson.recurring ? detailDateIso || todayIso : (lesson.date ?? detailDateIso ?? todayIso);
     setForm({
       objective: lesson.objective,
       subjectId: lesson.subjectId,
-      day: lesson.day,
+      recurring: lesson.recurring,
+      day: lesson.recurring ? lesson.day : monFirstDay(occurrenceDate),
+      date: occurrenceDate,
       startTime: lesson.startTime,
       durationMinutes: lesson.durationMinutes,
       materials: lesson.materials.join(', '),
-      status: lesson.status,
+      status: resolvedLessonStatus(lesson, occurrenceDate),
       notes: lesson.notes,
     });
     setScreen('form');
+  };
+
+  const toggleLessonDone = (id: string, dateIso: string) => {
+    const lesson = lessons.find((l) => l.id === id);
+    if (!lesson) return;
+    const next: LessonStatus = resolvedLessonStatus(lesson, dateIso) === 'done' ? 'planned' : 'done';
+    if (lesson.recurring) setLessonOccurrenceStatus(id, dateIso, next);
+    else setLessonStatus(id, next);
   };
 
   const saveLesson = () => {
@@ -95,9 +121,40 @@ export function LessonPlan() {
       setFormError('Please give this lesson an objective.');
       return;
     }
+    if (!form.recurring && !form.date) {
+      setFormError('Please choose a date.');
+      return;
+    }
     const draft = { ...form, objective };
-    if (editingId) updateLesson(editingId, draft);
-    else addLesson(draft);
+    if (editingId) {
+      const original = lessons.find((l) => l.id === editingId);
+      if (original?.recurring && draft.recurring && draft.status !== resolvedLessonStatus(original, detailDateIso)) {
+        setPendingStatusChoice({ lessonId: editingId, dateIso: detailDateIso, status: draft.status, restDraft: draft });
+        return;
+      }
+      updateLesson(editingId, draft);
+    } else {
+      addLesson(draft);
+    }
+    setScreen(detailId ? 'detail' : 'main');
+  };
+
+  const applyStatusToOne = () => {
+    if (!pendingStatusChoice) return;
+    const { lessonId, dateIso, status, restDraft } = pendingStatusChoice;
+    const original = lessons.find((l) => l.id === lessonId);
+    updateLesson(lessonId, { ...restDraft, status: original?.status ?? restDraft.status });
+    setLessonOccurrenceStatus(lessonId, dateIso, status);
+    setPendingStatusChoice(null);
+    setScreen(detailId ? 'detail' : 'main');
+  };
+
+  const applyStatusToAll = () => {
+    if (!pendingStatusChoice) return;
+    const { lessonId, restDraft } = pendingStatusChoice;
+    updateLesson(lessonId, restDraft);
+    setLessonStatus(lessonId, restDraft.status);
+    setPendingStatusChoice(null);
     setScreen(detailId ? 'detail' : 'main');
   };
 
@@ -119,7 +176,6 @@ export function LessonPlan() {
 
   const detailLesson = detailId ? lessons.find((l) => l.id === detailId) : undefined;
   const detailSubjectIndex = detailLesson ? lessonSubjects.findIndex((s) => s.id === detailLesson.subjectId) : -1;
-  const detailDateIso = detailLesson ? addDaysIso(mondayOfIso(todayIso), detailLesson.day) : '';
 
   return (
     <div className="page">
@@ -223,7 +279,13 @@ export function LessonPlan() {
                 No subjects yet — click "Manage Subjects" above to add one before creating lessons.
               </div>
             ) : (
-              <LessonWeekGrid weekDays={weekDays} lessons={filteredLessons} subjects={lessonSubjects} onSelectLesson={openDetail} />
+              <LessonWeekGrid
+                weekDays={weekDays}
+                lessons={filteredLessons}
+                subjects={lessonSubjects}
+                onSelectLesson={openDetail}
+                onToggleDone={toggleLessonDone}
+              />
             )}
           </>
         )}
@@ -237,6 +299,7 @@ export function LessonPlan() {
             onBack={backFromDetail}
             onEdit={() => openEditLesson(detailLesson)}
             onDelete={confirmDeleteLesson}
+            onToggleDone={() => toggleLessonDone(detailLesson.id, detailDateIso)}
           />
         )}
 
@@ -265,6 +328,16 @@ export function LessonPlan() {
           />
         )}
       </div>
+
+      {pendingStatusChoice && (
+        <LessonStatusScopeModal
+          lessonObjective={lessons.find((l) => l.id === pendingStatusChoice.lessonId)?.objective ?? ''}
+          status={pendingStatusChoice.status}
+          onApplyOne={applyStatusToOne}
+          onApplyAll={applyStatusToAll}
+          onCancel={() => setPendingStatusChoice(null)}
+        />
+      )}
     </div>
   );
 }

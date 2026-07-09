@@ -40,17 +40,44 @@ export function LessonFormScreen({ isEditing, subjects, draft, error, onChange, 
           </select>
         </label>
 
+        <div className="lesson-field">
+          <span className="lesson-field__label">Repeats</span>
+          <div className="lesson-status-toggle">
+            <button
+              type="button"
+              className={`lesson-status-toggle__btn${draft.recurring ? ' lesson-status-toggle__btn--active' : ''}`}
+              onClick={() => onChange({ recurring: true })}
+            >
+              Weekly
+            </button>
+            <button
+              type="button"
+              className={`lesson-status-toggle__btn${!draft.recurring ? ' lesson-status-toggle__btn--active' : ''}`}
+              onClick={() => onChange({ recurring: false })}
+            >
+              Just once
+            </button>
+          </div>
+        </div>
+
         <div className="lesson-field-row">
-          <label className="lesson-field">
-            <span className="lesson-field__label">Day</span>
-            <select value={draft.day} onChange={(e) => onChange({ day: Number(e.target.value) })}>
-              {LESSON_DAY_NAMES.map((name, idx) => (
-                <option key={name} value={idx}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
+          {draft.recurring ? (
+            <label className="lesson-field">
+              <span className="lesson-field__label">Day</span>
+              <select value={draft.day} onChange={(e) => onChange({ day: Number(e.target.value) })}>
+                {LESSON_DAY_NAMES.map((name, idx) => (
+                  <option key={name} value={idx}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <label className="lesson-field">
+              <span className="lesson-field__label">Date</span>
+              <input type="date" value={draft.date} onChange={(e) => onChange({ date: e.target.value })} />
+            </label>
+          )}
 
           <label className="lesson-field">
             <span className="lesson-field__label">Start Time</span>

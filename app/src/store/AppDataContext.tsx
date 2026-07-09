@@ -39,6 +39,7 @@ import type {
   JournalFolder,
   Lesson,
   LessonDraft,
+  LessonStatus,
   LessonSubject,
   Recipe,
   RecipeCategory,
@@ -116,6 +117,8 @@ interface AppDataContextValue {
   addLesson: (draft: LessonDraft) => void;
   updateLesson: (id: string, draft: LessonDraft) => void;
   deleteLesson: (id: string) => void;
+  setLessonStatus: (id: string, status: LessonStatus) => void;
+  setLessonOccurrenceStatus: (id: string, dateIso: string, status: LessonStatus) => void;
   lessonSubjects: LessonSubject[];
   addLessonSubject: (name: string, emoji: string) => void;
   renameLessonSubject: (id: string, name: string) => void;
@@ -411,7 +414,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
             id: generateId('lesson'),
             objective: draft.objective,
             subjectId: draft.subjectId || lessonSubjects[0]?.id || '',
+            recurring: draft.recurring,
             day: draft.day,
+            date: draft.recurring ? undefined : draft.date,
             startTime: draft.startTime,
             durationMinutes: draft.durationMinutes,
             materials: draft.materials
@@ -419,6 +424,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
               .map((m) => m.trim())
               .filter(Boolean),
             status: draft.status,
+            statusByDate: {},
             notes: draft.notes,
           },
         ]),
@@ -430,7 +436,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
                   ...l,
                   objective: draft.objective,
                   subjectId: draft.subjectId,
+                  recurring: draft.recurring,
                   day: draft.day,
+                  date: draft.recurring ? undefined : draft.date,
                   startTime: draft.startTime,
                   durationMinutes: draft.durationMinutes,
                   materials: draft.materials
@@ -438,12 +446,19 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
                     .map((m) => m.trim())
                     .filter(Boolean),
                   status: draft.status,
+                  statusByDate: draft.recurring ? l.statusByDate : {},
                   notes: draft.notes,
                 }
               : l,
           ),
         ),
       deleteLesson: (id) => setLessons((prev) => prev.filter((l) => l.id !== id)),
+      setLessonStatus: (id, status) =>
+        setLessons((prev) => prev.map((l) => (l.id === id ? { ...l, status, statusByDate: {} } : l))),
+      setLessonOccurrenceStatus: (id, dateIso, status) =>
+        setLessons((prev) =>
+          prev.map((l) => (l.id === id ? { ...l, statusByDate: { ...l.statusByDate, [dateIso]: status } } : l)),
+        ),
       lessonSubjects,
       addLessonSubject: (name, emoji) =>
         setLessonSubjects((prev) => [...prev, { id: generateId('subject'), name, emoji }]),

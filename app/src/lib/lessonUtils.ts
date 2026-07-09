@@ -74,19 +74,32 @@ export function subjectProgress(lessons: Lesson[], subjectId: string) {
   return { done, total: forSubject.length };
 }
 
+/** Resolves the status of a single occurrence, applying the per-date override for recurring lessons. */
+export function resolvedLessonStatus(lesson: Lesson, dateIso: string) {
+  if (!lesson.recurring) return lesson.status;
+  return lesson.statusByDate[dateIso] ?? lesson.status;
+}
+
 const LESSON_SYNC_WEEKS_BACK = 8;
 const LESSON_SYNC_WEEKS_FORWARD = 26;
 
-/** Projects each weekly-recurring lesson onto real calendar dates so it can be synced into the Calendar module. */
+/** Projects each lesson onto real calendar dates so it can be synced into the Calendar module. */
 export function lessonsToCalendarEvents(lessons: Lesson[], subjects: LessonSubject[], todayIso: string): CalendarEvent[] {
   const monday = mondayOfIso(todayIso);
   const events: CalendarEvent[] = [];
   for (const lesson of lessons) {
     const subjectIndex = subjects.findIndex((s) => s.id === lesson.subjectId);
     const color = lessonSubjectColors(Math.max(subjectIndex, 0)).accent;
-    for (let w = -LESSON_SYNC_WEEKS_BACK; w <= LESSON_SYNC_WEEKS_FORWARD; w++) {
-      const weekMonday = addDaysIso(monday, w * 7);
-      const date = addDaysIso(weekMonday, lesson.day);
+    const dates: string[] = [];
+    if (lesson.recurring) {
+      for (let w = -LESSON_SYNC_WEEKS_BACK; w <= LESSON_SYNC_WEEKS_FORWARD; w++) {
+        const weekMonday = addDaysIso(monday, w * 7);
+        dates.push(addDaysIso(weekMonday, lesson.day));
+      }
+    } else if (lesson.date) {
+      dates.push(lesson.date);
+    }
+    for (const date of dates) {
       events.push({
         id: `lesson-${lesson.id}-${date}`,
         title: lesson.objective,
@@ -95,7 +108,7 @@ export function lessonsToCalendarEvents(lessons: Lesson[], subjects: LessonSubje
         endTime: addMinutesToTime(lesson.startTime, lesson.durationMinutes),
         type: 'lesson',
         category: 'lesson',
-        recurring: 'weekly',
+        recurring: lesson.recurring ? 'weekly' : 'none',
         colorOverride: color,
       });
     }
