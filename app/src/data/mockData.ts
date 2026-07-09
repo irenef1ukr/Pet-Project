@@ -370,8 +370,7 @@ export const calendarEvents: CalendarEvent[] = [
 ];
 
 export const dayMeta: Record<string, DayMeta> = {
-  '2026-07-01': { spend: 42, mood: '🙂', weather: '☀️' },
-  '2026-07-02': { spend: 18 },
+  '2026-07-01': { mood: '🙂', weather: '☀️' },
   '2026-07-03': { mood: '😐', weather: '🌧️' },
 };
 
