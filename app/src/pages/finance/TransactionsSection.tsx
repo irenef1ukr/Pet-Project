@@ -9,6 +9,7 @@ interface TransactionRow {
   amountLabel: string;
   category: FinanceCategory;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
 interface TransactionsSectionProps {
@@ -109,8 +110,19 @@ export function TransactionsSection({
             </span>
           </div>
           <div className="transactions-table__amount">{t.amountLabel}</div>
-          <div className="transactions-table__edit" onClick={t.onEdit} role="button" tabIndex={0}>
-            Edit
+          <div className="transactions-table__actions">
+            <span className="transactions-table__edit" onClick={t.onEdit} role="button" tabIndex={0}>
+              Edit
+            </span>
+            <span
+              className="transactions-table__delete"
+              onClick={t.onDelete}
+              role="button"
+              tabIndex={0}
+              aria-label="Delete transaction"
+            >
+              Delete
+            </span>
           </div>
         </div>
       ))}
