@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatLessonDateHeading, formatTime12h } from '../../lib/lessonUtils';
+import { formatLessonDateHeading, formatTime12h, resolvedLessonStatus } from '../../lib/lessonUtils';
 import type { LessonSubjectColors } from '../../lib/lessonUtils';
 import type { Lesson, LessonSubject } from '../../types';
 import './LessonDetailScreen.css';
@@ -12,10 +12,22 @@ interface LessonDetailScreenProps {
   onBack: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onToggleDone: () => void;
 }
 
-export function LessonDetailScreen({ lesson, subject, colors, dateIso, onBack, onEdit, onDelete }: LessonDetailScreenProps) {
+export function LessonDetailScreen({
+  lesson,
+  subject,
+  colors,
+  dateIso,
+  onBack,
+  onEdit,
+  onDelete,
+  onToggleDone,
+}: LessonDetailScreenProps) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const status = resolvedLessonStatus(lesson, dateIso);
+  const isDone = status === 'done';
 
   return (
     <div className="lesson-detail-screen">
@@ -27,8 +39,13 @@ export function LessonDetailScreen({ lesson, subject, colors, dateIso, onBack, o
         <div className="lesson-detail-card">
           <div className="lesson-detail-card__header">
             <span className="lesson-detail-card__title">{lesson.objective}</span>
-            <span className={`lesson-detail-card__status${lesson.status === 'done' ? ' lesson-detail-card__status--done' : ''}`}>
-              {lesson.status === 'done' ? 'Done' : 'Planned'}
+            <span
+              className={`lesson-detail-card__status${isDone ? ' lesson-detail-card__status--done' : ''}`}
+              onClick={onToggleDone}
+              role="button"
+              tabIndex={0}
+            >
+              {isDone ? '✓ Done' : 'Mark Done'}
             </span>
           </div>
 

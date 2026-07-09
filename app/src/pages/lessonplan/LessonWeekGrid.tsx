@@ -1,5 +1,5 @@
 import { fromISODate } from '../../lib/dateUtils';
-import { LESSON_DAY_SHORT, formatHourLabel, formatTime12h, lessonSubjectColors } from '../../lib/lessonUtils';
+import { LESSON_DAY_SHORT, formatHourLabel, formatTime12h, lessonSubjectColors, resolvedLessonStatus } from '../../lib/lessonUtils';
 import type { Lesson, LessonSubject } from '../../types';
 import './LessonWeekGrid.css';
 
@@ -7,7 +7,8 @@ interface LessonWeekGridProps {
   weekDays: string[];
   lessons: Lesson[];
   subjects: LessonSubject[];
-  onSelectLesson: (id: string) => void;
+  onSelectLesson: (id: string, dateIso: string) => void;
+  onToggleDone: (id: string, dateIso: string) => void;
 }
 
 const HOUR_START = 8;
@@ -22,7 +23,7 @@ function offsetForTime(time: string) {
   return Math.max(0, (minutes / 60) * HOUR_HEIGHT);
 }
 
-export function LessonWeekGrid({ weekDays, lessons, subjects, onSelectLesson }: LessonWeekGridProps) {
+export function LessonWeekGrid({ weekDays, lessons, subjects, onSelectLesson, onToggleDone }: LessonWeekGridProps) {
   return (
     <div className="lesson-week-grid">
       <div className="lesson-week-grid__header">
@@ -42,7 +43,7 @@ export function LessonWeekGrid({ weekDays, lessons, subjects, onSelectLesson }: 
           ))}
         </div>
         {weekDays.map((iso, dayIdx) => {
-          const dayLessons = lessons.filter((l) => l.day === dayIdx);
+          const dayLessons = lessons.filter((l) => (l.recurring ? l.day === dayIdx : l.date === iso));
           return (
             <div key={iso} className="lesson-week-grid__day-col" style={{ height: GRID_HEIGHT }}>
               {HOURS.map((hour) => (
@@ -53,16 +54,28 @@ export function LessonWeekGrid({ weekDays, lessons, subjects, onSelectLesson }: 
                 const colors = lessonSubjectColors(Math.max(subjectIndex, 0));
                 const top = offsetForTime(lesson.startTime);
                 const height = Math.max(28, (lesson.durationMinutes / 60) * HOUR_HEIGHT);
-                const isDone = lesson.status === 'done';
+                const isDone = resolvedLessonStatus(lesson, iso) === 'done';
                 return (
                   <div
                     key={lesson.id}
                     className={`lesson-week-grid__block${isDone ? ' lesson-week-grid__block--done' : ''}`}
                     style={{ top, height, background: colors.accentSoft, borderLeftColor: colors.accent, color: colors.tagText }}
-                    onClick={() => onSelectLesson(lesson.id)}
+                    onClick={() => onSelectLesson(lesson.id, iso)}
                     role="button"
                     tabIndex={0}
                   >
+                    <span
+                      className="lesson-week-grid__block-check"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleDone(lesson.id, iso);
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={isDone ? 'Mark as planned' : 'Mark as done'}
+                    >
+                      {isDone ? '✓' : '○'}
+                    </span>
                     <span className="lesson-week-grid__block-title">{lesson.objective}</span>
                     <span className="lesson-week-grid__block-time">{formatTime12h(lesson.startTime)}</span>
                   </div>

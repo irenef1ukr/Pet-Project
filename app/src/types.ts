@@ -255,19 +255,28 @@ export interface Lesson {
   id: string;
   objective: string;
   subjectId: string;
-  /** Mon-first day index, 0=Mon..4=Fri. */
+  /** true = repeats weekly on `day`; false = a single lesson on `date`. */
+  recurring: boolean;
+  /** Mon-first day index, 0=Mon..4=Fri. Used when recurring. */
   day: number;
+  /** ISO date. Used when not recurring. */
+  date?: string;
   startTime: string;
   durationMinutes: number;
   materials: string[];
+  /** Default/series status. The status for single lessons, and the fallback for recurring occurrences without an override. */
   status: LessonStatus;
+  /** Per-occurrence status overrides for recurring lessons, keyed by ISO date. */
+  statusByDate: Record<string, LessonStatus>;
   notes: string;
 }
 
 export interface LessonDraft {
   objective: string;
   subjectId: string;
+  recurring: boolean;
   day: number;
+  date: string;
   startTime: string;
   durationMinutes: number;
   materials: string;
