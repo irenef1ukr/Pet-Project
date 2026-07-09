@@ -1,8 +1,8 @@
 import type { TodoPriority, TodoStatus, TodoTask } from '../types';
 
 export const PRIORITY_COLOR: Record<TodoPriority, string> = {
-  High: 'oklch(0.65 0.28 25)',
-  Medium: 'oklch(0.65 0.28 60)',
+  High: 'oklch(0.6 0.26 20)',
+  Medium: 'oklch(0.72 0.18 80)',
   Low: 'oklch(0.65 0.28 120)',
 };
 
