@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TopNav } from '../../components/TopNav';
 import { NOW_TIME, getTodayDate, getTodayISO } from '../../data/mockData';
 import { useAppData } from '../../store/AppDataContext';
-import type { CalendarView } from '../../types';
+import type { CalendarView, DayMeta } from '../../types';
 import { DayView } from './DayView';
 import { DeleteEventConfirmModal } from './DeleteEventConfirmModal';
 import { EventDetailModal } from './EventDetailModal';
@@ -25,7 +25,8 @@ type ModalState =
 
 export function Calendar() {
   const navigate = useNavigate();
-  const { events, calendarEntries, dayMeta, createEvent, updateEvent, deleteEvent } = useAppData();
+  const { events, calendarEntries, dayMeta, financeTransactions, createEvent, updateEvent, deleteEvent } =
+    useAppData();
   const [view, setView] = useState<CalendarView>('month');
   const [selectedDate, setSelectedDate] = useState(getTodayDate);
   const [modal, setModal] = useState<ModalState>({ type: 'none' });
@@ -52,6 +53,19 @@ export function Calendar() {
 
   const upcoming = useMemo(() => getUpcomingEvents(calendarEntries, today, 4), [calendarEntries, today]);
 
+  const calendarDayMeta = useMemo(() => {
+    const spendByDate: Record<string, number> = {};
+    for (const t of financeTransactions) {
+      spendByDate[t.date] = (spendByDate[t.date] ?? 0) + t.amount;
+    }
+    const merged: Record<string, DayMeta> = {};
+    for (const iso of new Set([...Object.keys(dayMeta), ...Object.keys(spendByDate)])) {
+      const meta: DayMeta = { mood: dayMeta[iso]?.mood, weather: dayMeta[iso]?.weather, spend: spendByDate[iso] };
+      if (meta.mood || meta.weather || meta.spend !== undefined) merged[iso] = meta;
+    }
+    return merged;
+  }, [dayMeta, financeTransactions]);
+
   const selectedEvent =
     (modal.type === 'detail' || modal.type === 'edit' || modal.type === 'delete') &&
     events.find((e) => e.id === modal.eventId);
@@ -73,7 +87,7 @@ export function Calendar() {
               selectedDate={selectedDate}
               today={today}
               events={calendarEntries}
-              dayMeta={dayMeta}
+              dayMeta={calendarDayMeta}
               onPrev={goToPrev}
               onNext={goToNext}
               onSelectDay={goToDay}
@@ -97,7 +111,7 @@ export function Calendar() {
               today={today}
               nowTime={NOW_TIME}
               events={calendarEntries}
-              dayMeta={dayMeta}
+              dayMeta={calendarDayMeta}
               onPrev={goToPrev}
               onNext={goToNext}
               onSelectEvent={(e) => setModal({ type: 'detail', eventId: e.id })}
