@@ -111,7 +111,7 @@ export function Finance() {
   const donutGradient = segments.length ? `conic-gradient(${segments.join(', ')})` : 'conic-gradient(oklch(0.9 0.01 240) 0deg 360deg)';
 
   const budgetRows = financeCategories.map((c) => {
-    const spent = Math.round(monthTotals[c.id] ?? 0);
+    const spent = monthTotals[c.id] ?? 0;
     const pct = c.budget ? Math.min(100, (spent / c.budget) * 100) : 0;
     const over = c.budget > 0 && spent > c.budget;
     return {

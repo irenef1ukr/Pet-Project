@@ -60,7 +60,7 @@ export function getCategory(categories: FinanceCategory[], id: string): FinanceC
 }
 
 export function formatCurrency(amount: number): string {
-  return `₴${Math.round(amount).toLocaleString()}`;
+  return `₴${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 export function formatPeriodLabel(period: FinancePeriod, range: PeriodRange): string {
