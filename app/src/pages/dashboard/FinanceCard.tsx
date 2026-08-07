@@ -1,3 +1,4 @@
+import { formatCurrency } from '../../lib/financeUtils';
 import type { FinanceSummary } from '../../types';
 import './FinanceCard.css';
 
@@ -28,13 +29,13 @@ export function FinanceCard({ summary, onNavigate }: FinanceCardProps) {
           <div className="finance-stat">
             <span className="finance-stat__label">Spent this month</span>
             <span className="finance-stat__value finance-stat__value--month">
-              ${summary.spentThisMonth}
+              {formatCurrency(summary.spentThisMonth)}
             </span>
           </div>
           <div className="finance-stat">
             <span className="finance-stat__label">Spent yesterday</span>
             <span className="finance-stat__value finance-stat__value--yesterday">
-              ${summary.spentYesterday}
+              {formatCurrency(summary.spentYesterday)}
             </span>
           </div>
         </>
