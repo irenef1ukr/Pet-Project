@@ -13,6 +13,7 @@ import type {
   JournalFolder,
   Lesson,
   LessonSubject,
+  Note,
   Recipe,
   RecipeCategory,
   ShoppingListItem,
@@ -293,6 +294,36 @@ export const initialJournalEntries: JournalEntry[] = [
     goalId: '',
     mediaUrl: '',
     mediaType: '',
+  },
+];
+
+export const initialNotes: Note[] = [
+  {
+    id: 'note-1',
+    title: 'Wifi password for the new router',
+    bodyHtml: '<b>Network:</b> HomeNet-5G<br><b>Password:</b> sunflower-42-blue',
+    tags: ['home', 'reference'],
+    pinned: true,
+    createdAt: addDaysIso(today0, -14),
+    updatedAt: addDaysIso(today0, -14),
+  },
+  {
+    id: 'note-2',
+    title: 'Book recommendations from Dana',
+    bodyHtml: '<ul><li>Atomic Habits</li><li>The Midnight Library</li><li>Project Hail Mary</li></ul>',
+    tags: ['reading', 'ideas'],
+    pinned: false,
+    createdAt: addDaysIso(today0, -5),
+    updatedAt: addDaysIso(today0, -5),
+  },
+  {
+    id: 'note-3',
+    title: 'Packing list — coast trip',
+    bodyHtml: '<ul><li>Sunscreen</li><li>Swimsuit</li><li>Phone charger</li><li>Passport</li></ul>',
+    tags: ['travel'],
+    pinned: true,
+    createdAt: addDaysIso(today0, -1),
+    updatedAt: today0,
   },
 ];
 

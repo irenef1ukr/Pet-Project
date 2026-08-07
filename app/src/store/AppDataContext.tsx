@@ -13,6 +13,7 @@ import {
   initialJournalFolders,
   initialLessonSubjects,
   initialLessons,
+  initialNotes,
   initialRecipeCategories,
   initialRecipes,
   initialShoppingList,
@@ -42,6 +43,8 @@ import type {
   LessonDraft,
   LessonStatus,
   LessonSubject,
+  Note,
+  NoteDraft,
   Recipe,
   RecipeCategory,
   RecipeDraft,
@@ -136,6 +139,11 @@ interface AppDataContextValue {
   renameLessonSubject: (id: string, name: string) => void;
   changeLessonSubjectEmoji: (id: string, emoji: string) => void;
   deleteLessonSubject: (id: string) => void;
+  notes: Note[];
+  addNote: (draft: NoteDraft) => void;
+  updateNote: (id: string, draft: NoteDraft) => void;
+  deleteNote: (id: string) => void;
+  toggleNotePinned: (id: string) => void;
   recipes: Recipe[];
   addRecipe: (draft: RecipeDraft) => void;
   updateRecipe: (id: string, draft: RecipeDraft) => void;
@@ -219,6 +227,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     'hi-app:lesson-subjects',
     initialLessonSubjects,
   );
+  const [notes, setNotes] = useLocalStorageState<Note[]>('hi-app:notes', initialNotes);
   const [recipes, setRecipes] = useLocalStorageState<Recipe[]>('hi-app:recipes', initialRecipes);
   const [recipeCategories, setRecipeCategories] = useLocalStorageState<RecipeCategory[]>(
     'hi-app:recipe-categories',
@@ -513,6 +522,18 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         setLessonSubjects(remaining);
         setLessons((prev) => prev.map((l) => (l.subjectId === id ? { ...l, subjectId: fallback } : l)));
       },
+      notes,
+      addNote: (draft) => {
+        const now = getTodayISO();
+        setNotes((prev) => [{ ...draft, id: generateId('note'), createdAt: now, updatedAt: now }, ...prev]);
+      },
+      updateNote: (id, draft) =>
+        setNotes((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, ...draft, updatedAt: getTodayISO() } : n)),
+        ),
+      deleteNote: (id) => setNotes((prev) => prev.filter((n) => n.id !== id)),
+      toggleNotePinned: (id) =>
+        setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, pinned: !n.pinned } : n))),
       recipes,
       addRecipe: (draft) =>
         setRecipes((prev) => [
@@ -591,6 +612,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     journalEntries,
     lessons,
     lessonSubjects,
+    notes,
     recipes,
     recipeCategories,
     shoppingList,
@@ -608,6 +630,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setJournalEntries,
     setLessons,
     setLessonSubjects,
+    setNotes,
     setRecipes,
     setRecipeCategories,
     setShoppingList,

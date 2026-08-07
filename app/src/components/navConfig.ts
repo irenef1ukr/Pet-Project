@@ -13,5 +13,6 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Goals', path: '/goals', hue: 190 },
   { label: 'Finance', path: '/finance', hue: 230 },
   { label: 'Journal', path: '/journal', hue: 300 },
+  { label: 'Notes', path: '/notes', hue: 45 },
   { label: 'Recipes', path: '/recipes', hue: 165 },
 ];
