@@ -160,10 +160,6 @@ export function Finance() {
 
   const saveTx = () => {
     const amount = parseFloat(txForm.amount);
-    if (!txForm.desc.trim()) {
-      setTxFormError('Please add a description.');
-      return;
-    }
     if (!amount || amount <= 0) {
       setTxFormError('Please enter a valid amount.');
       return;

@@ -46,7 +46,7 @@ export function TransactionFormScreen({
         </label>
 
         <label className="finance-field">
-          <span className="finance-field__label">Description</span>
+          <span className="finance-field__label">Description (optional)</span>
           <input
             type="text"
             placeholder="e.g. Grocery run"

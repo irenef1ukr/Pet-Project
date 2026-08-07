@@ -19,7 +19,12 @@ export function DeleteTransactionConfirmModal({
       <div className="modal-card delete-tx-confirm">
         <h3 className="delete-tx-confirm__title">Delete transaction?</h3>
         <p className="delete-tx-confirm__body">
-          &ldquo;{transaction.desc}&rdquo; ({formatCurrency(transaction.amount)}) will be permanently deleted.
+          {transaction.desc ? (
+            <>&ldquo;{transaction.desc}&rdquo; ({formatCurrency(transaction.amount)})</>
+          ) : (
+            <>This {formatCurrency(transaction.amount)} transaction</>
+          )}{' '}
+          will be permanently deleted.
         </p>
         <div className="modal-actions">
           <button type="button" className="modal-actions__cancel" onClick={onCancel}>
