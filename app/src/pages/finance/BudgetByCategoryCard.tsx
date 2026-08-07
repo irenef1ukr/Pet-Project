@@ -21,8 +21,8 @@ export function BudgetByCategoryCard({ rows, onAddBudget }: BudgetByCategoryCard
     <div className="finance-card budget-card">
       <div className="budget-card__header">
         <span className="finance-section-title">Budget by Category</span>
-        <button type="button" className="finance-round-btn" onClick={onAddBudget} aria-label="Set category budget">
-          +
+        <button type="button" className="finance-round-btn" onClick={onAddBudget} aria-label="Edit category budgets">
+          ✎
         </button>
       </div>
       <div className="budget-card__rows">
