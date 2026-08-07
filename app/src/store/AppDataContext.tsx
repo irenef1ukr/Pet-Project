@@ -96,6 +96,7 @@ interface AppDataContextValue {
   addFinanceCategory: (category: Omit<FinanceCategory, 'id'>) => void;
   renameFinanceCategory: (id: string, name: string) => void;
   changeFinanceCategoryEmoji: (id: string, emoji: string) => void;
+  changeFinanceCategoryHue: (id: string, hue: number) => void;
   deleteFinanceCategory: (id: string) => void;
   setCategoryBudget: (id: string, budget: number) => void;
   goals: Goal[];
@@ -332,6 +333,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
       changeFinanceCategoryEmoji: (id, emoji) =>
         setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, emoji } : c))),
+      changeFinanceCategoryHue: (id, hue) =>
+        setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, hue } : c))),
       deleteFinanceCategory: (id) => setFinanceCats((prev) => prev.filter((c) => c.id !== id)),
       setCategoryBudget: (id, budget) =>
         setFinanceCats((prev) => prev.map((c) => (c.id === id ? { ...c, budget } : c))),

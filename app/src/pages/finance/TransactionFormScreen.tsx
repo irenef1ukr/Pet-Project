@@ -34,6 +34,18 @@ export function TransactionFormScreen({
         </label>
 
         <label className="finance-field">
+          <span className="finance-field__label">Amount (₴)</span>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="0.00"
+            value={draft.amount}
+            onChange={(e) => onChange({ amount: e.target.value })}
+          />
+        </label>
+
+        <label className="finance-field">
           <span className="finance-field__label">Description</span>
           <input
             type="text"
@@ -55,18 +67,6 @@ export function TransactionFormScreen({
           <span className="finance-field__link" onClick={onManageCategories} role="button" tabIndex={0}>
             Manage categories →
           </span>
-        </label>
-
-        <label className="finance-field">
-          <span className="finance-field__label">Amount (₴)</span>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="0.00"
-            value={draft.amount}
-            onChange={(e) => onChange({ amount: e.target.value })}
-          />
         </label>
 
         {error && <div className="finance-form-error">{error}</div>}

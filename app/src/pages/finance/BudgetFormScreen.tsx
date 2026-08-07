@@ -19,6 +19,8 @@ export function BudgetFormScreen({
   onSave,
   onCancel,
 }: BudgetFormScreenProps) {
+  const noBudget = draft.amount === '0';
+
   return (
     <div className="finance-screen-center">
       <div className="finance-form-card" style={{ width: 480 }}>
@@ -45,9 +47,19 @@ export function BudgetFormScreen({
             step="0.01"
             min="0"
             placeholder="0.00"
-            value={draft.amount}
+            value={noBudget ? '' : draft.amount}
+            disabled={noBudget}
             onChange={(e) => onChange({ amount: e.target.value })}
           />
+        </label>
+
+        <label className="finance-checkbox-field">
+          <input
+            type="checkbox"
+            checked={noBudget}
+            onChange={(e) => onChange({ amount: e.target.checked ? '0' : '' })}
+          />
+          <span>No budget for this category</span>
         </label>
 
         {error && <div className="finance-form-error">{error}</div>}
