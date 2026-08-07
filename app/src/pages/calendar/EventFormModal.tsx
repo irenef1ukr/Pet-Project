@@ -34,6 +34,7 @@ interface FormState {
   recurring: TodoRecurrence;
   colorOverride: string;
   reminders: number[];
+  syncToGoogle: boolean;
 }
 
 function toFormState(initial: CalendarEvent | undefined, today: string): FormState {
@@ -49,6 +50,7 @@ function toFormState(initial: CalendarEvent | undefined, today: string): FormSta
       recurring: 'none',
       colorOverride: '',
       reminders: [],
+      syncToGoogle: true,
     };
   }
   const match = TYPE_OPTIONS.find((o) => o.type === initial.type && o.category === initial.category);
@@ -63,6 +65,7 @@ function toFormState(initial: CalendarEvent | undefined, today: string): FormSta
     recurring: initial.recurring,
     colorOverride: initial.colorOverride ?? '',
     reminders: initial.reminders ?? [],
+    syncToGoogle: true,
   };
 }
 
@@ -70,12 +73,15 @@ interface EventFormModalProps {
   mode: 'create' | 'edit';
   initial?: CalendarEvent;
   today: string;
+  /** Whether the user currently has Google Calendar connected — controls whether the sync checkbox shows. */
+  googleConnected?: boolean;
   onSubmit: (draft: CalendarEventDraft) => void;
   onClose: () => void;
 }
 
-export function EventFormModal({ mode, initial, today, onSubmit, onClose }: EventFormModalProps) {
+export function EventFormModal({ mode, initial, today, googleConnected, onSubmit, onClose }: EventFormModalProps) {
   const [form, setForm] = useState<FormState>(() => toFormState(initial, today));
+  const alreadyLinkedToGoogle = Boolean(initial?.googleEventId);
   const [titleError, setTitleError] = useState(false);
   const [typeError, setTypeError] = useState(false);
   const [dateError, setDateError] = useState('');
@@ -120,6 +126,7 @@ export function EventFormModal({ mode, initial, today, onSubmit, onClose }: Even
       recurring: form.recurring,
       colorOverride: form.colorOverride || undefined,
       reminders: form.reminders,
+      syncToGoogle: form.syncToGoogle,
     });
   };
 
@@ -258,6 +265,21 @@ export function EventFormModal({ mode, initial, today, onSubmit, onClose }: Even
               ))}
             </div>
           </div>
+
+          {alreadyLinkedToGoogle ? (
+            <span className="modal-field__hint">🔗 Synced with Google Calendar — changes will be pushed automatically.</span>
+          ) : (
+            googleConnected && (
+              <label className="modal-checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={form.syncToGoogle}
+                  onChange={(e) => patch({ syncToGoogle: e.target.checked })}
+                />
+                Sync to Google Calendar
+              </label>
+            )
+          )}
 
           <div className="modal-actions">
             <button type="button" className="modal-actions__cancel" onClick={onClose}>
