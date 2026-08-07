@@ -94,8 +94,8 @@ export function TransactionsSection({
 
       <div className="transactions-table__head">
         <div>Date</div>
-        <div>Description</div>
         <div>Category</div>
+        <div>Description</div>
         <div className="transactions-table__amount-head">Amount</div>
         <div />
       </div>
@@ -103,12 +103,12 @@ export function TransactionsSection({
       {transactions.map((t) => (
         <div key={t.id} className="transactions-table__row">
           <div className="transactions-table__date">{t.dateLabel}</div>
-          <div className="transactions-table__desc">{t.desc}</div>
           <div>
             <span className="transactions-table__chip" style={categoryChipStyle(t.category.hue)}>
               {t.category.emoji} {t.category.name}
             </span>
           </div>
+          <div className="transactions-table__desc">{t.desc}</div>
           <div className="transactions-table__amount">{t.amountLabel}</div>
           <div className="transactions-table__actions">
             <span className="transactions-table__edit" onClick={t.onEdit} role="button" tabIndex={0}>
