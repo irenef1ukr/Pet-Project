@@ -19,6 +19,7 @@ import {
   todoCategories,
   todoTasks,
 } from '../data/mockData';
+import { useGoogleCalendarSync } from '../lib/useGoogleCalendarSync';
 import { lessonsToCalendarEvents } from '../lib/lessonUtils';
 import { generateId, nextStatus } from '../lib/todoUtils';
 import { useLocalStorageState } from '../lib/useLocalStorageState';
@@ -73,6 +74,17 @@ interface AppDataContextValue {
   createEvent: (draft: CalendarEventDraft) => void;
   updateEvent: (id: string, draft: CalendarEventDraft) => void;
   deleteEvent: (id: string) => void;
+  googleCalendar: {
+    configured: boolean;
+    connected: boolean;
+    connecting: boolean;
+    syncing: boolean;
+    lastSyncedAt: string | null;
+    error: string | null;
+    connect: () => Promise<void>;
+    disconnect: () => void;
+    syncNow: () => Promise<void>;
+  };
   financeCategories: FinanceCategory[];
   financeTransactions: FinanceTransaction[];
   addTransaction: (tx: Omit<FinanceTransaction, 'id'>) => void;
@@ -218,6 +230,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   );
   const [dayMeta, setDayMeta] = useLocalStorageState<Record<string, DayMeta>>('hi-app:day-meta', initialDayMeta);
 
+  const googleSync = useGoogleCalendarSync(events, setEvents);
+
   const value = useMemo<AppDataContextValue>(() => {
     const lessonEvents = lessonsToCalendarEvents(lessons, lessonSubjects, getTodayISO());
     const calendarEntries = [
@@ -266,10 +280,37 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       addCategory: (name) => setCategories((prev) => [...prev, { id: generateId('cat'), name }]),
       renameCategory: (id, name) => setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name } : c))),
       deleteCategory: (id) => setCategories((prev) => prev.filter((c) => c.id !== id)),
-      createEvent: (draft) => setEvents((prev) => [...prev, draftToEvent(generateId('event'), draft)]),
-      updateEvent: (id, draft) =>
-        setEvents((prev) => prev.map((e) => (e.id === id ? draftToEvent(id, draft) : e))),
-      deleteEvent: (id) => setEvents((prev) => prev.filter((e) => e.id !== id)),
+      createEvent: (draft) => {
+        const newEvent = draftToEvent(generateId('event'), draft);
+        setEvents((prev) => [...prev, newEvent]);
+        if (draft.syncToGoogle !== false && googleSync.connected) googleSync.pushCreate(newEvent);
+      },
+      updateEvent: (id, draft) => {
+        const updated = draftToEvent(id, draft);
+        setEvents((prev) => prev.map((e) => (e.id === id ? updated : e)));
+        const existing = events.find((e) => e.id === id);
+        if (existing?.googleEventId) {
+          googleSync.pushUpdate({ ...updated, googleEventId: existing.googleEventId }, draft);
+        } else if (draft.syncToGoogle && googleSync.connected) {
+          googleSync.pushCreate(updated);
+        }
+      },
+      deleteEvent: (id) => {
+        const existing = events.find((e) => e.id === id);
+        setEvents((prev) => prev.filter((e) => e.id !== id));
+        if (existing?.googleEventId) googleSync.pushDelete(existing);
+      },
+      googleCalendar: {
+        configured: googleSync.configured,
+        connected: googleSync.connected,
+        connecting: googleSync.connecting,
+        syncing: googleSync.syncing,
+        lastSyncedAt: googleSync.lastSyncedAt,
+        error: googleSync.error,
+        connect: googleSync.connect,
+        disconnect: googleSync.disconnect,
+        syncNow: googleSync.syncNow,
+      },
       financeCategories: financeCats,
       financeTransactions: financeTxs,
       addTransaction: (tx) => setFinanceTxs((prev) => [...prev, { ...tx, id: generateId('tx') }]),
@@ -571,6 +612,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setRecipeCategories,
     setShoppingList,
     setDayMeta,
+    googleSync,
   ]);
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;

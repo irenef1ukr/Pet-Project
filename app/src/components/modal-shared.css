@@ -87,6 +87,11 @@
   margin-top: 6px;
 }
 
+.modal-field__hint {
+  font: 600 12px var(--font-body);
+  color: var(--color-text-muted-2);
+}
+
 .modal-checkbox-row {
   display: flex;
   align-items: center;

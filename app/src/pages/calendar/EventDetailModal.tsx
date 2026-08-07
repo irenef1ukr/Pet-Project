@@ -61,6 +61,16 @@ export function EventDetailModal({ event, onEdit, onDelete, onClose }: EventDeta
               <span>{event.reminders.map((m) => REMINDER_LABEL[m] ?? `${m} min before`).join(', ')}</span>
             </div>
           )}
+          {event.googleEventId && (
+            <div className="event-detail__row">
+              <span className="event-detail__label">Google</span>
+              <span>
+                🔗 Synced with Google Calendar
+                {event.googleSyncStatus === 'pending' && ' · syncing…'}
+                {event.googleSyncStatus === 'error' && ' · ⚠️ sync failed, will retry on next save'}
+              </span>
+            </div>
+          )}
 
           <div className="modal-actions">
             <button type="button" className="modal-actions__cancel" onClick={onDelete}>

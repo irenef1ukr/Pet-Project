@@ -156,6 +156,11 @@ export type CalendarEventType = 'event' | 'task' | 'lesson';
 
 export type CalendarEventCategory = 'work' | 'personal' | 'lesson' | 'task';
 
+/** 'google' marks an event that is mirrored to/from the user's connected Google Calendar. */
+export type CalendarEventSource = 'local' | 'google';
+
+export type GoogleSyncStatus = 'synced' | 'pending' | 'error';
+
 export interface CalendarEvent {
   id: string;
   title: string;
@@ -170,6 +175,10 @@ export interface CalendarEvent {
   colorOverride?: string;
   /** Minutes before the event start to show an in-app reminder banner. */
   reminders?: number[];
+  /** Present once this event is linked to a Google Calendar event. */
+  source?: CalendarEventSource;
+  googleEventId?: string;
+  googleSyncStatus?: GoogleSyncStatus;
 }
 
 export interface CalendarEventDraft {
@@ -184,6 +193,8 @@ export interface CalendarEventDraft {
   recurring: TodoRecurrence;
   colorOverride?: string;
   reminders: number[];
+  /** Whether to also create/keep this event synced with Google Calendar. Defaults to true when connected. */
+  syncToGoogle?: boolean;
 }
 
 export interface DayMeta {

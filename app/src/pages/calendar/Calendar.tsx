@@ -8,6 +8,7 @@ import { DayView } from './DayView';
 import { DeleteEventConfirmModal } from './DeleteEventConfirmModal';
 import { EventDetailModal } from './EventDetailModal';
 import { EventFormModal } from './EventFormModal';
+import { GoogleCalendarSync } from './GoogleCalendarSync';
 import { MiniMonthPicker } from './MiniMonthPicker';
 import { MonthView } from './MonthView';
 import { UpcomingList } from './UpcomingList';
@@ -25,7 +26,7 @@ type ModalState =
 
 export function Calendar() {
   const navigate = useNavigate();
-  const { events, calendarEntries, dayMeta, financeTransactions, createEvent, updateEvent, deleteEvent } =
+  const { events, calendarEntries, dayMeta, financeTransactions, createEvent, updateEvent, deleteEvent, googleCalendar } =
     useAppData();
   const [view, setView] = useState<CalendarView>('month');
   const [selectedDate, setSelectedDate] = useState(getTodayDate);
@@ -120,6 +121,7 @@ export function Calendar() {
           )}
 
           <div className="calendar-sidebar">
+            <GoogleCalendarSync />
             {view === 'day' && <MiniMonthPicker selectedDate={selectedDate} onSelectDay={setSelectedDate} />}
             <UpcomingList events={upcoming} onSelectEvent={(e) => setModal({ type: 'detail', eventId: e.id })} />
           </div>
@@ -130,6 +132,7 @@ export function Calendar() {
         <EventFormModal
           mode="create"
           today={todayIso}
+          googleConnected={googleCalendar.connected}
           onSubmit={(draft) => {
             createEvent(draft);
             setModal({ type: 'none' });
@@ -152,6 +155,7 @@ export function Calendar() {
           mode="edit"
           initial={selectedEvent}
           today={todayIso}
+          googleConnected={googleCalendar.connected}
           onSubmit={(draft) => {
             updateEvent(selectedEvent.id, draft);
             setModal({ type: 'none' });

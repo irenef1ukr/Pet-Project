@@ -13,7 +13,10 @@ export function DeleteEventConfirmModal({ event, onCancel, onConfirm }: DeleteEv
     <div className="modal-overlay" style={{ zIndex: 1100 }}>
       <div className="modal-card delete-event-confirm">
         <h3 className="delete-event-confirm__title">Delete event?</h3>
-        <p className="delete-event-confirm__body">&ldquo;{event.title}&rdquo; will be permanently deleted.</p>
+        <p className="delete-event-confirm__body">
+          &ldquo;{event.title}&rdquo; will be permanently deleted.
+          {event.googleEventId && ' It will also be removed from Google Calendar.'}
+        </p>
         <div className="modal-actions">
           <button type="button" className="modal-actions__cancel" onClick={onCancel}>
             Cancel
