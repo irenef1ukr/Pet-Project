@@ -46,16 +46,6 @@ export function TransactionFormScreen({
         </label>
 
         <label className="finance-field">
-          <span className="finance-field__label">Description (optional)</span>
-          <input
-            type="text"
-            placeholder="e.g. Grocery run"
-            value={draft.desc}
-            onChange={(e) => onChange({ desc: e.target.value })}
-          />
-        </label>
-
-        <label className="finance-field">
           <span className="finance-field__label">Category</span>
           <select value={draft.categoryId} onChange={(e) => onChange({ categoryId: e.target.value })}>
             {categories.map((c) => (
@@ -67,6 +57,16 @@ export function TransactionFormScreen({
           <span className="finance-field__link" onClick={onManageCategories} role="button" tabIndex={0}>
             Manage categories →
           </span>
+        </label>
+
+        <label className="finance-field">
+          <span className="finance-field__label">Description (optional)</span>
+          <input
+            type="text"
+            placeholder="e.g. Grocery run"
+            value={draft.desc}
+            onChange={(e) => onChange({ desc: e.target.value })}
+          />
         </label>
 
         {error && <div className="finance-form-error">{error}</div>}

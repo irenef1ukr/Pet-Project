@@ -93,7 +93,7 @@
 
 .transactions-table__head {
   display: grid;
-  grid-template-columns: 100px 1fr 140px 110px 120px;
+  grid-template-columns: 100px 140px 1fr 110px 120px;
   padding: 10px 8px;
   font: 700 11px var(--font-display);
   text-transform: uppercase;
@@ -108,7 +108,7 @@
 
 .transactions-table__row {
   display: grid;
-  grid-template-columns: 100px 1fr 140px 110px 120px;
+  grid-template-columns: 100px 140px 1fr 110px 120px;
   padding: 13px 8px;
   align-items: center;
   border-bottom: 1px solid oklch(0.94 0.01 240);
