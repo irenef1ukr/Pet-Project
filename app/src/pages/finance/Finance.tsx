@@ -49,6 +49,7 @@ export function Finance() {
     addFinanceCategory,
     renameFinanceCategory,
     changeFinanceCategoryEmoji,
+    changeFinanceCategoryHue,
     deleteFinanceCategory,
     setCategoryBudget,
   } = useAppData();
@@ -112,8 +113,9 @@ export function Finance() {
 
   const budgetRows = financeCategories.map((c) => {
     const spent = monthTotals[c.id] ?? 0;
-    const pct = c.budget ? Math.min(100, (spent / c.budget) * 100) : 0;
-    const over = c.budget > 0 && spent > c.budget;
+    const hasBudget = c.budget > 0;
+    const pct = hasBudget ? Math.min(100, (spent / c.budget) * 100) : 0;
+    const over = hasBudget && spent > c.budget;
     return {
       id: c.id,
       emoji: c.emoji,
@@ -121,7 +123,7 @@ export function Finance() {
       hue: c.hue,
       pct,
       over,
-      amountLabel: `${formatCurrency(spent)} / ${formatCurrency(c.budget)}`,
+      amountLabel: hasBudget ? `${formatCurrency(spent)} / ${formatCurrency(c.budget)}` : `${formatCurrency(spent)} · No budget`,
     };
   });
 
@@ -205,9 +207,14 @@ export function Finance() {
   };
 
   const saveBudget = () => {
+    if (budgetForm.amount === '0') {
+      setCategoryBudget(budgetForm.categoryId, 0);
+      setScreen('dashboard');
+      return;
+    }
     const amount = parseFloat(budgetForm.amount);
     if (!amount || amount <= 0) {
-      setBudgetFormError('Please enter a valid budget amount.');
+      setBudgetFormError('Please enter a valid budget amount, or choose "No budget".');
       return;
     }
     setCategoryBudget(budgetForm.categoryId, amount);
@@ -243,27 +250,6 @@ export function Finance() {
               }}
             />
 
-            <div className="finance-summary-grid">
-              <DonutCard
-                legend={legend}
-                gradient={donutGradient}
-                centerValue={formatCurrency(spentPeriod)}
-                centerLabel={filter === 'day' ? 'today' : filter === 'week' ? 'this week' : 'this month'}
-              />
-
-              <div className="finance-right-stack">
-                <StatCards
-                  spentMonthLabel={formatCurrency(spentMonth)}
-                  showPeriodStat={filter !== 'month'}
-                  periodStatLabel={filter === 'day' ? 'Spent Today' : 'Spent This Week'}
-                  periodStatValue={formatCurrency(spentPeriod)}
-                />
-                <BudgetByCategoryCard rows={budgetRows} onAddBudget={openAddBudget} />
-              </div>
-            </div>
-
-            <SpendingTrendChart months={trendMonths} maxAmount={maxMonthAmt} />
-
             <TransactionsSection
               categories={financeCategories}
               categoryFilter={txCategoryFilter}
@@ -292,6 +278,27 @@ export function Finance() {
               onPrevPage={() => setPage((p) => Math.max(0, p - 1))}
               onNextPage={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
             />
+
+            <div className="finance-summary-grid">
+              <DonutCard
+                legend={legend}
+                gradient={donutGradient}
+                centerValue={formatCurrency(spentPeriod)}
+                centerLabel={filter === 'day' ? 'today' : filter === 'week' ? 'this week' : 'this month'}
+              />
+
+              <div className="finance-right-stack">
+                <StatCards
+                  spentMonthLabel={formatCurrency(spentMonth)}
+                  showPeriodStat={filter !== 'month'}
+                  periodStatLabel={filter === 'day' ? 'Spent Today' : 'Spent This Week'}
+                  periodStatValue={formatCurrency(spentPeriod)}
+                />
+                <BudgetByCategoryCard rows={budgetRows} onAddBudget={openAddBudget} />
+              </div>
+            </div>
+
+            <SpendingTrendChart months={trendMonths} maxAmount={maxMonthAmt} />
           </div>
         )}
 
@@ -315,6 +322,7 @@ export function Finance() {
             newCategory={newCategory}
             onBack={() => setScreen(categoriesReturnTo)}
             onEmojiChange={changeFinanceCategoryEmoji}
+            onHueChange={changeFinanceCategoryHue}
             onNameChange={renameFinanceCategory}
             onDelete={deleteFinanceCategory}
             onNewCategoryChange={(patch) => setNewCategory((c) => ({ ...c, ...patch }))}

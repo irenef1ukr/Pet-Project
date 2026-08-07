@@ -113,6 +113,21 @@
   cursor: pointer;
 }
 
+.finance-checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 13px var(--font-body);
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.finance-checkbox-field input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 .finance-field__link {
   font: 700 12px var(--font-display);
   color: oklch(0.5 0.18 230);

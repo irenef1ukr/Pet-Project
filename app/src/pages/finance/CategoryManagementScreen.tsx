@@ -7,6 +7,7 @@ interface CategoryManagementScreenProps {
   newCategory: FinanceNewCategoryDraft;
   onBack: () => void;
   onEmojiChange: (id: string, emoji: string) => void;
+  onHueChange: (id: string, hue: number) => void;
   onNameChange: (id: string, name: string) => void;
   onDelete: (id: string) => void;
   onNewCategoryChange: (patch: Partial<FinanceNewCategoryDraft>) => void;
@@ -18,6 +19,7 @@ export function CategoryManagementScreen({
   newCategory,
   onBack,
   onEmojiChange,
+  onHueChange,
   onNameChange,
   onDelete,
   onNewCategoryChange,
@@ -36,26 +38,41 @@ export function CategoryManagementScreen({
         <div className="finance-card category-screen__list">
           {categories.map((c) => (
             <div key={c.id} className="category-row">
-              <select
-                value={c.emoji}
-                onChange={(e) => onEmojiChange(c.id, e.target.value)}
-                className="category-row__emoji-select"
-              >
-                {(CATEGORY_ICONS.includes(c.emoji) ? CATEGORY_ICONS : [c.emoji, ...CATEGORY_ICONS]).map((icon) => (
-                  <option key={icon} value={icon}>
-                    {icon}
-                  </option>
+              <div className="category-row__main">
+                <select
+                  value={c.emoji}
+                  onChange={(e) => onEmojiChange(c.id, e.target.value)}
+                  className="category-row__emoji-select"
+                >
+                  {(CATEGORY_ICONS.includes(c.emoji) ? CATEGORY_ICONS : [c.emoji, ...CATEGORY_ICONS]).map((icon) => (
+                    <option key={icon} value={icon}>
+                      {icon}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  value={c.name}
+                  onChange={(e) => onNameChange(c.id, e.target.value)}
+                  className="category-row__name"
+                />
+                <span className="category-row__delete" onClick={() => onDelete(c.id)} role="button" tabIndex={0}>
+                  ×
+                </span>
+              </div>
+              <div className="category-row__swatches">
+                <span className="category-screen__swatch-label">Color:</span>
+                {HUE_SWATCHES.map((hue) => (
+                  <div
+                    key={hue}
+                    className={`category-swatch${c.hue === hue ? ' category-swatch--selected' : ''}`}
+                    style={{ background: `oklch(0.6 0.18 ${hue})` }}
+                    onClick={() => onHueChange(c.id, hue)}
+                    role="button"
+                    tabIndex={0}
+                  />
                 ))}
-              </select>
-              <input
-                type="text"
-                value={c.name}
-                onChange={(e) => onNameChange(c.id, e.target.value)}
-                className="category-row__name"
-              />
-              <span className="category-row__delete" onClick={() => onDelete(c.id)} role="button" tabIndex={0}>
-                ×
-              </span>
+              </div>
             </div>
           ))}
         </div>

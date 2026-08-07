@@ -25,16 +25,30 @@
 }
 
 .category-row {
-  display: grid;
-  grid-template-columns: 52px 1fr 40px;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
-  align-items: center;
   padding: 12px 0;
   border-bottom: 1px solid oklch(0.94 0.01 240);
 }
 
 .category-row:last-child {
   border-bottom: none;
+}
+
+.category-row__main {
+  display: grid;
+  grid-template-columns: 52px 1fr 40px;
+  gap: 10px;
+  align-items: center;
+}
+
+.category-row__swatches {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-left: 2px;
 }
 
 .category-row__emoji-select {
