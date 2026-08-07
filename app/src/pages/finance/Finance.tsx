@@ -200,9 +200,17 @@ export function Finance() {
     setNewCategory({ emoji: '🙂', name: '', hue: newCategory.hue });
   };
 
+  // '0' doubles as the draft's "No budget" marker (see BudgetFormScreen), so a
+  // category with no budget set pre-fills to '0' rather than an empty string.
+  const budgetAmountFor = (categoryId: string) => {
+    const budget = getCategory(financeCategories, categoryId).budget;
+    return budget > 0 ? String(budget) : '0';
+  };
+
   const openAddBudget = () => {
     setBudgetFormError('');
-    setBudgetForm({ categoryId: financeCategories[0]?.id ?? '', amount: '' });
+    const categoryId = financeCategories[0]?.id ?? '';
+    setBudgetForm({ categoryId, amount: budgetAmountFor(categoryId) });
     setScreen('budgetForm');
   };
 
@@ -335,7 +343,15 @@ export function Finance() {
             categories={financeCategories}
             draft={budgetForm}
             error={budgetFormError}
-            onChange={(patch) => setBudgetForm((f) => ({ ...f, ...patch }))}
+            onChange={(patch) =>
+              setBudgetForm((f) => {
+                const next = { ...f, ...patch };
+                if (patch.categoryId !== undefined && patch.categoryId !== f.categoryId) {
+                  next.amount = budgetAmountFor(patch.categoryId);
+                }
+                return next;
+              })
+            }
             onManageCategories={() => openCategoriesFrom('budgetForm')}
             onSave={saveBudget}
             onCancel={() => setScreen('dashboard')}
