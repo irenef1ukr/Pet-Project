@@ -7,13 +7,14 @@ import { Journal } from './pages/journal/Journal';
 import { Goals } from './pages/goals/Goals';
 import { Habits } from './pages/habits/Habits';
 import { LessonPlan } from './pages/lessonplan/LessonPlan';
+import { Notes } from './pages/notes/Notes';
 import { Recipes } from './pages/recipes/Recipes';
 import { StubPage } from './pages/StubPage';
 import { NAV_ITEMS } from './components/navConfig';
 import { ReminderBanner } from './components/ReminderBanner';
 import { AppDataProvider } from './store/AppDataContext';
 
-const BUILT_PATHS = ['/', '/calendar', '/todo', '/finance', '/journal', '/goals', '/habits', '/lesson-plan', '/recipes'];
+const BUILT_PATHS = ['/', '/calendar', '/todo', '/finance', '/journal', '/goals', '/habits', '/lesson-plan', '/notes', '/recipes'];
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/goals" element={<Goals />} />
         <Route path="/habits" element={<Habits />} />
         <Route path="/lesson-plan" element={<LessonPlan />} />
+        <Route path="/notes" element={<Notes />} />
         <Route path="/recipes" element={<Recipes />} />
         {NAV_ITEMS.filter((item) => !BUILT_PATHS.includes(item.path)).map((item) => (
           <Route

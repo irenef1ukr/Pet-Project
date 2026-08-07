@@ -150,6 +150,23 @@ export interface JournalEntryDraft {
   mediaType: JournalMediaType;
 }
 
+export interface Note {
+  id: string;
+  title: string;
+  bodyHtml: string;
+  tags: string[];
+  pinned: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NoteDraft {
+  title: string;
+  bodyHtml: string;
+  tags: string[];
+  pinned: boolean;
+}
+
 export type CalendarView = 'month' | 'week' | 'day';
 
 export type CalendarEventType = 'event' | 'task' | 'lesson';
