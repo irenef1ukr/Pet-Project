@@ -1,6 +1,6 @@
 .month-view__weekdays {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   background: oklch(0.55 0.05 240);
 }
 
@@ -13,7 +13,7 @@
 
 .month-view__grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   grid-auto-rows: minmax(90px, auto);
   background: var(--color-card);
 }

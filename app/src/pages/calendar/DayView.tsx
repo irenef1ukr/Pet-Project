@@ -1,4 +1,5 @@
 import type { CalendarEvent, DayMeta } from '../../types';
+import { formatCurrency } from '../../lib/financeUtils';
 import {
   EVENT_TYPE_ICON,
   allDayEventsInRange,
@@ -73,7 +74,7 @@ export function DayView({
       <div className="day-view__section day-view__finance" onClick={onNavigateFinance} role="button" tabIndex={0}>
         <span className="day-view__section-label">Finance</span>
         {meta?.spend !== undefined ? (
-          <span className="day-view__finance-amount">Spent today: ₴{meta.spend}</span>
+          <span className="day-view__finance-amount">Spent today: {formatCurrency(meta.spend)}</span>
         ) : (
           <span className="day-view__empty">No spending logged</span>
         )}

@@ -1,4 +1,5 @@
 import type { CalendarEvent, DayMeta } from '../../types';
+import { formatCurrency } from '../../lib/financeUtils';
 import {
   EVENT_TYPE_ICON,
   WEEKDAY_LABELS,
@@ -75,7 +76,7 @@ export function MonthView({
                 <span className="month-view__day-number">{date.getDate()}</span>
                 {meta && (
                   <span className="month-view__day-meta">
-                    {meta.spend !== undefined ? `₴${meta.spend} ` : ''}
+                    {meta.spend !== undefined ? `${formatCurrency(meta.spend)} ` : ''}
                     {meta.mood ?? ''}
                     {meta.weather ?? ''}
                   </span>
