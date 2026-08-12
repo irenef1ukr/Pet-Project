@@ -122,6 +122,66 @@ export function eventsOnDate(events: CalendarEvent[], date: Date) {
   return events.filter((e) => !e.allDay && e.date === iso);
 }
 
+export interface PositionedEvent {
+  event: CalendarEvent;
+  col: number;
+  colCount: number;
+}
+
+function eventMinutesRange(event: CalendarEvent): [number, number] {
+  const start = timeToMinutes(event.startTime!);
+  const end = event.endTime ? timeToMinutes(event.endTime) : start + 30;
+  return [start, end > start ? end : start + 30];
+}
+
+/**
+ * Lays out same-day timed events into side-by-side columns so overlapping
+ * events (e.g. two events with the same start time) are all visible instead
+ * of stacking on top of each other. Events are grouped into clusters of
+ * mutually-overlapping events; each cluster shares a column count.
+ */
+export function layoutTimedEvents(events: CalendarEvent[]): PositionedEvent[] {
+  const timed = events.filter((e) => e.startTime);
+  const sorted = timed
+    .map((event) => {
+      const [start, end] = eventMinutesRange(event);
+      return { event, start, end };
+    })
+    .sort((a, b) => a.start - b.start || a.end - b.end);
+
+  const result: PositionedEvent[] = [];
+  let cluster: { event: CalendarEvent; start: number; end: number; col: number }[] = [];
+  let clusterEnd = -Infinity;
+  const columnEnds: number[] = [];
+
+  const flushCluster = () => {
+    if (cluster.length === 0) return;
+    const colCount = Math.max(...cluster.map((c) => c.col)) + 1;
+    for (const c of cluster) result.push({ event: c.event, col: c.col, colCount });
+    cluster = [];
+    columnEnds.length = 0;
+  };
+
+  for (const { event, start, end } of sorted) {
+    if (start >= clusterEnd) {
+      flushCluster();
+      clusterEnd = -Infinity;
+    }
+    let col = columnEnds.findIndex((endTime) => start >= endTime);
+    if (col === -1) {
+      col = columnEnds.length;
+      columnEnds.push(end);
+    } else {
+      columnEnds[col] = end;
+    }
+    cluster.push({ event, start, end, col });
+    clusterEnd = Math.max(clusterEnd, end);
+  }
+  flushCluster();
+
+  return result;
+}
+
 export function allDayEventsInRange(events: CalendarEvent[], rangeStart: Date, rangeEnd: Date) {
   return events.filter((e) => {
     if (!e.allDay) return false;

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { TopNav } from '../../components/TopNav';
 import { getTodayISO } from '../../data/mockData';
-import { addDaysIso } from '../../lib/dateUtils';
+import { addDaysIso, formatDateRange } from '../../lib/dateUtils';
 import {
   buildWeekDays,
   completionRate,
@@ -58,6 +58,7 @@ export function Habits() {
 
   const [screen, setScreen] = useState<Screen>('main');
   const [dueFilter, setDueFilter] = useState<DueFilter>('all');
+  const [weekOffset, setWeekOffset] = useState(0);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<HabitDraft>(EMPTY_FORM);
@@ -81,9 +82,12 @@ export function Habits() {
     frequencyLabel: frequencyLabel(h),
     streak: computeStreak(h, todayIso),
     rateLabel: `${completionRate(h, todayIso, 30)}%`,
-    week: buildWeekDays(h, todayIso),
+    week: buildWeekDays(h, todayIso, weekOffset),
     archived: h.archived,
   });
+
+  const weekStartIso = addDaysIso(mondayOfIso(todayIso), weekOffset * 7);
+  const weekRangeLabel = weekOffset === 0 ? 'This Week' : formatDateRange(weekStartIso, addDaysIso(weekStartIso, 6));
 
   const categoryGroups = useMemo(() => {
     const filtered = habits.filter(matchesFilter);
@@ -97,7 +101,7 @@ export function Habits() {
       }))
       .filter((c) => c.habits.length > 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [habits, habitCategories, dueFilter, todayIso]);
+  }, [habits, habitCategories, dueFilter, todayIso, weekOffset]);
 
   interface BestStreak {
     streak: number;
@@ -259,6 +263,27 @@ export function Habits() {
                   {chip.label}
                 </button>
               ))}
+            </div>
+
+            <div className="habits-week-nav">
+              <button
+                type="button"
+                className="habits-week-nav__arrow"
+                onClick={() => setWeekOffset((o) => o - 1)}
+                aria-label="Previous week"
+              >
+                ‹
+              </button>
+              <span className="habits-week-nav__label">{weekRangeLabel}</span>
+              <button
+                type="button"
+                className="habits-week-nav__arrow"
+                onClick={() => setWeekOffset((o) => Math.min(0, o + 1))}
+                disabled={weekOffset >= 0}
+                aria-label="Next week"
+              >
+                ›
+              </button>
             </div>
 
             {habits.length === 0 && (

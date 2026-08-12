@@ -37,7 +37,7 @@ import './Finance.css';
 type Screen = 'dashboard' | 'txForm' | 'categories' | 'budgetForm';
 type CategoriesReturnTo = 'dashboard' | 'txForm' | 'budgetForm';
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10;
 
 export function Finance() {
   const {
@@ -111,21 +111,24 @@ export function Finance() {
     });
   const donutGradient = segments.length ? `conic-gradient(${segments.join(', ')})` : 'conic-gradient(oklch(0.9 0.01 240) 0deg 360deg)';
 
-  const budgetRows = financeCategories.map((c) => {
-    const spent = monthTotals[c.id] ?? 0;
-    const hasBudget = c.budget > 0;
-    const pct = hasBudget ? Math.min(100, (spent / c.budget) * 100) : 0;
-    const over = hasBudget && spent > c.budget;
-    return {
-      id: c.id,
-      emoji: c.emoji,
-      name: c.name,
-      hue: c.hue,
-      pct,
-      over,
-      amountLabel: hasBudget ? `${formatCurrency(spent)} / ${formatCurrency(c.budget)}` : `${formatCurrency(spent)} · No budget`,
-    };
-  });
+  const budgetRows = financeCategories
+    .filter((c) => (monthTotals[c.id] ?? 0) > 0)
+    .sort((a, b) => (monthTotals[b.id] ?? 0) - (monthTotals[a.id] ?? 0))
+    .map((c) => {
+      const spent = monthTotals[c.id] ?? 0;
+      const hasBudget = c.budget > 0;
+      const pct = hasBudget ? Math.min(100, (spent / c.budget) * 100) : 0;
+      const over = hasBudget && spent > c.budget;
+      return {
+        id: c.id,
+        emoji: c.emoji,
+        name: c.name,
+        hue: c.hue,
+        pct,
+        over,
+        amountLabel: hasBudget ? `${formatCurrency(spent)} / ${formatCurrency(c.budget)}` : `${formatCurrency(spent)} · No budget`,
+      };
+    });
 
   const trendMonths = last6MonthTotals(financeTransactions, today);
   const maxMonthAmt = Math.max(1, ...trendMonths.map((m) => m.total));

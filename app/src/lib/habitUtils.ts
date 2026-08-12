@@ -96,8 +96,8 @@ export interface HabitWeekDay {
   clickable: boolean;
 }
 
-export function buildWeekDays(habit: Habit, todayIso: string): HabitWeekDay[] {
-  const monday = mondayOfIso(todayIso);
+export function buildWeekDays(habit: Habit, todayIso: string, weekOffset = 0): HabitWeekDay[] {
+  const monday = addDaysIso(mondayOfIso(todayIso), weekOffset * 7);
   return Array.from({ length: 7 }, (_, i) => {
     const iso = addDaysIso(monday, i);
     const scheduled = isScheduled(habit, iso);
