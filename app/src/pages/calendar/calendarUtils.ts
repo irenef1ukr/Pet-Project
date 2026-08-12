@@ -193,8 +193,15 @@ export function allDayEventsInRange(events: CalendarEvent[], rangeStart: Date, r
 
 export function getUpcomingEvents(events: CalendarEvent[], fromDate: Date, limit: number) {
   const fromIso = toISODate(fromDate);
+  const fromMinutes = fromDate.getHours() * 60 + fromDate.getMinutes();
   return [...events]
-    .filter((e) => (e.endDate ?? e.date) >= fromIso)
+    .filter((e) => {
+      const endIso = e.endDate ?? e.date;
+      if (endIso !== fromIso) return endIso > fromIso;
+      // Event ends today: still upcoming unless its scheduled start time already passed.
+      if (e.allDay || !e.startTime) return true;
+      return timeToMinutes(e.startTime) >= fromMinutes;
+    })
     .sort((a, b) => {
       if (a.date !== b.date) return a.date < b.date ? -1 : 1;
       const aTime = a.startTime ?? '00:00';
