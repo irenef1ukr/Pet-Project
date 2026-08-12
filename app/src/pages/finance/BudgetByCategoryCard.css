@@ -12,6 +12,13 @@
   margin-bottom: 14px;
 }
 
+.budget-card__empty {
+  font: 600 13px var(--font-body);
+  color: var(--color-text-muted-2);
+  padding: 16px 0;
+  text-align: center;
+}
+
 .budget-card__rows {
   display: flex;
   flex-direction: column;

@@ -25,6 +25,7 @@ export function BudgetByCategoryCard({ rows, onAddBudget }: BudgetByCategoryCard
           ✎
         </button>
       </div>
+      {rows.length === 0 && <div className="budget-card__empty">No spending yet this month</div>}
       <div className="budget-card__rows">
         {rows.map((row) => (
           <div key={row.id} className="budget-row">

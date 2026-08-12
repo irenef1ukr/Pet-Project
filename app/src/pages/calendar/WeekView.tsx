@@ -9,6 +9,7 @@ import {
   formatWeekRange,
   getWeekDays,
   isSameDay,
+  layoutTimedEvents,
   mondayIndex,
   timeToMinutes,
   toISODate,
@@ -112,16 +113,22 @@ export function WeekView({ selectedDate, today, events, onPrev, onNext, onSelect
               {HOURS.map((hour) => (
                 <div key={hour} className="week-view__hour-line" style={{ height: HOUR_HEIGHT }} />
               ))}
-              {dayEvents.map((e) => {
-                if (!e.startTime) return null;
-                const top = offsetForTime(e.startTime);
+              {layoutTimedEvents(dayEvents).map(({ event: e, col, colCount }) => {
+                const top = offsetForTime(e.startTime!);
                 const height = e.endTime ? Math.max(20, offsetForTime(e.endTime) - top) : 24;
                 const isRealEvent = !e.id.startsWith('task-');
+                const widthPct = 100 / colCount;
                 return (
                   <div
                     key={e.id}
                     className="week-view__event"
-                    style={{ top, height, background: eventColor(e) }}
+                    style={{
+                      top,
+                      height,
+                      left: `calc(${col * widthPct}% + 3px)`,
+                      width: `calc(${widthPct}% - 6px)`,
+                      background: eventColor(e),
+                    }}
                     onClick={
                       isRealEvent
                         ? (ev) => {
