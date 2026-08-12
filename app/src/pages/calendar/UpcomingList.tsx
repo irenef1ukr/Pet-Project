@@ -27,7 +27,8 @@ export function UpcomingList({ events, onSelectEvent }: UpcomingListProps) {
                   {EVENT_TYPE_ICON[e.type]}
                 </span>
                 <span className="upcoming-list__label">
-                  {formatShortDate(fromISODate(e.date))} · {e.title}
+                  {formatShortDate(fromISODate(e.date))}
+                  {e.startTime ? `, ${e.startTime}` : ''} · {e.title}
                   {e.recurring !== 'none' ? ' ↻' : ''}
                 </span>
               </div>
