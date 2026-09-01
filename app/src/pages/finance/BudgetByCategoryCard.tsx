@@ -14,9 +14,10 @@ interface BudgetRow {
 interface BudgetByCategoryCardProps {
   rows: BudgetRow[];
   onAddBudget: () => void;
+  emptyLabel?: string;
 }
 
-export function BudgetByCategoryCard({ rows, onAddBudget }: BudgetByCategoryCardProps) {
+export function BudgetByCategoryCard({ rows, onAddBudget, emptyLabel = 'No spending yet this period' }: BudgetByCategoryCardProps) {
   return (
     <div className="finance-card budget-card">
       <div className="budget-card__header">
@@ -25,7 +26,7 @@ export function BudgetByCategoryCard({ rows, onAddBudget }: BudgetByCategoryCard
           ✎
         </button>
       </div>
-      {rows.length === 0 && <div className="budget-card__empty">No spending yet this month</div>}
+      {rows.length === 0 && <div className="budget-card__empty">{emptyLabel}</div>}
       <div className="budget-card__rows">
         {rows.map((row) => (
           <div key={row.id} className="budget-row">
