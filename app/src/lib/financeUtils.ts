@@ -39,6 +39,15 @@ export function getPeriodRange(period: FinancePeriod, offset: number, todayIso: 
   return { start, end };
 }
 
+export function monthRangeContaining(dateIso: string): PeriodRange {
+  const date = fromISODate(dateIso);
+  const y = date.getFullYear();
+  const m = date.getMonth();
+  const start = toISODate(new Date(y, m, 1));
+  const end = toISODate(new Date(y, m + 1, 0));
+  return { start, end };
+}
+
 export function inRange(dateIso: string, range: PeriodRange): boolean {
   return dateIso >= range.start && dateIso <= range.end;
 }
