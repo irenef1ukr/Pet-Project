@@ -11,6 +11,7 @@ import {
   getPeriodRange,
   inRange,
   last6MonthTotals,
+  monthRangeContaining,
   sumTotals,
   totalsByCategory,
 } from '../../lib/financeUtils';
@@ -86,11 +87,13 @@ export function Finance() {
   };
 
   const periodRange = getPeriodRange(filter, periodOffset, today);
-  const monthRange = getPeriodRange('month', 0, today);
+  const monthRange = monthRangeContaining(periodRange.start);
   const periodTotals = totalsByCategory(financeTransactions, periodRange);
   const monthTotals = totalsByCategory(financeTransactions, monthRange);
   const spentPeriod = sumTotals(periodTotals);
   const spentMonth = sumTotals(monthTotals);
+  const isCurrentMonth = monthRange.start === monthRangeContaining(today).start;
+  const spentMonthTitle = isCurrentMonth ? 'Spent this month' : `Spent in ${formatPeriodLabel('month', monthRange)}`;
 
   const legend = financeCategories
     .filter((c) => (periodTotals[c.id] ?? 0) > 0)
@@ -297,6 +300,7 @@ export function Finance() {
               <div className="finance-right-stack">
                 <StatCards
                   spentMonthLabel={formatCurrency(spentMonth)}
+                  spentMonthTitle={spentMonthTitle}
                   showPeriodStat={filter !== 'month'}
                   periodStatLabel={filter === 'day' ? 'Spent Today' : 'Spent This Week'}
                   periodStatValue={formatCurrency(spentPeriod)}
